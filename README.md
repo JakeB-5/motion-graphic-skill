@@ -97,6 +97,16 @@ Make a 30-second motion graphic introducing this repository's motion-graphic ski
 
 The same `skills/motion-graphic` folder supports both agents, including the engine, references and scripts.
 
+### Quick install (any agent)
+
+With the [`skills`](https://www.npmjs.com/package/skills) CLI, one command installs the skill for Claude Code, Codex and other supported agents:
+
+```bash
+npx skills add JakeB-5/motion-graphic-skill --skill motion-graphic
+```
+
+It installs into the current project by default; add `-g` to install for your user instead. The sections below cover the agent-specific alternatives.
+
 ### Codex
 
 When you open this repository in Codex, `.agents/skills/motion-graphic` links to the shared skill so it can be discovered locally. To use it in other projects, copy it to your personal skills directory (macOS/Linux/WSL):

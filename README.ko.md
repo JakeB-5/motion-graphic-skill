@@ -97,6 +97,16 @@ Make a 30-second motion graphic introducing this repository's motion-graphic ski
 
 두 에이전트 모두 같은 `skills/motion-graphic` 폴더의 엔진·참고자료·스크립트를 사용합니다.
 
+### 빠른 설치 (모든 에이전트)
+
+[`skills`](https://www.npmjs.com/package/skills) CLI를 쓰면 명령 하나로 Claude Code·Codex 등 지원 에이전트에 설치됩니다.
+
+```bash
+npx skills add JakeB-5/motion-graphic-skill --skill motion-graphic
+```
+
+기본은 현재 프로젝트에 설치되며, `-g`를 붙이면 사용자 전역에 설치됩니다. 아래는 에이전트별 다른 설치 방법입니다.
+
 ### Codex
 
 이 저장소를 Codex에서 열면 `.agents/skills/motion-graphic` 링크를 통해 공용 스킬을 찾습니다. 다른 프로젝트에서도 쓰려면 개인 스킬 폴더에 복사하세요(macOS/Linux/WSL).

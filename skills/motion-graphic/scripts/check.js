@@ -10,12 +10,19 @@
 //
 // Produces in DIR:
 //   sheet-<lang>.png     contact sheet: 2 stills per scene + last frame, labelled — read this first
+//   sheet-<lang>-phone.png  the same stills shrunk to 360 px wide (a portrait phone) — text you can't read here is too small
+//   strip-<lang>-00.png  the opening, 12 frames from t = 0 to 2.2 s — is there a hook within 2 s?
+//   strip-<lang>-<n>.png 12 consecutive frames (30 fps, −0.13 … +0.23 s) around the cut into scene n — pops, overlaps,
+//                        dead cuts; 6 × 2 grid, the 5th frame (marked) is the new scene's first
 //   still-<lang>-*.png   full-size stills (1920x1080) for close inspection
 //   view-<lang>-*.png    page screenshots on phone / tablet / desktop viewports
 //   report.json          everything below, machine-readable
 // Checks (non-zero exit when any fails):
 //   - page errors / console errors
 //   - text drawn partly outside the 1920x1080 canvas (clipped copy)
+//   - determinism: the same times rendered forwards then backwards must give identical frames
+//     (catches accumulated state, Math.random(), Date.now() in draw — ?t= stills and record.js depend on it);
+//     runs on a CPU-backed canvas so GPU raster noise can't cause false failures
 //   - audio: offline render peak and per-scene RMS (silent scene < 0.02, clipping peak >= 0.99)
 //   - layout: DOM elements overflowing the viewport on 7 device sizes, film size per device, labels cut by an ellipsis
 // Warnings (printed, not failures — judge them on the sheet): non-mono canvas text under 26px, Hangul set in the mono font
@@ -68,6 +75,13 @@ const PROBE = () => {
     return orig.call(this, s, x, y, ...rest);
   };
 };
+// With ?detcheck every 2d canvas is created CPU-backed (willReadFrequently): the GPU canvas varies by a few bytes
+// between identical draws, which would make the determinism check flaky. Only the determinism pass loads the page this way.
+const CPU_CANVAS = () => {
+  if (!/[?&]detcheck(&|$)/.test(location.search)) return;
+  const get = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (type, o){ return get.call(this, type, type === '2d' ? { ...o, willReadFrequently: true } : o); };
+};
 const dedupe = list => { const seen = new Set(), out = []; for (const c of list){ const k = c.text; if (!seen.has(k)){ seen.add(k); out.push(c); } } return out; };
 
 (async () => {
@@ -83,6 +97,7 @@ const dedupe = list => { const seen = new Set(), out = []; for (const c of list)
     try { if (a) s = await a.evaluate(e => (e && e.stack) ? e.stack.split('\n').slice(0, 2).join(' | ') : String(e)); } catch (_){}
     errs.push(s); });
   await page.evaluateOnNewDocument(PROBE);
+  await page.evaluateOnNewDocument(CPU_CANVAS);
   await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.goto(url('t=0'), { waitUntil: 'networkidle0' });
   await page.waitForFunction(() => document.body.dataset.ready === '1', { timeout: 15000 }).catch(() => fail('page never set data-ready (fontsReady/boot failed?)'));
@@ -125,6 +140,58 @@ const dedupe = list => { const seen = new Set(), out = []; for (const c of list)
     R.smallText = dedupe(shots.small); R.hangulInMono = dedupe(shots.monoKo);
     if (R.smallText.length) console.log(`  WARN ${R.smallText.length} non-mono text line(s) under 26px (hard to read on phones): ` + R.smallText.slice(0, 6).map(c => `"${c.text.slice(0, 24)}" ${c.px}px`).join(', '));
     if (R.hangulInMono.length) console.log(`  WARN Hangul drawn in the mono font (spaced-out fallback): ` + R.hangulInMono.slice(0, 6).map(c => `"${c.text.slice(0, 24)}"`).join(', '));
+
+    // phone sheet (same stills at a portrait phone's 360 px) + strips of 12 frames (6 × 2, read left to right): strip 00 is
+    // the opening (t = 0 … 2.2 s, for the hook); strip n is 12 consecutive 30 fps frames around the cut into scene n —
+    // 4 before, 8 after so the default 0.28 s transition plays out — and its 5th frame (+0.000s) is the new scene's first
+    const cuts = meta.SC.slice(1).map((s, j) => ({ n: j + 2, code: s.code, t0: s.t0 }));
+    const fmtT = dt => `${dt < 0 ? '' : '+'}${dt.toFixed(3)}s`;
+    const strips = [{ n: 0, cut: -1, frames: Array.from({ length: 12 }, (_, f) => [f * .2, `t=${(f * .2).toFixed(1)}s`]) },
+      ...cuts.map(c => ({ n: c.n, cut: 4, frames: Array.from({ length: 12 }, (_, f) => { const dt = (f - 4) / 30;
+        return [Math.max(0, c.t0 + dt), fmtT(dt) + (f === 4 ? ` → ${String(c.n).padStart(2, '0')} ${c.code}` : '')]; }) }))];
+    const extra = await page.evaluate(async (times, strips) => {
+      const cv = document.getElementById('cv');
+      const label = (g, s, x, y, z) => { g.fillStyle = '#FFB224'; g.font = `700 ${z}px monospace`; g.fillText(s, x, y); };
+      const cols = 4, pw = 360, ph = 203, pp = 20, rows = Math.ceil(times.length / cols);
+      const ps = document.createElement('canvas'); ps.width = cols * pw; ps.height = rows * (ph + pp); const pg = ps.getContext('2d');
+      pg.fillStyle = '#000'; pg.fillRect(0, 0, ps.width, ps.height); pg.imageSmoothingQuality = 'high';
+      times.forEach(([i, code, t], k) => { __motion.render(t); const x = (k % cols) * pw, y = Math.floor(k / cols) * (ph + pp);
+        pg.drawImage(cv, x, y + pp, pw, ph); label(pg, `${String(i + 1).padStart(2, '0')} ${code} · t=${t.toFixed(2)}`, x + 6, y + 14, 12); });
+      const sw = 320, sh = 180, sp = 22, sc = 6;
+      const urls = strips.map(s => {
+        const st = document.createElement('canvas'); st.width = sc * sw; st.height = Math.ceil(s.frames.length / sc) * (sh + sp); const sg = st.getContext('2d');
+        sg.fillStyle = '#000'; sg.fillRect(0, 0, st.width, st.height); sg.imageSmoothingQuality = 'high';
+        const at = f => [(f % sc) * sw, Math.floor(f / sc) * (sh + sp)];
+        s.frames.forEach(([t, lab], f) => { const [x, y] = at(f); __motion.render(t); sg.drawImage(cv, x, y + sp, sw, sh); label(sg, lab, x + 6, y + 16, 13); });
+        if (s.cut >= 0){ const [x, y] = at(s.cut); sg.fillStyle = '#FFB224'; sg.fillRect(x, y + sp, 4, sh); }   // left edge of the new scene's first frame
+        return st.toDataURL('image/png');
+      });
+      return { phone: ps.toDataURL('image/png'), strips: urls };
+    }, times, strips);
+    save(`sheet-${lang}-phone.png`, extra.phone);
+    const stale = new RegExp(`^strip-${lang.replace(/[^\w-]/g, '')}-\\d{2}\\.png$`);   // exact lang: 'pt' must not match 'pt-BR' strips
+    for (const f of fs.readdirSync(out)) if (stale.test(f)) fs.unlinkSync(path.join(out, f));   // no stale strips from an older cut list
+    extra.strips.forEach((d, k) => save(`strip-${lang}-${String(strips[k].n).padStart(2, '0')}.png`, d));
+    console.log(`  sheet-${lang}-phone.png + strip-${lang}-00.png (opening) + ${cuts.length} cut strip(s)`);
+
+    // determinism: the same times rendered forwards, then backwards; a frame that differs depends on what was drawn before it
+    const dtimes = [...times.map(x => x[2]), ...cuts.map(c => c.t0 + .1)];
+    await page.goto(url(`t=0&lang=${lang}&detcheck`), { waitUntil: 'networkidle0' });   // CPU-backed canvas, see CPU_CANVAS
+    await page.waitForFunction(() => document.body.dataset.ready === '1', { timeout: 15000 }).catch(() => {});
+    const nondet = await page.evaluate(async ts => {
+      const cv = document.getElementById('cv');
+      const h = s => { let x = 0x811c9dc5; for (let i = 0; i < s.length; i++){ x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193); } return (x >>> 0).toString(16) + ':' + s.length; };
+      const shot = t => { __motion.render(t); return h(cv.toDataURL('image/png')); };
+      // a glyph drawn for the first time can pull in a web-font subset mid-pass and change later frames, so warm up,
+      // wait for fonts, and only report times that differ on two attempts (real order bugs and Math.random always repeat)
+      const attempt = async () => { ts.forEach(shot); if (document.fonts) await document.fonts.ready;
+        const fwd = ts.map(shot), back = ts.slice().reverse().map(shot).reverse(); return new Set(ts.filter((t, i) => fwd[i] !== back[i])); };
+      const a = await attempt(); if (!a.size) return [];
+      const b = await attempt(); return ts.filter(t => a.has(t) && b.has(t)).map(t => +t.toFixed(2));
+    }, dtimes);
+    R.nondeterministic = nondet;
+    if (nondet.length) fail(`[${lang}] render(t) is not deterministic at t=${nondet.slice(0, 8).join(', ')} (same t, different frame depending on render order — accumulated state or Math.random/Date.now in draw?)`);
+    else console.log(`  deterministic (${dtimes.length} times rendered forwards and backwards)`);
 
     if (!args.includes('--no-audio')){
       await page.goto(url(`t=0&lang=${lang}&audiotest`), { waitUntil: 'networkidle0' });

@@ -232,6 +232,31 @@ function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
   T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
 }
 function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
 // draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
 function polyPartial(pts, p){
   let L = 0; const seg = [];
@@ -253,7 +278,8 @@ function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >>
      transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
    The engine draws the progress bar after hud(); keep y > 990 free for it. */
 // @@style
-// default: dark technical console — dot grid drifting, vignette + scanlines, corner brackets, timecode HUD
+// default: dark technical console — dot grid drifting, vignette + scanlines, corner brackets, timecode HUD.
+// The brackets and corner labels only belong to technical / instrument-screen topics; otherwise empty or shrink hud() (styles.md §5)
 const bgTile = (() => { const c = document.createElement('canvas'); c.width = c.height = 48; const g = c.getContext('2d'); g.fillStyle = C.grid; g.fillRect(23, 23, 2, 2); return c; })();
 const bgPat = ctx.createPattern(bgTile, 'repeat');
 const vig = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
@@ -376,9 +402,12 @@ S.list = {
     kicker(TXT.lK, 110, 200, lt, .05);
     slam(TXT.lT, 110, 330, lt, .1, { f: FD, z: 150, c: C.alt, fit: 900 });
     T(TXT.lS, 110, 400, { f: FK, w: 500, z: 32, fit: 900, c: C.dim, a: inv(.6, .9, lt) });
-    TXT.lL.forEach((s, i) => { const t0 = (3 + i * 1.5) * B, a = inv(t0, t0 + .15, lt); if (a <= 0) return;
+    // one highlight bar follows the newest line: track() retargets it with a spring each time a line lands
+    const LT = TXT.lL.map((_, i) => (3 + i * 1.5) * B), hy = track(lt, LT.map((t0, i) => [t0, 560 + i * 90]), ...SPRING.snappy);
+    ctx.fillStyle = rgba(C.alt, .12 * inv(LT[0], LT[0] + .15, lt)); ctx.fillRect(96, hy - 52, 880, 74);
+    TXT.lL.forEach((s, i) => { const t0 = LT[i], a = inv(t0, t0 + .15, lt); if (a <= 0) return;
       ctx.fillStyle = C.alt; ctx.globalAlpha = a; ctx.fillRect(110, 560 + i * 90 - 22, 16, 16); ctx.globalAlpha = 1;
-      T(s, 146 + (1 - eO(a)) * 30, 560 + i * 90, { f: FK, w: 700, z: 40, a, fit: 820 }); });
+      T(s, 146 + (1 - spring(lt - t0, ...SPRING.snappy)) * 30, 560 + i * 90, { f: FK, w: 700, z: 40, a, fit: 820 }); });
     // right: a grid written by a scan beam
     const wx = GRID.ox + (lt - 2 * B) / (3 * B) * (GRID.w + 20), bp = beatPulse(lt);
     for (const c of GRID.cells){ let col = C.grid, a = 1;
@@ -404,7 +433,7 @@ S.number = {
     // right: headline bar vs companion bar, both scaled to the headline value
     const vx = 1100, vw = 560, max = TXT.nBar[0][1];   // leave ~150px right of the longest bar for its value label
     // v = exact value for the bar length, shown = label exactly as the headline/source words it
-    TXT.nBar.forEach(([lab, v, shown], i) => { const t0 = (2 + i * 2) * B, p = eO(inv(t0, t0 + 1.2, lt)), a = inv(t0 - .2, t0, lt); if (a <= 0) return;
+    TXT.nBar.forEach(([lab, v, shown], i) => { const t0 = (2 + i * 2) * B, p = spring(lt - t0, ...SPRING.default), a = inv(t0 - .2, t0, lt); if (a <= 0) return;
       const y = 420 + i * 160, bw = Math.max(6, vw * v / max * p);
       T(lab, vx, y, { f: FK, w: 700, z: 28, a, fit: vw });
       ctx.fillStyle = i ? C.dim : C.acc; ctx.globalAlpha = a; ctx.fillRect(vx, y + 22, bw, 56); ctx.globalAlpha = 1;

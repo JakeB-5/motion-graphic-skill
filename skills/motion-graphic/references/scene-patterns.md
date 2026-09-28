@@ -1,23 +1,75 @@
 # Scene patterns
 
-Proven animation patterns built on the engine helpers (`T`, `mw`, `slam`, `rise`, `kicker`, `typeOn`, `polyPartial`, `dot`, `glow`, `rgba`, `inv`, `lerp`, `eO`, `eIO`, `eBack`, `hash`, `beatPulse`). All of them shipped in a real 54-second, 12-scene piece. Paste the code and change coordinates, copy and colours.
+Proven animation patterns built on the engine helpers (`T`, `mw`, `slam`, `rise`, `kicker`, `typeOn`, `polyPartial`, `dot`, `glow`, `rgba`, `inv`, `lerp`, `eO`, `eIO`, `eBack`, `spring`, `track`, `swapAlpha`, `hash`, `beatPulse`). All of them shipped in a real 54-second, 12-scene piece. Paste the code and change coordinates, copy and colours.
 
-Basic grammar: `inv(a, b, lt)` goes 0 → 1 as `lt` moves from a to b. Shape it with `eO` (decelerate), `eIO` (ease in-out) or `eBack` (slight overshoot). Entrances usually take 0.15–0.3 s.
+Basic grammar: `inv(a, b, lt)` goes 0 → 1 as `lt` moves from a to b. Shape it with `eO` (decelerate), `eIO` (ease in-out) or `eBack` (slight overshoot). Entrances usually take 0.15–0.3 s. For anything that moves or grows — position, width, scale, a bar's length — prefer a spring (§1): fixed curves read as sliding, springs read as mass.
 
 These patterns lean technical because that is where they were born. For calm styles, keep the structure and swap the voice: `rise` for `slam`, sans subheads for mono kickers, softer sounds (see `styles.md` §4).
 
 ## Contents
-1. Text — headline slam · kicker · list · strike-through · laser engraving · dot-matrix word · glitch
-2. Numbers — counter · bar comparison · cell fill · ring gauge · value morph
-3. Lines and structure — circuit traces · scan beam · radar sweep · timeline · converging lines
-4. Objects — circular grid (wafer) · isometric stack · chip package · mock UI + numbered badges · terminal panel · bit cells decaying / being written · falling-digit rain
-5. Emphasis and cuts — flash · zoom creep · beat pulse · blink · shake · badge pop
-6. Sound pairings
-7. Performance
+1. Motion — springs and presets · `track` for values that retarget · stretching tab indicator · text swaps inside a morphing container
+2. Text — headline slam · kicker · list · strike-through · laser engraving · dot-matrix word · glitch
+3. Numbers — counter · bar comparison · cell fill · ring gauge · value morph
+4. Lines and structure — circuit traces · scan beam · radar sweep · timeline · converging lines
+5. Objects — circular grid (wafer) · isometric stack · chip package · mock UI + numbered badges · terminal panel · bit cells decaying / being written · falling-digit rain
+6. Emphasis and cuts — flash · zoom creep · beat pulse · blink · shake · badge pop
+7. Sound pairings
+8. Performance
 
 ---
 
-## 1. Text
+## 1. Motion — springs
+
+`spring(t, k, d)` is a closed-form damped spring from 0 to 1, `t` in seconds since the move began. It stays a pure function of time (no simulation), so scrubbing and `?t=` stills are exact. There is no end time to pick: it accelerates, settles on its own, and the underdamped presets overshoot a hair. Spread a preset from `SPRING` into it:
+
+| Preset | `[k, d]` | Overshoot · settles | Use for |
+|---|---|---|---|
+| `SPRING.snappy` | `[320, 28]` | ~2 % · 0.35 s | buttons, toggles, chips, list lines, leading edges |
+| `SPRING.default` | `[170, 26]` | none · 0.5 s | cards, panels, bars, camera moves (`spring(t)` with no k, d) |
+| `SPRING.heavy` | `[90, 19]` | none · 0.7 s | big type, logos, large objects — type never bounces |
+| `SPRING.playful` | `[220, 16]` | ~13 % · 0.6 s | stickers, mascots, badges in playful styles |
+
+Tiny overshoot on UI, none on type. `eBack` stays for `slam`'s punch; `spring` is for things that travel.
+
+**Single move** — replace `eO(inv(t0, t0 + dur, lt))` with a spring started at `t0`:
+```js
+const p = spring(lt - t0, ...SPRING.default);                         // 0 → 1, starts at t0
+ctx.fillRect(vx, y, vw * v / max * p, 56);                            // a bar that grows with weight (S.number in the engine)
+T(s, 146 + (1 - spring(lt - t0, ...SPRING.snappy)) * 30, y, o);        // a list line sliding in from 30 px left (S.list)
+const sc = lerp(.86, 1, spring(lt - .1, ...SPRING.heavy));            // a logo settling into place: scale from the centre, no bounce
+```
+
+**One value, several targets — `track`**. When a value changes target more than once (a cursor, a highlight, a container's width), don't restart a spring per segment — that snaps when a new move begins before the old one settled. `track(t, keys, k, d)` adds one spring per change, each from its own start time, so the motion stays continuous and any `t` is still computed directly. `keys = [[time, value], ...]`, sorted by time, at least one; before the second key the value is the first one.
+```js
+// a highlight that follows the newest list line (S.list in the engine); it fades in with the first line
+const LT = TXT.lL.map((_, i) => (3 + i * 1.5) * B);
+const hy = track(lt, LT.map((t0, i) => [t0, 560 + i * 90]), ...SPRING.snappy);
+ctx.fillStyle = rgba(C.alt, .12 * inv(LT[0], LT[0] + .15, lt)); ctx.fillRect(96, hy - 52, 880, 74);
+// a cursor gliding between three targets; x and y are separate tracks with the same times
+const K = [[0, 300, 700], [1.2, 900, 420], [2.6, 1380, 610]];
+const cx = track(lt, K.map(([t, x]) => [t, x])), cy = track(lt, K.map(([t, , y]) => [t, y]));
+```
+
+**Stretching tab indicator** — the same stops tracked twice: a stiff leading edge and a softer trailing edge. The bar stretches while it travels and snaps back to its width when it lands.
+```js
+const stops = [[.3, 200], [1.4, 620], [2.5, 1040]];                  // [time, left x of the active tab]
+const lead = track(lt, stops, ...SPRING.snappy), trail = track(lt, stops, 140, 22);
+const left = Math.min(lead, trail), right = Math.max(lead, trail) + 360;   // 360 = tab width
+ctx.fillStyle = C.acc; ctx.fillRect(left, 520, right - left, 8);    // cue: stops.map(([t]) => [t, 'blip', 880])
+```
+
+**Morphing container with text swaps** — one box whose width and height are tracks (button → card → panel); the text of each state fades out just before the next morph starts and the new text fades in once the box has nearly settled, via `swapAlpha(t, tIn, tOut)` (in 0.08–0.2 s after `tIn`, out over the 0.1 s before `tOut`). Pass `tIn` plus the spring's settle lead — about 0.25 s for `SPRING.default` — so text never overlaps text and never rides a box that is still growing or shrinking.
+```js
+const M = [[.2, 'btn', 260, 84], [1.6, 'card', 620, 360], [3.4, 'panel', 1100, 560]];   // [start, state, w, h]
+const bw = track(lt, M.map(([t, , w]) => [t, w])), bh = track(lt, M.map(([t, , , h]) => [t, h]));
+const bx = 960 - bw / 2, by = 540 - bh / 2;
+ctx.fillStyle = C.panel; ctx.fillRect(bx, by, bw, bh); ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.strokeRect(bx, by, bw, bh);
+M.forEach(([tIn, state], i) => { const tOut = i + 1 < M.length ? M[i + 1][0] : Infinity, a = swapAlpha(lt, tIn + .25, tOut); if (a <= 0) return;
+  T(TXT.morph[state], 960, 540 + 14, { z: 40, al: 'center', a, fit: bw - 60 }); });   // cues: M.map(([t]) => [t, 'whoosh', .2, .1])
+```
+Keep states at least ~1 s apart so each text is readable between its fade-in (~0.45 s after `tIn`) and the next morph, and give text a `fit` of the box's current width.
+
+## 2. Text
 
 **Headline slam** — overshoots in with an RGB split for the first frames. Only for a scene's key sentence (overused, everything shouts). `CFG.textSplit = false` or `{ split: false }` keeps the overshoot without the split.
 ```js
@@ -35,11 +87,11 @@ rise(TXT.title, 110, 300, lt, .1, { z: 96, fit: 900 });           // rise(s, x, 
 kicker('PROBLEM 01 · MEMORY LOSS', 110, 190, lt, .05);            // other colour: kicker(s, x, y, lt, t0, C.alt)
 ```
 
-**List, one line per beat** — slides in 30 px from the left with a square marker.
+**List, one line per beat** — springs in 30 px from the left with a square marker (add the `track` highlight from §1 to point at the newest line).
 ```js
 TXT.items.forEach((s, i) => { const t0 = (3 + i * 1.5) * B, a = inv(t0, t0 + .15, lt); if (a <= 0) return;
   ctx.fillStyle = C.alt; ctx.globalAlpha = a; ctx.fillRect(110, 560 + i * 90 - 22, 16, 16); ctx.globalAlpha = 1;
-  T(s, 146 + (1 - eO(a)) * 30, 560 + i * 90, { f: FK, w: 700, z: 40, a, fit: 820 }); });
+  T(s, 146 + (1 - spring(lt - t0, ...SPRING.snappy)) * 30, 560 + i * 90, { f: FK, w: 700, z: 40, a, fit: 820 }); });
 // cues: TXT.items.map((_, i) => [(3 + i * 1.5) * B, 'blip', 660 + i * 150])   ← pitch rises line by line
 ```
 
@@ -82,7 +134,7 @@ if (jit){ T(s, x + off - 10, y, { ...o, c: C.bad, a: .7 }); T(s, x + off + 10, y
 T(s, x + off, y, o);                                                // cue: [4 * B, 'glitch']
 ```
 
-## 2. Numbers
+## 3. Numbers
 
 **Counter with suffix** — decelerates from 0 to the value, with a slight overshoot. `dec` sets decimals.
 ```js
@@ -110,7 +162,7 @@ ctx.strokeStyle = C.acc; ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math
 
 **Value morph** (before → after, e.g. 555 → 58) — `Math.round(lerp(555, 58, eIO(sw)))`; when done, switch to `C.alt` and pop a `'−89%'` badge.
 
-## 3. Lines and structure
+## 4. Lines and structure
 
 **Circuit traces growing out** (boot, connection) — bent lines grow from a centre panel in every direction with a glowing pen tip. See `TRACES` + `S.title` in the engine. `polyPartial(pts, p)` returns the pen tip, so `glow` there.
 
@@ -137,7 +189,7 @@ const px = lerp(120, 1800, inv(.2 * B, 6 * B, lt));                  // cues: TT
 
 **Converging lines** (several pieces of evidence point to one spot; locating an error) — bent lines from each origin drawn with `polyPartial`, staggered, meeting at one point.
 
-## 4. Objects
+## 5. Objects
 
 **Circular grid (wafer)** — keep only the cells inside a circle and sort them in a zig-zag, so lighting them in order reads as "inspection in progress". Store per-cell seeded randoms (`h`, `h2`) and angle (`ang`).
 ```js
@@ -178,7 +230,7 @@ for (let c = 0; c < 48; c++){ const x = 20 + c * 40, sp = 180 + hash(c) * 420, o
 ctx.restore(); ctx.fillStyle = rgba(C.bg, .62); ctx.fillRect(0, 260, W, 600);
 ```
 
-## 5. Emphasis and cuts
+## 6. Emphasis and cuts
 
 - **End-of-scene flash**: `const fl = inv(d - .12, d, lt); if (fl > 0){ ctx.fillStyle = rgba(C.accHi, fl * .55); ctx.fillRect(0, 0, W, H); }` — from the opening into the body.
 - **Zoom creep**: `const z = 1 + lt * .012; ctx.translate(cx, cy); ctx.scale(z, z); ctx.translate(-cx, -cy);` — subtle life in a static statement scene.
@@ -188,7 +240,7 @@ ctx.restore(); ctx.fillStyle = rgba(C.bg, .62); ctx.fillRect(0, 260, W, 600);
 - **Badge pop**: `eBack` scale 1.8 → 1 or 0 → 1 (value badges, chip labels).
 - **Scene cuts** come from `transition()` in `style.js` (default: tile dissolve on odd scenes, light sweep on even ones).
 
-## 6. Sound pairings
+## 7. Sound pairings
 
 Use `SYN` names from the engine in `cues()`, on **the same beat** as the motion.
 
@@ -209,7 +261,7 @@ Use `SYN` names from the engine in `cues()`, on **the same beat** as the motion.
 
 The beat bed starts from the second scene according to `CFG.music.groove`: `electro` (kick, clap, hats, saw bass), `soft` (light kick on 1 and 3, shaker, round bass, pad), `pulse` (pad and gentle arpeggio, no drums), `none` (cues only). `liteScenes` thin the bed for scenes that need reading; `arpScenes` add an arpeggio. `?audiotest` reports per-scene RMS; 0.04–0.15 is typical (calm grooves sit lower).
 
-## 7. Performance
+## 8. Performance
 
 - Never `getImageData` or create canvases per frame — build them once in `geometry.js`, `style.js` or `ready.js`.
 - Thousands of `fillRect`s (an 800-cell grid, 768 falling digits) run at 60 fps. `shadowBlur` is slow; use `glow()` (radial gradient + `'lighter'`).

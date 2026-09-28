@@ -16,10 +16,11 @@ The skill is built around an engine extracted from a production piece (a 54-seco
 | `assets/engine.html` | The source for `assemble.py split`. Ships five example scenes (title, statement, list, number, outro) — open it as-is to see a 24-second demo. No need to read or edit it directly |
 | `references/story.md` | When writing the storyboard and copy: structures by length, copy rules, how to show numbers honestly |
 | `references/styles.md` | When choosing the concept: topic → visual-language decisions, and style building blocks (console, clean, editorial, pop, playful) |
-| `references/scene-patterns.md` | When designing and coding scenes: proven animation patterns with code, and which sound goes with which move |
+| `references/scene-patterns.md` | When designing and coding scenes: springs and `track`, proven animation patterns with code, and which sound goes with which move |
+| `references/critique.md` | In step 5: the critique loop — separate reviewer, defect table, seven scored axes, `review_log.md` format |
 | `scripts/assemble.py` | Splits the engine into small editable parts and reassembles them, with a syntax check |
-| `scripts/check.js` | Verification after each build: contact sheet of stills, clipped text, audio levels, 7 device layouts, touch playback, truncated labels; warnings for small text |
-| `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack (needs ffmpeg) |
+| `scripts/check.js` | Verification after each build: contact sheet, phone-size sheet, opening and cut strips, determinism, clipped text, audio levels, 7 device layouts, touch playback, truncated labels; warnings for small text |
+| `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack and checks the file it wrote (needs ffmpeg) |
 
 `SKILL_DIR` below means the directory containing this file. Resolve it from the loaded skill's path, not the working directory; the same folder works in Codex and Claude Code. Keep generated HTML, `facts.md`, editable parts and verification output in the user's working folder or scratch space, outside the installed skill.
 
@@ -41,15 +42,16 @@ Read every reference (extract PDF text, look at images, fetch URLs). Then create
 
 ### 2. Concept — one metaphor from the audience's world, and a style to match
 
-A good motion graphic is not "slides that move"; it has **one world**. Pick a metaphor from the audience's (or recipient company's) domain and make HUD labels, transitions, shapes and sounds all speak it.
+A good motion graphic is not "slides that move"; it has **one world**. Pick a metaphor from the audience's (or recipient company's) domain and make labels, transitions, shapes and sounds all speak it.
 
 - Example: application to a memory-chip maker → a wafer-probe test sequence (power on → wafer → yield → error correction → package engraving), translating the actual content (an AI workflow) into fab language.
 - Example: a dev tool whose vocabulary is "tracks" → a railway dispatch board (tracks as rails, parallel worktrees as parallel lines, merging as joining the main line).
 - Example: logistics → container-terminal control screen. Games → boot → stage select → boss fight.
-- The metaphor is a **visual device, not vocabulary**. Body copy stays in plain language; metaphor terms live only in HUD labels and kickers. (Lesson from production: pushing datasheet jargon into body copy made it unreadable for non-specialists.)
+- The metaphor is a **visual device, not vocabulary**. Body copy stays in plain language; metaphor terms live only in kickers (and HUD labels, on technical topics). (Lesson from production: pushing datasheet jargon into body copy made it unreadable for non-specialists.)
 
 **Choose the style from the topic yourself.** Read `references/styles.md` and decide each axis — brightness, texture, frame, typeface, entrance, easing, transitions, music, colour. The engine default (dark console + HUD + electro beat) is only a starting point for technical topics; don't use it unchanged for investor relations, brand stories or children's education. Don't ask the user to pick a style — infer it from the material, audience and brand, and state it in one line at the top of the storyboard ("Style: … because …"). If the user named a tone or supplied a reference design (existing HTML, brand guide, screenshots), that wins.
 
+- Avoid the banned defaults in `references/styles.md` §5 (centred title on a gradient, everything fading in, UI glow, particle bursts). The engine's corner brackets and corner labels are for technical topics only — otherwise empty or shrink `hud()`.
 - Palette: 1 background + 2 inks (`ink`, `dim`) + 3 accents (`acc` primary, `alt` secondary, `bad` alert). A brand colour goes into `acc`.
 
 ### 3. Storyboard — the approval gate
@@ -60,12 +62,13 @@ Using the structures in `references/story.md`, build a scene table, show it to t
 |---|---|---|---|---|---|---|---|
 
 - One scene = one message. Copy per scene: 1 headline + 1–3 supporting lines.
+- Pace (`references/story.md`): a hook on screen within the first 2 s, and something new every 2–4 s.
 - Beats: at 140 BPM one beat ≈ 0.43 s. 8 beats ≈ 3.4 s (short), 12 ≈ 5.1 s (normal), 16 ≈ 6.9 s (e.g. four numbers in a row). The more there is to read, the longer the scene.
 - Showing the table in the conversation is enough; no separate document needed.
 
 ### 4. Build — split, fill, assemble
 
-Don't edit the ~640-line engine directly. **Split it into small files**; the player, audio and helpers never need touching, so there's no need to read them.
+Don't edit the ~700-line engine directly. **Split it into small files**; the player, audio and helpers never need touching, so there's no need to read them.
 
 ```bash
 python3 "$SKILL_DIR/scripts/assemble.py" split "$SKILL_DIR/assets/engine.html" <work>/parts
@@ -92,6 +95,7 @@ Rules, and why:
 
 - **`draw()` is a pure function of `lt`.** No accumulated state, no `Math.random()`, no `Date.now()` — use `hash(i)` / `rng(seed)`. That way scrubbing anywhere or freezing with `?t=12.3` shows exactly what playback shows, and verification stills can be trusted.
 - **Time in beats.** Write `inv(2 * B, 2.3 * B, lt)` with multiples of `B`, and put the matching sound in `cues` on the same beat. Sound and motion landing together is most of what makes this format feel good.
+- **Springs for things that move.** Position, width, scale and bar length use `spring(lt - t0, ...SPRING.snappy|default|heavy|playful)`; a value with several targets uses `track()`. Fixed curves read as sliding. Tiny overshoot on UI, none on type (`references/scene-patterns.md` §1).
 - **Safe area.** 110 px left/right, below 150 px at the top (HUD), above 950 px at the bottom (progress bar at y = 1002).
 - **Long lines get `fit`.** `T(s, x, y, { z: 96, fit: 900 })` shrinks a line to its box, so translations don't overflow. Give every headline a box width.
 - **No CJK in the mono font.** JetBrains Mono has no Hangul/CJK glyphs; the fallback spaces them out. Use the mono font (`FM`) for Latin labels, numbers and code; CJK text uses `FK`.
@@ -101,7 +105,7 @@ Rules, and why:
 - **Dock button label** (`ui.ctaLab`) ≈ 16 Latin characters. Longer labels get ellipsized on phones (check.js fails it). Put long URLs in `ctaSub`.
 - **End call to action.** Draw an object in the last scene that becomes the link (chip, card, ticket, book cover…) and put its box in `CFG.endCta`. It only activates after one complete viewing (engine behaviour).
 
-### 5. Verify — look at the stills yourself
+### 5. Verify — checks, then a scored critique
 
 check.js needs `puppeteer-core` and Chrome/Chromium:
 
@@ -112,9 +116,16 @@ node "$SKILL_DIR/scripts/check.js" <output.html> --out <scratch>/check
 
 Chrome is auto-detected on macOS, Linux and Windows; set `CHROME=/path/to/chrome` otherwise. While iterating, `--lang ko` checks one language, and `--no-audio` / `--no-layout` skip the slower parts; run the full check before delivery.
 
-Then **always open `sheet-<lang>.png` and look at it** (two frames per scene plus the last frame). Problems the script can't see — overlapping text, shapes covering copy, text too small, empty frames, a metaphor that doesn't read — only show up in stills. Inspect suspicious frames at full size in `still-*.png`.
+Output per language: `sheet-<lang>.png` (two frames per scene plus the last frame), `sheet-<lang>-phone.png` (the same stills at a phone's 360 px), `strip-<lang>-00.png` (the opening, 0–2.2 s), `strip-<lang>-<n>.png` (12 consecutive frames around the cut into scene n), full-size `still-*.png`, device screenshots `view-*.png`, and `report.json`.
 
-Failures reported by the script: page errors (with stack), text clipped by the canvas edge, near-silent scenes or clipping audio, elements overflowing the viewport on 7 devices, ellipsized labels, broken touch playback/seek. Warnings (judge against the sheet): body text under 26 px, CJK in the mono font. Fix and re-run until failures are zero.
+Failures reported by the script: page errors (with stack), text clipped by the canvas edge, a frame that changes with render order (accumulated state, `Math.random()` or `Date.now()` in `draw`), near-silent scenes or clipping audio, elements overflowing the viewport on 7 devices, ellipsized labels, broken touch playback/seek. Warnings (judge against the sheet): body text under 26 px, CJK in the mono font. Fix and re-run until failures are zero.
+
+Then **have the frames critiqued** — problems the script can't see (overlapping text, shapes covering copy, a slow opening, dead stretches, sliding motion, a metaphor that doesn't read) only show up in the images, and the builder is the worst judge of them. Follow `references/critique.md`:
+
+- If the host can start a separate agent with a fresh context, that agent reviews; give it only `critique.md`, the check output (with your `cue-check.md` of cue timings), the brief and `facts.md` — not your build notes or opinion. Otherwise review yourself under the same rules.
+- Defects first: every row of the defect table gets PASS or FAIL with file-and-time evidence; a FAIL caps its axes at 6.
+- Then seven scores 1–10 (hook in the first 2 s · readability at phone size · motion quality · variety · composition · brand accuracy · sound sync); an 8+ must name the file it was judged from and why none of that axis's defects apply, or it is at most 7. Then the three worst problems with timestamps.
+- Log each round in `review_log.md` in the working folder, fix, re-run. **Deliver when nothing FAILs and every axis is 8+ after at least two rounds; stop after three rounds** and list what is still short in the log and the delivery report.
 
 If a scene's `draw()` throws, only that scene goes blank; the engine catches it and logs `console.error`. A blank frame on the sheet → read the page error in the report first.
 
@@ -125,15 +136,16 @@ Pitfalls:
 
 ### 6. Deliver
 
-- Report the output path, length (s) and scene count, and the verification result (zero failures, audio levels).
+- Report the output path, length (s) and scene count, the verification result (zero failures, audio levels), the last critique round's scores and anything the critique left unresolved.
 - Mention in one line: `?t=<seconds>` freezes a frame, `?lang=xx` switches language, `?audiotest` renders the audio offline and reports levels.
 - If the user needs a video file (social posts, a README, a deck), `node "$SKILL_DIR/scripts/record.js" <output.html> --out <name>.mp4 [--lang xx] [--crf 18]` renders it at 1080p30 with the synthesized audio. Raise `--crf` (e.g. 23) to shrink grainy or textured pieces under an upload limit.
+- **Wait for `record.js` to finish before reporting or ending your turn** — it takes minutes (roughly 5–10× the film length). Left running when the session or turn ends, it is cut off and the MP4 is unplayable. Run it in the foreground with a command timeout of about 10× the film length, up to the shell's maximum; if the shell can't wait that long, start it in the background and keep checking its output until it prints `verified:` or an error. It checks its own output with ffprobe (playable, and as long as the film; exit code 1 otherwise). Report the video only after `verified:` — or, if it printed that ffprobe is missing, say the MP4 is unchecked. `node record.js <output.html> --out <name>.mp4 --verify-only` re-checks an existing MP4 without rendering.
 - For a link-preview image, suggest cropping the last-frame still (`still-*-END-*.png`) to 1200×630 as `og.png`.
 - Publishing (static hosting, artifacts) makes it public — only when the user asks.
 
 ## When the user asks for changes
 
 - "Bigger / easier to read" → larger type and longer scenes; fewer lines per scene (split a scene in two).
-- "No jargon" → plain body copy; metaphor terms only in HUD and kickers.
+- "No jargon" → plain body copy; metaphor terms only in kickers (and the HUD, on technical topics).
 - "Change the numbers" → update `facts.md` first, then every language in `copy.js`.
 - Record settled decisions (wording, numbers, notation) in `HANDOFF.md` in the working folder so a later session doesn't undo them.

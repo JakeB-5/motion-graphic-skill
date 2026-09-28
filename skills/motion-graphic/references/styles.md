@@ -1,6 +1,6 @@
 # Style — decided fresh for every topic
 
-The engine's default frame (dark console, HUD, scanlines, electro beat) is **one option among many**. For each piece, look at the topic, audience and brand, decide the axes below one by one, and write the result into `style.js` and `config.js`. Don't ask the user to pick a style — infer it from the material and audience, and state the decision and the reason in one line at the top of the storyboard.
+The engine's default frame (dark console, HUD, scanlines, electro beat) is **one option among many**. For each piece, look at the topic, audience and brand, decide the axes below one by one, and write the result into `style.js` and `config.js`. Don't ask the user to pick a style — infer it from the material and audience, and state the decision and the reason in one line at the top of the storyboard. Whatever the style, avoid the banned defaults in §5.
 
 ## 1. Axes
 
@@ -8,10 +8,10 @@ The engine's default frame (dark console, HUD, scanlines, electro beat) is **one
 |---|---|---|
 | Brightness | dark / light / mid (cream, grey) | brand tone, where it will play (a dark auditorium favours dark — no glare), continuity with print and web material |
 | Texture | dot grid + scanlines / paper fibre + grain / flat / blueprint lines | the material nature of the topic (machine, paper, screen, nature) |
-| Frame | technical HUD / page counter only / none / magazine masthead | HUD if the metaphor is "an instrument screen"; minimal if story or brand leads |
+| Frame | technical HUD / page counter only / none / magazine masthead | technical HUD (corner brackets, corner labels, timecode) **only** when the topic is technical and the metaphor is "an instrument screen"; otherwise a page counter, a masthead or nothing (§5) |
 | Typeface | condensed display (Big Shoulders) / serif (Noto Serif, Playfair) / rounded (Nunito, Gowun Dodum, Jua) / heavy grotesk (Inter Black, Archivo Black, Black Han Sans) | voice: technical and solid / trustworthy and formal / friendly / declarative |
-| Entrance | `slam` (overshoot + RGB split) / `slam` with split off / `rise` (fade + lift) / typing | energy. Finance, health, public sector → `rise`; games, hackathons → `slam` |
-| Easing | `eBack` (overshoot) / `eO` (decelerate) / `eIO` (smooth) | overshoot = playful/energetic, decelerate = neat, smooth = premium/calm |
+| Entrance | `slam` (overshoot + RGB split) / `slam` with split off / `rise` (fade + lift) / typing / spring in (slide, grow, scale) | energy. Finance, health, public sector → `rise` for headlines (its lift keeps it from being a plain fade); games, hackathons → `slam`. Mix entrances by element type (§5) |
+| Easing | spring presets `SPRING.snappy` / `default` / `heavy` / `playful` for anything that travels or grows; `eBack` (overshoot) / `eO` (decelerate) / `eIO` (smooth) for fades, wipes and one-off hits | springs give mass; heavy = premium/calm, snappy = neat UI, playful = bouncy. Fixed curves alone read as sliding |
 | Transition | tile dissolve + light sweep / panel slide / colour-block wipe / crossfade / ink wash | a move that belongs to the same world as the frame |
 | Music (`music.groove`) | `electro` (~140 BPM) / `soft` (96–118) / `pulse` (72–96, no drums) / `none` | energy. Talk openers and teasers: electro/soft. Brand, memorial, editorial: pulse |
 | Colour | 1 background + 2 inks + 3 accents | brand colour into `acc`. On light backgrounds `ink` is dark and `dim` a mid grey |
@@ -34,7 +34,7 @@ Keep contrast readable on light backgrounds: a large lightness gap between `ink`
 `style.js` must define all four functions (`drawBg`, `overlay`, `hud`, `transition`). Start from the blocks below and combine or bend them. Build anything heavy (texture canvases) once, at the top of the block.
 
 ### A. Console (default) — as shipped in the engine
-Drifting dot grid + vignette and scanlines + corner brackets and timecode HUD + tile dissolve / light sweep.
+Drifting dot grid + vignette and scanlines + corner brackets and timecode HUD + tile dissolve / light sweep. Technical topics only (§5); for anything else, start from B–E.
 
 ### B. Clean — light, generous space, page counter
 ```js
@@ -118,3 +118,19 @@ Rounded type (Nunito, Jua, Gowun Dodum), `eBack` bounces, `groove: 'soft'`, `bpm
 - **The closing object.** Instead of a chip package, draw an object from the topic (book cover, business card, ticket, app icon, seal) and match `CFG.endCta` to it.
 - **Glow on light backgrounds.** `glow()` uses `'lighter'` compositing and nearly disappears on light backgrounds. Emphasise with colour blocks, underlines and circles instead.
 - **The engine side follows automatically.** Page margin, play button and tooltip follow `C.bg` (a light `bg` gives a light page). The progress bar is drawn with `C.ink` / `C.acc`.
+
+## 5. Banned defaults — they read as machine-made
+
+These are what an unguided generator reaches for. Viewers recognise them within a second, and the piece stops feeling made for them. Don't use them unless the brief asks for that exact look.
+
+| Banned | Instead |
+|---|---|
+| A centred title on a gradient background (the "hero slide") | An off-centre layout on the style's own background; the title tied to an object from the metaphor (engraved, stamped, printed, drawn) |
+| Everything fading in (every element an opacity ramp) | Give each kind of element its own entrance: springs for things that travel or grow (`scene-patterns.md` §1), `slam` for the key line, typing for code, wipes and masks for objects. Fades only for secondary copy |
+| Corner labels and frame borders on a non-technical topic | A page counter, a masthead or nothing — see the rule below |
+| Glow on UI chrome (buttons, cards, panels, haloed borders) | Flat fills, colour blocks, a solid underline. Keep `glow()` for light sources: a pen tip, a beam, a laser cutter |
+| Generic particle bursts (confetti, sparks radiating from a word) | One object from the topic that reacts: a stamp landing, a cell filling, a line being drawn |
+
+Also: one display face and one text face (plus the mono for Latin labels), and one accent doing the work in any given frame.
+
+**Default HUD scope.** The engine's `hud()` — corner brackets, top-left title, timecode, scene counter, bottom-right meta — is the console style. Keep it only when the topic is technical (dev tools, semiconductors, security, data, games) and the metaphor is an instrument screen. For anything else (brand, finance, education, culture, consumer, children), empty `hud()` or reduce it to a page counter or masthead from blocks B–E; `CFG.hudTitle` / `hudMeta` then go unused. Even on technical topics the HUD must not compete with the copy: small, `C.dim`, corners only.

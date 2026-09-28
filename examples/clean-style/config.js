@@ -1,0 +1,17 @@
+const CFG = {
+  bpm: 104,
+  colors: { bg: '#F6F7F9', panel: '#FFFFFF', line: '#DDE1E6', ink: '#15181C', dim: '#6B7480', grid: '#E6E9ED',
+            acc: '#2F6BFF', accHi: '#7FA2FF', alt: '#12B886', bad: '#E5484D' },
+  fonts: { sans: '"Noto Sans KR","Apple SD Gothic Neo",sans-serif',
+           display: '"Big Shoulders Display","Noto Sans KR",sans-serif',
+           mono: '"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit: false,
+  hudTitle: 'MOTION KIT',
+  hudMeta: t => '',
+  cta: { href: 'https://example.com', newTab: true },
+  endCta: { x: 690, y: 190, w: 540, h: 440 },
+  endCtaBeat: 6.5,
+  posterT: 2.6,
+  watchKey: 'motion-kit-clean-demo-watched',
+  music: { groove: 'soft', liteScenes: ['statement'], arpScenes: ['list', 'number'], tailBeats: 6 },
+};

@@ -1,0 +1,15 @@
+{
+  "name": "motion-graphic-skill",
+  "description": "A Claude Code skill that turns briefs into single-file motion graphics.",
+  "owner": {
+    "name": "JakeB-5",
+    "url": "https://github.com/JakeB-5"
+  },
+  "plugins": [
+    {
+      "name": "motion-graphic",
+      "description": "Brief + references → beat-synced canvas motion graphic in one HTML file, styled to the topic, verified with stills and device layouts.",
+      "source": "./"
+    }
+  ]
+}

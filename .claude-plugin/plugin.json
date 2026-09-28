@@ -1,0 +1,13 @@
+{
+  "name": "motion-graphic",
+  "version": "0.1.0",
+  "description": "Turn a brief and reference material into a single-file, beat-synced canvas motion graphic (HTML) with synthesized sound, a mobile-ready player and automated verification.",
+  "author": {
+    "name": "JakeB-5",
+    "url": "https://github.com/JakeB-5"
+  },
+  "homepage": "https://github.com/JakeB-5/motion-graphic-skill",
+  "repository": "https://github.com/JakeB-5/motion-graphic-skill",
+  "license": "MIT",
+  "keywords": ["motion-graphics", "animation", "canvas", "web-audio", "kinetic-typography", "intro", "skill"]
+}

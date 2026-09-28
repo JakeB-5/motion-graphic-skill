@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>Codex Motion Studio — 생각에 움직임을</title>
+<meta name="description" content="Codex로 만든 한국어 30초 모션그래픽. 문서와 아이디어가 음악과 함께 재생되는 HTML 한 파일로.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Codex Motion Studio">
+<meta property="og:description" content="생각에 움직임을. 30초, 7장면의 작은 모션 스튜디오.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F5F0E7">
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const CFG = {
+  bpm: 128,
+  colors: { bg:'#F5F0E7', panel:'#FFFDF7', line:'#242321', ink:'#242321', dim:'#66625E', grid:'#DED8CE', acc:'#7653E8', accHi:'#C8B9FF', alt:'#BEE8C5', bad:'#FF8958' },
+  fonts: { sans:'"Noto Sans KR","Apple SD Gothic Neo",sans-serif', display:'"Noto Sans KR",sans-serif', mono:'"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit:false,
+  hudTitle:'MOTION / STUDIO', hudMeta:()=>'',
+  cta:{href:'https://github.com/JakeB-5/motion-graphic-skill',newTab:true},
+  endCta:{x:260,y:520,w:1400,h:300}, endCtaBeat:4,
+  posterT:2.8, watchKey:'codex-studio-ko-v1',
+  music:{groove:'electro',liteScenes:['file'],arpScenes:['rhythm','mobile'],tailBeats:10}
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+I18N.ko = {
+  ui:{title:'Codex Motion Studio',play:'사운드와 함께 재생',playsub:'클릭 또는 스페이스',playsubtouch:'탭해서 재생',replay:'다시 재생',rotate:'↻ 가로로 돌리면 크게 볼 수 있어요',fullscreen:'⤢ 전체 화면',scrub:'재생 위치',canvas:'모션그래픽. 클릭 또는 스페이스로 재생, 방향키로 이동, M 음소거, F 전체 화면',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'스킬 보기',endTag:'저장소 열기',lang:''},
+  title:['생각에','움직임을.'], intro:'아이디어를 재생하는 작은 스튜디오', stamp:'MADE WITH CODEX',
+  inputs:'재료는 이미 있어요', cards:['문서','이미지','아이디어'], inputSub:'모아둔 자료가 이야기의 시작이 됩니다.',
+  story:'한 장면에 한 메시지', frames:['시작','핵심','마무리'], storySub:'전하고 싶은 말에 순서를 만들고',
+  rhythm:['움직임도, 소리도','같은 박자에.'], rhythmSub:'장면과 효과음이 함께 움직입니다.',
+  file:'HTML 파일 하나', fileSub:'장면 · 음악 · 플레이어를 한곳에', fileName:'your-story.html', fileTag:'OPEN & PLAY',
+  mobile:'폰에서도 그대로', mobileSub:'탭해서 재생하고, 원하는 순간으로 이동하세요.', screen:'PLAY YOUR STORY',
+  outro:'이제 Codex에서도', outroSub:'당신의 이야기를 재생하세요.', command:'$motion-graphic', ending:'BRIEF → MOTION',
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+const STUDIO_BG = ['#F5F0E7','#C8B9FF','#F5F0E7','#BEE8C5','#FF8958','#F5F0E7','#C8B9FF'];
+function drawBg(t){ctx.fillStyle=STUDIO_BG[sceneAt(t).i];ctx.fillRect(0,0,W,H);}
+function overlay(t){}
+function hud(t,sc){
+  T(CFG.hudTitle,110,78,{f:FM,z:24,w:700,c:C.ink});
+  T(sc.code,1810,78,{f:FM,z:24,w:700,al:'right',c:C.ink});
+  ctx.fillStyle=C.ink;ctx.fillRect(110,103,1700,2);
+}
+function transition(sc,lt){
+  if(sc.i===0)return;
+  const p=eIO(inv(0,.7*B,lt));if(p>=1)return;
+  ctx.fillStyle=C.ink;ctx.fillRect(W*p,0,W,H);
+  ctx.fillStyle=C.acc;ctx.fillRect(W*p+W*.08,0,W,H);
+}
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+function card(x,y,w,h,color,r=24){
+  ctx.fillStyle=C.ink;ctx.beginPath();ctx.roundRect(x+9,y+11,w,h,r);ctx.fill();
+  ctx.fillStyle=color;ctx.strokeStyle=C.ink;ctx.lineWidth=4;
+  ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke();
+}
+function star(x,y,r,t,color=C.acc){
+  ctx.save();ctx.translate(x,y);ctx.rotate(t);
+  ctx.strokeStyle=color;ctx.lineWidth=r*.23;ctx.lineCap='square';
+  for(let i=0;i<6;i++){ctx.rotate(Math.PI/6);ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.stroke();}
+  ctx.restore();
+}
+function playMark(x,y,s,color=C.ink){
+  ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x-s*.32,y-s*.5);ctx.lineTo(x+s*.48,y);ctx.lineTo(x-s*.32,y+s*.5);ctx.closePath();ctx.fill();
+}
+function titleLine(s,lt,y=290){slam(s,110,y,lt,B,{z:100,w:900,fit:1680,c:C.ink});}
+function caption(s,lt,y=890){rise(s,110,y,lt,2*B,{z:38,w:700,fit:1680,c:C.ink},B);}
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+S.title={
+  draw(lt){
+    const p=eBack(inv(.5*B,1.5*B,lt));
+    ctx.save();ctx.translate(1280,500);ctx.rotate(-.045);ctx.scale(p,p);card(-455,-270,910,580,C.panel);ctx.restore();
+    slam(TXT.title[0],1280,435,lt,1.5*B,{z:118,w:900,al:'center',fit:770});
+    slam(TXT.title[1],1280,590,lt,2.5*B,{z:128,w:900,al:'center',fit:790,c:C.acc});
+    star(1680,220,82,lt*.18,C.bad);
+    rise(TXT.intro,1260,725,lt,3.5*B,{z:36,w:700,al:'center',fit:800},B);
+    T(TXT.stamp,115,910,{f:FM,z:25,w:700,a:inv(B,2*B,lt)});
+    for(let i=0;i<3;i++)dot(140+i*58,190,17,[C.acc,C.bad,C.alt][i]);
+  },cues:()=>[[0,'power'],[1.5*B,'slam',.5],[2.5*B,'slam',.65],[3.5*B,'blip',660]]
+};
+S.inputs={
+  draw(lt){
+    titleLine(TXT.inputs,lt);
+    TXT.cards.forEach((s,i)=>{
+      const p=eBack(inv((2+i)*B,(2.7+i)*B,lt));if(p<=0)return;
+      ctx.save();ctx.translate(395+i*560,590);ctx.rotate((i-1)*.06*p);ctx.scale(p,p);
+      card(-235,-200,470,420,[C.panel,C.alt,C.bad][i]);
+      if(i===0){for(let j=0;j<4;j++){ctx.fillStyle=C.acc;ctx.fillRect(-145,-115+j*36,210-j*27,13);}}
+      if(i===1){dot(85,-115,35,C.acc);ctx.fillStyle=C.ink;ctx.beginPath();ctx.moveTo(-150,10);ctx.lineTo(-40,-115);ctx.lineTo(90,10);ctx.fill();}
+      if(i===2)star(0,-65,87,lt*.13,C.ink);
+      T(s,0,145,{z:62,w:900,al:'center',fit:370});ctx.restore();
+    });caption(TXT.inputSub,lt);
+  },cues:()=>[[B,'slam',.5],...[0,1,2].map(i=>[(2+i)*B,'blip',520+i*150])]
+};
+S.story={
+  draw(lt){
+    titleLine(TXT.story,lt);caption(TXT.storySub,lt);
+    TXT.frames.forEach((s,i)=>{
+      const a=inv((2+i*1.5)*B,(2.6+i*1.5)*B,lt);if(a<=0)return;
+      const x=135+i*570,y=425+(1-eO(a))*80;
+      ctx.save();ctx.globalAlpha=a;card(x,y,500,350,[C.accHi,C.bad,C.alt][i]);
+      if(i===0)dot(x+250,y+120,65,C.acc);
+      if(i===1)star(x+250,y+120,65,lt*.1,C.ink);
+      if(i===2)playMark(x+250,y+120,115);
+      T(s,x+250,y+290,{z:55,w:900,al:'center',fit:430});ctx.restore();
+    });
+  },cues:()=>[[B,'slam',.6],...[0,1,2].map(i=>[(2+i*1.5)*B,'blip',600+i*180])]
+};
+S.rhythm={
+  draw(lt){
+    titleLine(TXT.rhythm[0],lt,280);
+    slam(TXT.rhythm[1],110,425,lt,2*B,{z:120,w:900,fit:1500,c:C.acc});
+    const step=Math.floor(lt/B)%8;
+    for(let i=0;i<8;i++){
+      const x=130+i*210,h=80+130*(.5+.5*Math.sin(lt/B*Math.PI-i*.7));
+      ctx.fillStyle=i===step?C.acc:C.ink;ctx.fillRect(x,735-h,155,h);
+      dot(x+77,790,12,i===step?C.acc:C.panel);
+    }
+    caption(TXT.rhythmSub,lt,915);
+  },cues:()=>[[B,'slam',.55],[2*B,'slam',.6],...[3,4,5,6,7,8].map(i=>[i*B,'blip',440+i*60,.045])]
+};
+S.file={
+  draw(lt){
+    titleLine(TXT.file,lt);caption(TXT.fileSub,lt);
+    const p=eO(inv(2*B,4*B,lt));
+    for(let i=2;i>=0;i--){const dx=(1-p)*(i-1)*440;ctx.save();ctx.translate(960+dx,575);ctx.rotate((1-p)*(i-1)*.13);card(-360,-205,720,410,[C.panel,C.accHi,C.alt][i]);ctx.restore();}
+    dot(960,560,100,C.acc);playMark(969,560,96,C.panel);
+    T(TXT.fileName,960,735,{f:FM,z:37,w:700,al:'center',fit:650});
+    T(TXT.fileTag,960,432,{f:FM,z:24,w:700,al:'center',fit:600});
+  },cues:()=>[[B,'slam',.6],[2*B,'whoosh',B,.12],[4*B,'stamp',.6],[4.5*B,'bell']]
+};
+S.mobile={
+  draw(lt){
+    titleLine(TXT.mobile,lt);caption(TXT.mobileSub,lt);
+    const p=eO(inv(2*B,3*B,lt));ctx.save();ctx.globalAlpha=p;
+    card(170,385,1060,380,C.panel);card(1360,335,295,475,C.ink,40);
+    ctx.fillStyle=C.accHi;ctx.fillRect(1390,392,235,340);
+    dot(1507,765,14,C.panel);star(1510,550,63,lt*.18,C.acc);
+    star(410,565,104,lt*.18,C.acc);
+    T(TXT.screen,820,560,{f:FM,z:40,w:700,al:'center',fit:530});
+    ctx.fillStyle=C.ink;ctx.fillRect(590,623,440,8);dot(590+440*((lt/B%4)/4),627,15,C.acc);
+    ctx.restore();
+  },cues:()=>[[B,'slam',.55],[2*B,'whoosh',.3,.15],[3*B,'blip',780]]
+};
+S.outro={
+  draw(lt){
+    slam(TXT.outro,960,300,lt,B,{z:110,w:900,al:'center',fit:1670});
+    rise(TXT.outroSub,960,405,lt,2*B,{z:42,w:700,al:'center',fit:1600},B);
+    const p=eBack(inv(3*B,4*B,lt));if(p>0){ctx.save();ctx.translate(960,670);ctx.scale(p,p);card(-700,-150,1400,300,C.panel);T(TXT.command,0,28,{f:FM,z:89,w:700,al:'center',fit:1240,c:C.acc});ctx.restore();}
+    star(1650,400,65,lt*.16,C.bad);
+    T(TXT.ending,960,920,{f:FM,z:28,w:700,al:'center',a:inv(4*B,5*B,lt)});
+  },cues:()=>[[B,'impact'],[B,'chord',3.2],[3*B,'stamp',.6],[4*B,'bell']]
+};
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [['title',8,'HELLO'],['inputs',8,'COLLECT'],['story',10,'COMPOSE'],['rhythm',10,'SYNC'],['file',10,'PACKAGE'],['mobile',8,'PLAY'],['outro',10,'CREATE']];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+// All geometry is deterministic; no font-dependent caches are needed.
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

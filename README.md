@@ -1,12 +1,12 @@
 # motion-graphic
 
-**Hand Claude a brief. Get a motion graphic in one HTML file.**
+**Hand Codex or Claude a brief. Get a motion graphic in one HTML file.**
 
-A [Claude Code](https://claude.com/claude-code) skill that turns a brief and reference material — docs, PDFs, numbers, screenshots, URLs — into a beat-synced, 1920×1080 canvas motion graphic with synthesized music, a scrubbable player that works on phones, and automated visual checks.
+A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude.com/claude-code) skill that turns a brief and reference material — docs, PDFs, numbers, screenshots, URLs — into a beat-synced, 1920×1080 canvas motion graphic with synthesized music, a scrubbable player that works on phones, and automated visual checks.
 
 **English** · [한국어](README.ko.md)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
 
 ![Contact sheet of the demo in the default console style: two frames per scene](docs/images/sheet-console.png)
 
@@ -63,12 +63,18 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 *The videos show the English version; the ▶ links have a Korean one too.*
 
+### Codex Motion Studio — paper cards · 30 s
+
+![Codex Motion Studio contact sheet](samples/codex-studio/preview.png)
+
+[interactive HTML](samples/codex-studio/index.html) · [MP4 with audio](samples/codex-studio/codex-studio.mp4) · [contact sheet](samples/codex-studio/preview.png). Seven scenes in a bright paper-card style, built and verified with the globally installed Codex skill. [Sources and storyboard](samples/codex-studio).
+
 ## What you get
 
 - **One self-contained HTML file.** No build step, no video, no audio assets. Open it in a browser, drop it on any static host, or attach it.
 - **Scenes on the beat.** Every motion is timed in beats at a chosen tempo, and each sound effect lands on the same beat as the motion it belongs to.
 - **Music and effects synthesized live** with Web Audio: four grooves (`electro`, `soft`, `pulse`, `none`) plus a palette of effects (slam, scan, riser, stamp, laser, error → correct…).
-- **A style that fits the topic.** Claude picks brightness, texture, frame, type, easing, transitions and music from the subject and audience — a dark technical console for a chip maker, clean and light for investor relations, cream paper and serif for a brand story, flat pop for a teaser.
+- **A style that fits the topic.** The agent picks brightness, texture, frame, type, easing, transitions and music from the subject and audience — a dark technical console for a chip maker, clean and light for investor relations, cream paper and serif for a brand story, flat pop for a teaser.
 - **A real player.** Click or tap to play, drag the progress bar to scrub, keyboard shortcuts, full screen, a call-to-action button, and an end-frame link that unlocks after one full viewing.
 - **Phone-ready.** Portrait stacks the controls under the film; landscape gives the film the full height with a side dock.
 - **Honest numbers.** Every on-screen figure is traced to a source in `facts.md`, big metrics get a same-scale companion metric, and rounding stays consistent.
@@ -80,7 +86,23 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 ## Install
 
-**As a plugin** (Claude Code):
+The same `skills/motion-graphic` folder supports both agents, including the engine, references and scripts.
+
+### Codex
+
+When you open this repository in Codex, `.agents/skills/motion-graphic` links to the shared skill so it can be discovered locally. To use it in other projects, copy it to your personal skills directory (macOS/Linux/WSL):
+
+```bash
+git clone https://github.com/JakeB-5/motion-graphic-skill.git
+mkdir -p ~/.agents/skills
+cp -R motion-graphic-skill/skills/motion-graphic ~/.agents/skills/
+```
+
+If you already cloned the repository, skip `git clone`. For installation in just one other project, use that project's `.agents/skills/` instead of `~/.agents/skills/`. Copy the entire skill folder, including `assets`, `references`, `scripts` and `agents`. Choose one installation scope to avoid duplicate entries. If the skill does not appear, restart Codex. See the [official skill discovery documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills).
+
+### Claude Code
+
+**As a plugin**:
 
 ```text
 /plugin marketplace add JakeB-5/motion-graphic-skill
@@ -91,24 +113,38 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 ```bash
 git clone https://github.com/JakeB-5/motion-graphic-skill.git
-cp -r motion-graphic-skill/skills/motion-graphic ~/.claude/skills/
+mkdir -p ~/.claude/skills
+cp -R motion-graphic-skill/skills/motion-graphic ~/.claude/skills/
 ```
 
-**Verification dependencies** (recommended — the skill uses them to check its own work):
+### Verification dependencies
+
+**Dependencies** (recommended — the skill uses them to check its own work):
 
 - Python 3 (for `assemble.py`)
 - Node.js 18+ and Chrome or Chromium
 - `puppeteer-core`, installed once next to the script:
 
 ```bash
+# Codex personal installation
+npm i --prefix ~/.agents/skills/motion-graphic/scripts puppeteer-core@23
+# Claude Code manual installation
 npm i --prefix ~/.claude/skills/motion-graphic/scripts puppeteer-core@23
 ```
+
+Run only the command for your installation. For a repository-local skill, use `skills/motion-graphic/scripts` as the prefix from this repository root; for a plugin installation, use the installed skill's `scripts` directory.
 
 Chrome is found automatically on macOS, Linux and Windows; otherwise set `CHROME=/path/to/chrome`.
 
 ## Use
 
-Just ask. The skill triggers on requests like:
+In Codex, invoke the skill explicitly with `$motion-graphic`:
+
+```text
+$motion-graphic Make a 30-second product intro from README.md, in English and Korean.
+```
+
+Both agents can also select the skill automatically for requests like:
 
 ```text
 Make a 30-second motion graphic introducing our product from README.md and docs/metrics.csv — it opens my lightning talk.
@@ -122,15 +158,15 @@ Make a 30-second motion graphic introducing our product from README.md and docs/
 Turn these three case studies into a 15-second intro for our investor update. Keep it calm and corporate.
 ```
 
-Claude will ask once for anything essential that's missing (audience, length, link), show a storyboard for approval, build, verify, and hand you the file.
+Codex or Claude will ask once for anything essential that's missing (audience, length, link), show a storyboard for approval, build, verify, and hand you the file.
 
 ## How it works
 
 1. **Intake** — reads every reference and writes `facts.md`: each fact and number that will appear, with its source.
 2. **Concept** — one metaphor from the audience's world (a wafer-probe sequence, a railway dispatch board, a container terminal…) and a style derived from topic, audience and brand.
 3. **Storyboard** — a scene table (beats, message, visual, motion, sound) for you to approve. The cheapest place to change the story.
-4. **Build** — `assemble.py` splits the engine into small parts (`config`, `style`, `copy`, `geometry`, `scenes`, `plan`…); Claude fills them and reassembles with a syntax check. The player, audio and mobile layout come from the engine untouched.
-5. **Verify** — `check.js` renders a contact sheet and runs the checks; Claude looks at the stills and fixes what it sees until there are zero failures.
+4. **Build** — `assemble.py` splits the engine into small parts (`config`, `style`, `copy`, `geometry`, `scenes`, `plan`…); the agent fills them and reassembles with a syntax check. The player, audio and mobile layout come from the engine untouched.
+5. **Verify** — `check.js` renders a contact sheet and runs the checks; the agent looks at the stills and fixes what it sees until there are zero failures.
 6. **Deliver** — the HTML path, duration, scene count and check results.
 
 Every frame is a pure function of time (`render(t)`), so scrubbing, freezing a frame and verification stills all show exactly what playback shows.
@@ -154,9 +190,11 @@ Play them live (GitHub Pages), or open the files in a browser:
 ## Repository layout
 
 ```text
-.claude-plugin/          plugin + marketplace manifests
+.agents/skills/          Codex discovery link to the shared skill
+.claude-plugin/          Claude Code plugin + marketplace manifests
 skills/motion-graphic/
-  SKILL.md               the workflow Claude follows
+  SKILL.md               shared workflow for Codex and Claude Code
+  agents/openai.yaml    Codex display metadata and default prompt
   assets/engine.html     the engine (player, audio, helpers, example scenes)
   references/            story.md · styles.md · scene-patterns.md
   scripts/assemble.py    split the engine into parts / assemble them back

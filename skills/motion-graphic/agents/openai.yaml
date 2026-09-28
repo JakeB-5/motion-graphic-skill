@@ -1,0 +1,4 @@
+interface:
+  display_name: "Motion Graphic"
+  short_description: "Create HTML motion graphics with music and visual checks"
+  default_prompt: "Use $motion-graphic to turn my brief and reference material into a single-file HTML motion graphic with synchronized audio and visual verification."

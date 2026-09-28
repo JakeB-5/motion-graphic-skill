@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Codex support using the shared `motion-graphic` skill: UI metadata in `agents/openai.yaml`, repository discovery through `.agents/skills/motion-graphic`, and host-neutral tool instructions.
+- English and Korean instructions for Codex installation and explicit `$motion-graphic` invocation.
+
 ## 0.2.0 — 2026-09-28
 
 - `record.js`: render a piece to MP4 (H.264 + AAC) frame by frame, with the engine's own offline-rendered soundtrack.

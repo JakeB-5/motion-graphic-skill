@@ -1,6 +1,6 @@
 ---
 name: motion-graphic
-description: Turns a brief plus reference material (docs, PDFs, images, numbers, URLs, existing HTML) into a single-file canvas motion graphic in HTML — beat-synced 1920×1080 scenes drawn by a pure render(t), synthesized Web Audio music and sound effects, a scrubbable player that works on phones, multi-language copy, and automated verification (scene stills, clipped text, audio levels, 7 device layouts). The visual style is chosen per topic, from dark technical consoles to clean corporate, editorial paper, flat pop or playful pastel. Use this skill whenever the user asks for a "motion graphic", "animated intro", "opening/intro video as HTML", "sizzle reel", "kinetic typography", "product/portfolio/pitch/talk opener animation", a "15/30/60-second intro", or hands over material and says "make this into something that plays like a video" — even if they never say "canvas" or "HTML". Do not use it for editing video files (mp4), After Effects work, simple CSS hover effects, or slide decks.
+description: Create or revise single-file HTML motion graphics from briefs and reference material, with beat-synced canvas scenes, synthesized audio, a mobile player, and visual checks. Use for animated intros, kinetic typography, sizzle reels, and product, portfolio, or talk openers. Can export the generated HTML to MP4. Not for editing existing video files, After Effects, simple CSS effects, or slide decks.
 ---
 
 # motion-graphic — material → one-file motion graphic
@@ -21,13 +21,15 @@ The skill is built around an engine extracted from a production piece (a 54-seco
 | `scripts/check.js` | Verification after each build: contact sheet of stills, clipped text, audio levels, 7 device layouts, touch playback, truncated labels; warnings for small text |
 | `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack (needs ffmpeg) |
 
-`SKILL_DIR` below means the directory containing this file.
+`SKILL_DIR` below means the directory containing this file. Resolve it from the loaded skill's path, not the working directory; the same folder works in Codex and Claude Code. Keep generated HTML, `facts.md`, editable parts and verification output in the user's working folder or scratch space, outside the installed skill.
+
+Use the host's available shell, file-editing and image-viewing tools. In Codex, use `apply_patch` for edits and `view_image` to inspect the generated PNGs when those tools are available. The bundled scripts run through the shell and do not require Claude-specific tools or a browser MCP server. If a required runtime or image viewer is unavailable, report which checks could not be completed rather than claiming verification passed.
 
 ## Workflow
 
 ### 1. Intake — what, for whom, how long
 
-Check the brief for the following. If something that matters is missing, ask **once**, all together (AskUserQuestion when available); use defaults for anything the user doesn't care about.
+Check the brief for the following. If something that matters is missing, ask **once**, all together using an available question tool or a plain-language question; use defaults for anything the user doesn't care about.
 
 - **Purpose and audience** — job application, product intro, talk opener, team intro… If the audience is non-specialist, jargon has to go, so this matters.
 - **Length** — default 45–60 s (10–12 scenes). A 30 s opener is about 7 scenes, a 15 s intro 4–5.
@@ -67,7 +69,7 @@ Don't edit the ~640-line engine directly. **Split it into small files**; the pla
 
 ```bash
 python3 "$SKILL_DIR/scripts/assemble.py" split "$SKILL_DIR/assets/engine.html" <work>/parts
-# fill the files in parts/ with Write/Edit, then
+# edit the files in parts/ using the host's file-editing tools, then
 python3 "$SKILL_DIR/scripts/assemble.py" build <work>/parts <output.html>   # assemble + syntax check
 ```
 

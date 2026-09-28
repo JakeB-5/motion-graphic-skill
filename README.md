@@ -63,20 +63,21 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 ### Codex Motion Studio — paper cards · 30 s
 
-https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
+https://github.com/user-attachments/assets/956b8396-94b1-468b-90a3-c0aff0739447
 
-[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, Korean, made with Codex
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko)) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, made with Codex
 
 <details>
-<summary>Prompt</summary>
+<summary>Prompt (translated from Korean)</summary>
 
 ```text
-전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
+Install this as a global Codex skill and make a sample.
+Follow-up: What about an English version?
 ```
 
 </details>
 
-*The first three videos show the English version; their ▶ links have a Korean one too. The Codex sample is in Korean.*
+*The videos show the English version; the ▶ links have a Korean one too.*
 
 ## What you get
 

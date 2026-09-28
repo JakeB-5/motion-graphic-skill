@@ -169,7 +169,7 @@ const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
 const I18N = {};
 // @@copy
 I18N.ko = {
-  ui:{title:'Codex Motion Studio',play:'사운드와 함께 재생',playsub:'클릭 또는 스페이스',playsubtouch:'탭해서 재생',replay:'다시 재생',rotate:'↻ 가로로 돌리면 크게 볼 수 있어요',fullscreen:'⤢ 전체 화면',scrub:'재생 위치',canvas:'모션그래픽. 클릭 또는 스페이스로 재생, 방향키로 이동, M 음소거, F 전체 화면',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'스킬 보기',endTag:'저장소 열기',lang:''},
+  ui:{title:'Codex Motion Studio',play:'사운드와 함께 재생',playsub:'클릭 또는 스페이스',playsubtouch:'탭해서 재생',replay:'다시 재생',rotate:'↻ 가로로 돌리면 크게 볼 수 있어요',fullscreen:'⤢ 전체 화면',scrub:'재생 위치',canvas:'모션그래픽. 클릭 또는 스페이스로 재생, 방향키로 이동, M 음소거, F 전체 화면',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'스킬 보기',endTag:'저장소 열기',lang:'ENGLISH'},
   title:['생각에','움직임을.'], intro:'아이디어를 재생하는 작은 스튜디오', stamp:'MADE WITH CODEX',
   inputs:'재료는 이미 있어요', cards:['문서','이미지','아이디어'], inputSub:'모아둔 자료가 이야기의 시작이 됩니다.',
   story:'한 장면에 한 메시지', frames:['시작','핵심','마무리'], storySub:'전하고 싶은 말에 순서를 만들고',
@@ -177,6 +177,17 @@ I18N.ko = {
   file:'HTML 파일 하나', fileSub:'장면 · 음악 · 플레이어를 한곳에', fileName:'your-story.html', fileTag:'OPEN & PLAY',
   mobile:'폰에서도 그대로', mobileSub:'탭해서 재생하고, 원하는 순간으로 이동하세요.', screen:'PLAY YOUR STORY',
   outro:'이제 Codex에서도', outroSub:'당신의 이야기를 재생하세요.', command:'$motion-graphic', ending:'BRIEF → MOTION',
+};
+
+I18N.en = {
+  ui:{title:'Codex Motion Studio',play:'Play with sound',playsub:'click or press Space',playsubtouch:'tap to play',replay:'Replay',rotate:'↻ Turn sideways for a bigger view',fullscreen:'⤢ Full screen',scrub:'Playback position',canvas:'Motion graphic. Click or Space to play, arrow keys to seek, M to mute, F for full screen',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'View skill',endTag:'Open repository',lang:'한국어'},
+  title:['Ideas,','in motion.'], intro:'A little studio for your next big idea', stamp:'MADE WITH CODEX',
+  inputs:'Start with what you have', cards:['Docs','Images','Ideas'], inputSub:'Your source material is where the story begins.',
+  story:'One scene. One message.', frames:['Opening','The idea','The close'], storySub:'Give your story a shape, one frame at a time.',
+  rhythm:['Every move. Every sound.','On the beat.'], rhythmSub:'Motion and sound land together.',
+  file:'One HTML file', fileSub:'Scenes, music and a player. All together.', fileName:'your-story.html', fileTag:'OPEN & PLAY',
+  mobile:'Made to move with you', mobileSub:'Tap to play. Jump to any moment.', screen:'PLAY YOUR STORY',
+  outro:'Now in Codex, too.', outroSub:'Put your story in motion.', command:'$motion-graphic', ending:'BRIEF → MOTION',
 };
 // @@/copy
 const LANGS = Object.keys(I18N);

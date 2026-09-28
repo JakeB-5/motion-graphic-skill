@@ -65,18 +65,19 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
 
-[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) · [소스](samples/codex-studio) · 7장면, 128 BPM 일렉트로 그루브, 한국어, Codex 제작
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en)) · [소스](samples/codex-studio) · 7장면, 128 BPM 일렉트로 그루브, Codex 제작
 
 <details>
 <summary>프롬프트</summary>
 
 ```text
 전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
+추가 요청: 영문버전은?
 ```
 
 </details>
 
-*앞의 세 영상은 영어판입니다. 한국어판은 각 ▶ 링크에서 볼 수 있습니다. Codex 샘플은 한국어판입니다.*
+*앞의 세 영상은 영어판, Codex 영상은 한국어판입니다. 각 재생 링크에서 한·영 버전을 선택할 수 있습니다.*
 
 ## 무엇이 나오나
 

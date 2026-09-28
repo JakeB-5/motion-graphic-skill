@@ -2,7 +2,7 @@
 
 Style: a bright graphic-design studio, with cream paper, violet, orange and mint cards, bold Korean typography and an electro groove. The cards become story frames, a beat sequencer, an HTML file, and a phone.
 
-Korean · 128 BPM · 64 beats · 30 seconds · 7 scenes.
+Korean and English · 128 BPM · 64 beats · 30 seconds · 7 scenes.
 
 | Scene | Beats | Message | Visual / motion | Sound |
 |---|---:|---|---|---|

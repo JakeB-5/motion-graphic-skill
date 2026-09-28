@@ -6,7 +6,7 @@
 
 [English](README.md) · **한국어**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.3](https://img.shields.io/badge/status-0.3-d4a34b)](CHANGELOG.md)
 
 ![기본 콘솔 스타일 데모의 장면별 스틸 시트](docs/images/sheet-console.png)
 
@@ -14,7 +14,7 @@
 
 ## 샘플
 
-이 스킬로 만든 네 편입니다. 앞의 세 편은 Claude가 각각 프롬프트 하나로 만들었고, 마지막은 샘플 제작 요청을 받은 Codex가 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
+Claude Code와 Codex에서 이 스킬로 만든 모션그래픽 네 편입니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
 
 ### 스킬 소개 — 플랫 팝 · 30초
 
@@ -71,8 +71,7 @@ https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
 <summary>프롬프트</summary>
 
 ```text
-전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
-추가 요청: 영문버전은?
+Make a 30-second motion graphic introducing this repository's motion-graphic skill to developers who use Codex. Use README.md, skills/motion-graphic/SKILL.md and CHANGELOG.md as the source material. Make it feel like a playful graphic-design studio: cream paper, bold typography, and violet, orange and mint cards that become a storyboard, a beat sequencer, an HTML file and a phone. Show how a brief and reference material turn into a motion graphic with synchronized music and a mobile-ready player. Seven scenes, electro groove at 128 BPM. English and Korean, with a language switch in the same HTML. End with Codex support and a link to https://github.com/JakeB-5/motion-graphic-skill.
 ```
 
 </details>

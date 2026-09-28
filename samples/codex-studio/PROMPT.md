@@ -1,13 +1,1 @@
-# Request
-
-전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
-
-# Sample choices
-
-Create a Korean, 30-second introduction to this repository's motion-graphic skill. Use the repository documentation as the factual source. Make it feel like a playful graphic-design studio, with paper cards, large type, violet, orange and mint. End with Codex support and a repository link. Use the globally installed skill to build and verify the HTML.
-
-# Follow-up
-
-영문버전은?
-
-Add English copy and a language switch to the same HTML, export an English MP4, and show the English video in the English README.
+Make a 30-second motion graphic introducing this repository's motion-graphic skill to developers who use Codex. Use README.md, skills/motion-graphic/SKILL.md and CHANGELOG.md as the source material. Make it feel like a playful graphic-design studio: cream paper, bold typography, and violet, orange and mint cards that become a storyboard, a beat sequencer, an HTML file and a phone. Show how a brief and reference material turn into a motion graphic with synchronized music and a mobile-ready player. Seven scenes, electro groove at 128 BPM. English and Korean, with a language switch in the same HTML. End with Codex support and a link to https://github.com/JakeB-5/motion-graphic-skill.

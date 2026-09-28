@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 — 2026-09-28
 
 - Codex support using the shared `motion-graphic` skill: UI metadata in `agents/openai.yaml`, repository discovery through `.agents/skills/motion-graphic`, and host-neutral tool instructions.
 - English and Korean instructions for Codex installation and explicit `$motion-graphic` invocation.
+- `samples/codex-studio/`: a 30-second, seven-scene paper-card motion graphic with English and Korean playback, MP4 exports, contact sheets, sourced facts, a storyboard and verification results.
+- README showcase: English and Korean video embeds, live playback links, and a reusable production prompt describing the sample's audience, source material, style, timing and call to action.
 
 ## 0.2.0 — 2026-09-28
 

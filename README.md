@@ -6,7 +6,7 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 **English** · [한국어](README.ko.md)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.3](https://img.shields.io/badge/status-0.3-d4a34b)](CHANGELOG.md)
 
 ![Contact sheet of the demo in the default console style: two frames per scene](docs/images/sheet-console.png)
 
@@ -14,7 +14,7 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 ## Samples
 
-Four pieces made with this skill: the first three by Claude from a single prompt each, and the last by Codex from a sample request. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md` and the `storyboard.md` the agent wrote.
+Four motion graphics made with this skill using Claude Code and Codex. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md` and the `storyboard.md` the agent wrote.
 
 ### Skill intro — flat pop · 30 s
 
@@ -68,11 +68,10 @@ https://github.com/user-attachments/assets/956b8396-94b1-468b-90a3-c0aff0739447
 [▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko)) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, made with Codex
 
 <details>
-<summary>Prompt (translated from Korean)</summary>
+<summary>Prompt</summary>
 
 ```text
-Install this as a global Codex skill and make a sample.
-Follow-up: What about an English version?
+Make a 30-second motion graphic introducing this repository's motion-graphic skill to developers who use Codex. Use README.md, skills/motion-graphic/SKILL.md and CHANGELOG.md as the source material. Make it feel like a playful graphic-design studio: cream paper, bold typography, and violet, orange and mint cards that become a storyboard, a beat sequencer, an HTML file and a phone. Show how a brief and reference material turn into a motion graphic with synchronized music and a mobile-ready player. Seven scenes, electro groove at 128 BPM. English and Korean, with a language switch in the same HTML. End with Codex support and a link to https://github.com/JakeB-5/motion-graphic-skill.
 ```
 
 </details>

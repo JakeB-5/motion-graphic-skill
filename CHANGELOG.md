@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `record.js`: render a piece to MP4 (H.264 + AAC) frame by frame, with the engine's own offline-rendered soundtrack.
+- `samples/`: three pieces made from one prompt each — skill intro (flat pop), James Webb Space Telescope (night-sky planetarium), V60 pour-over (café illustration) — with their prompt, `facts.md`, storyboard and MP4.
+
 ## 0.1.0 — 2026-09-28
 
 First public version.

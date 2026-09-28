@@ -12,6 +12,57 @@
 
 *번들 데모(24초, 5장면)를 장면당 두 컷씩 모은 시트입니다. 스킬의 검증 스크립트가 만들었습니다.*
 
+## 샘플
+
+Claude가 이 스킬로 만든 세 편입니다. 각각 프롬프트 하나만 주고 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 Claude가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
+
+### 스킬 소개 — 플랫 팝 · 30초
+
+https://github.com/user-attachments/assets/be0d6871-4e56-49c0-91d5-90b77d540cf2
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/)) · [소스](samples/skill-intro) · 7장면, 128 BPM 일렉트로 그루브
+
+<details>
+<summary>프롬프트</summary>
+
+```text
+Make a 30-second motion graphic that introduces this repository's motion-graphic skill to developers browsing GitHub. Use the README, SKILL.md and CHANGELOG in this repo as the source material. Bold, playful flat-pop look — not the default dark console. English and Korean. End with a link to https://github.com/JakeB-5/motion-graphic-skill.
+```
+
+</details>
+
+### 제임스 웹 우주망원경 — 밤하늘 천체관 · 45초
+
+https://github.com/user-attachments/assets/03088c20-9c28-4d23-9669-7edb0c5e0aeb
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/)) · [소스](samples/webb-telescope) · 8장면, 90 BPM 드럼 없는 펄스 그루브, 모든 수치 NASA 출처
+
+<details>
+<summary>프롬프트</summary>
+
+```text
+Make a 45-second explainer motion graphic about the James Webb Space Telescope for a general audience — it will loop on a science-museum lobby screen. Take every number from NASA's public Webb pages (https://science.nasa.gov/mission/webb/). English and Korean. End with a link to https://science.nasa.gov/mission/webb/.
+```
+
+</details>
+
+### V60 핸드드립 가이드 — 따뜻한 카페 일러스트 · 31초
+
+https://github.com/user-attachments/assets/bba61e37-23db-41b9-89be-78fe5fbb94a8
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/)) · [소스](samples/pour-over) · 7장면, 124 BPM 소프트 그루브, 레시피는 Hario·SCA 기준
+
+<details>
+<summary>프롬프트</summary>
+
+```text
+Make a 30-second motion graphic that teaches a complete beginner how to brew pour-over coffee with a V60 dripper — friendly and warm, for a small café's in-store screen. Base the recipe numbers on the Specialty Coffee Association's brewing guidance and Hario's V60 instructions. English and Korean. No call-to-action link.
+```
+
+</details>
+
+*영상은 영어판입니다. 한국어판은 ▶ 링크에서 볼 수 있습니다.*
+
 ## 무엇이 나오나
 
 - **HTML 한 파일.** 빌드 과정도, 영상·오디오 파일도 없습니다. 브라우저로 열거나 정적 호스팅에 올리거나 첨부하면 됩니다.
@@ -110,6 +161,8 @@ skills/motion-graphic/
   references/            story.md · styles.md · scene-patterns.md
   scripts/assemble.py    엔진 ↔ 편집 파일 분리·조립
   scripts/check.js       검증: 스틸·잘림·오디오·레이아웃·탭
+  scripts/record.js      HTML → mp4 (프레임 단위 렌더 + 엔진 오디오)
+samples/                 프롬프트 하나로 만든 샘플 (HTML·mp4·프롬프트·facts·스토리보드)
 examples/                스타일 예시 완성본
 docs/images/             README 이미지
 ```
@@ -118,7 +171,7 @@ docs/images/             README 이미지
 
 - 16:9 전용입니다 (1920×1080 캔버스. 다른 화면에서는 레터박스나 세로 배치).
 - 웹폰트를 Google Fonts에서 받으므로 처음 재생할 때 네트워크가 필요합니다. 나머지는 모두 파일 안에 있습니다.
-- 결과물은 영상 파일이 아니라 인터랙티브 HTML입니다. mp4가 필요하면 재생 화면을 녹화하세요.
+- 결과물은 영상 파일이 아니라 인터랙티브 HTML입니다. mp4가 필요하면 `node scripts/record.js <file.html> --out film.mp4`로 변환합니다(ffmpeg 필요, 진행 막대까지 영상에 들어감).
 - 아이폰 Safari는 요소 전체 화면을 지원하지 않습니다. 그래서 전체 화면 버튼을 숨기고 "가로로 돌리면 크게" 안내를 보여줍니다.
 - 검증에는 Chrome/Chromium과 Node가 필요합니다. 없어도 만들 수는 있지만 결과물을 스스로 검사하지 못합니다.
 

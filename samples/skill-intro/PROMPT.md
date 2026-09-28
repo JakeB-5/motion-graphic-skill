@@ -1,0 +1,1 @@
+Make a 30-second motion graphic that introduces this repository's motion-graphic skill to developers browsing GitHub. Use the README, SKILL.md and CHANGELOG in this repo as the source material. Bold, playful flat-pop look — not the default dark console. English and Korean. End with a link to https://github.com/JakeB-5/motion-graphic-skill.

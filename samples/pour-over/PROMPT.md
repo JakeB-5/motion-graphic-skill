@@ -1,0 +1,1 @@
+Make a 30-second motion graphic that teaches a complete beginner how to brew pour-over coffee with a V60 dripper — friendly and warm, for a small café's in-store screen. Base the recipe numbers on the Specialty Coffee Association's brewing guidance and Hario's V60 instructions. English and Korean. No call-to-action link.

@@ -19,6 +19,7 @@ The skill is built around an engine extracted from a production piece (a 54-seco
 | `references/scene-patterns.md` | When designing and coding scenes: proven animation patterns with code, and which sound goes with which move |
 | `scripts/assemble.py` | Splits the engine into small editable parts and reassembles them, with a syntax check |
 | `scripts/check.js` | Verification after each build: contact sheet of stills, clipped text, audio levels, 7 device layouts, touch playback, truncated labels; warnings for small text |
+| `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack (needs ffmpeg) |
 
 `SKILL_DIR` below means the directory containing this file.
 
@@ -124,6 +125,7 @@ Pitfalls:
 
 - Report the output path, length (s) and scene count, and the verification result (zero failures, audio levels).
 - Mention in one line: `?t=<seconds>` freezes a frame, `?lang=xx` switches language, `?audiotest` renders the audio offline and reports levels.
+- If the user needs a video file (social posts, a README, a deck), `node "$SKILL_DIR/scripts/record.js" <output.html> --out <name>.mp4 [--lang xx] [--crf 18]` renders it at 1080p30 with the synthesized audio. Raise `--crf` (e.g. 23) to shrink grainy or textured pieces under an upload limit.
 - For a link-preview image, suggest cropping the last-frame still (`still-*-END-*.png`) to 1200×630 as `og.png`.
 - Publishing (static hosting, artifacts) makes it public — only when the user asks.
 

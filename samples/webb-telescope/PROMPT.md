@@ -1,0 +1,1 @@
+Make a 45-second explainer motion graphic about the James Webb Space Telescope for a general audience — it will loop on a science-museum lobby screen. Take every number from NASA's public Webb pages (https://science.nasa.gov/mission/webb/). English and Korean. End with a link to https://science.nasa.gov/mission/webb/.

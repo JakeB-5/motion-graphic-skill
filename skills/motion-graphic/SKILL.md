@@ -17,10 +17,10 @@ The skill is built around an engine extracted from a production piece (a 54-seco
 | `references/story.md` | When writing the storyboard and copy: structures by length, copy rules, how to show numbers honestly |
 | `references/styles.md` | When choosing the concept: topic → visual-language decisions, and style building blocks (console, clean, editorial, pop, playful) |
 | `references/scene-patterns.md` | When designing and coding scenes: springs and `track`, proven animation patterns with code, and which sound goes with which move |
-| `references/critique.md` | In step 5: the scored critique loop — seven axes, defects to hunt, `review_log.md` format |
+| `references/critique.md` | In step 5: the critique loop — separate reviewer, defect table, seven scored axes, `review_log.md` format |
 | `scripts/assemble.py` | Splits the engine into small editable parts and reassembles them, with a syntax check |
 | `scripts/check.js` | Verification after each build: contact sheet, phone-size sheet, opening and cut strips, determinism, clipped text, audio levels, 7 device layouts, touch playback, truncated labels; warnings for small text |
-| `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack (needs ffmpeg) |
+| `scripts/record.js` | Only when the user wants a video file: renders the piece frame by frame to an MP4 with its own soundtrack and checks the file it wrote (needs ffmpeg) |
 
 `SKILL_DIR` below means the directory containing this file. Resolve it from the loaded skill's path, not the working directory; the same folder works in Codex and Claude Code. Keep generated HTML, `facts.md`, editable parts and verification output in the user's working folder or scratch space, outside the installed skill.
 
@@ -120,7 +120,12 @@ Output per language: `sheet-<lang>.png` (two frames per scene plus the last fram
 
 Failures reported by the script: page errors (with stack), text clipped by the canvas edge, a frame that changes with render order (accumulated state, `Math.random()` or `Date.now()` in `draw`), near-silent scenes or clipping audio, elements overflowing the viewport on 7 devices, ellipsized labels, broken touch playback/seek. Warnings (judge against the sheet): body text under 26 px, CJK in the mono font. Fix and re-run until failures are zero.
 
-Then **critique your own frames** — problems the script can't see (overlapping text, shapes covering copy, a slow opening, dead stretches, sliding motion, a metaphor that doesn't read) only show up in the images. Follow `references/critique.md`: as a harsh motion director, open the sheet, phone sheet and strips, score seven axes 1–10 (hook in the first 2 s · readability at phone size · motion quality · variety · composition · brand accuracy · sound sync), write the three worst problems with timestamps, log the round in `review_log.md` in the working folder, fix them, and re-run. **Deliver only when every axis is 8+ after at least two rounds** (after four rounds, deliver and name the axis that fell short).
+Then **have the frames critiqued** — problems the script can't see (overlapping text, shapes covering copy, a slow opening, dead stretches, sliding motion, a metaphor that doesn't read) only show up in the images, and the builder is the worst judge of them. Follow `references/critique.md`:
+
+- If the host can start a separate agent with a fresh context, that agent reviews; give it only `critique.md`, the check output (with your `cue-check.md` of cue timings), the brief and `facts.md` — not your build notes or opinion. Otherwise review yourself under the same rules.
+- Defects first: every row of the defect table gets PASS or FAIL with file-and-time evidence; a FAIL caps its axes at 6.
+- Then seven scores 1–10 (hook in the first 2 s · readability at phone size · motion quality · variety · composition · brand accuracy · sound sync); an 8+ must name the file it was judged from and why none of that axis's defects apply, or it is at most 7. Then the three worst problems with timestamps.
+- Log each round in `review_log.md` in the working folder, fix, re-run. **Deliver when nothing FAILs and every axis is 8+ after at least two rounds; stop after three rounds** and list what is still short in the log and the delivery report.
 
 If a scene's `draw()` throws, only that scene goes blank; the engine catches it and logs `console.error`. A blank frame on the sheet → read the page error in the report first.
 
@@ -131,9 +136,10 @@ Pitfalls:
 
 ### 6. Deliver
 
-- Report the output path, length (s) and scene count, the verification result (zero failures, audio levels) and the last critique round's scores.
+- Report the output path, length (s) and scene count, the verification result (zero failures, audio levels), the last critique round's scores and anything the critique left unresolved.
 - Mention in one line: `?t=<seconds>` freezes a frame, `?lang=xx` switches language, `?audiotest` renders the audio offline and reports levels.
 - If the user needs a video file (social posts, a README, a deck), `node "$SKILL_DIR/scripts/record.js" <output.html> --out <name>.mp4 [--lang xx] [--crf 18]` renders it at 1080p30 with the synthesized audio. Raise `--crf` (e.g. 23) to shrink grainy or textured pieces under an upload limit.
+- **Wait for `record.js` to finish before reporting or ending your turn** — it takes minutes (roughly 5–10× the film length). Left running when the session or turn ends, it is cut off and the MP4 is unplayable. Run it in the foreground with a command timeout of about 10× the film length, up to the shell's maximum; if the shell can't wait that long, start it in the background and keep checking its output until it prints `verified:` or an error. It checks its own output with ffprobe (playable, and as long as the film; exit code 1 otherwise). Report the video only after `verified:` — or, if it printed that ffprobe is missing, say the MP4 is unchecked. `node record.js <output.html> --out <name>.mp4 --verify-only` re-checks an existing MP4 without rendering.
 - For a link-preview image, suggest cropping the last-frame still (`still-*-END-*.png`) to 1200×630 as `og.png`.
 - Publishing (static hosting, artifacts) makes it public — only when the user asks.
 

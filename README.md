@@ -95,10 +95,10 @@ Every frame is a pure function of time (`render(t)`), so scrubbing, freezing a f
 
 ## Try the demo
 
-Open these in a browser:
+Play them live (GitHub Pages), or open the files in a browser:
 
-- [`skills/motion-graphic/assets/engine.html`](skills/motion-graphic/assets/engine.html) — the engine with its five example scenes, console style
-- [`examples/clean-style.html`](examples/clean-style.html) — the same scenes with a clean, light style and a soft groove
+- [▶ Console style](https://jakeb-5.github.io/motion-graphic-skill/skills/motion-graphic/assets/engine.html) · [`skills/motion-graphic/assets/engine.html`](skills/motion-graphic/assets/engine.html) — the engine with its five example scenes, console style
+- [▶ Clean style](https://jakeb-5.github.io/motion-graphic-skill/examples/clean-style.html) · [`examples/clean-style.html`](examples/clean-style.html) — the same scenes with a clean, light style and a soft groove
 
 ## Repository layout
 

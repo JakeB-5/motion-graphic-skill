@@ -95,10 +95,10 @@ Claude가 꼭 필요한데 빠진 정보(관객·길이·링크)를 한 번에 �
 
 ## 데모 보기
 
-브라우저로 열어 보세요.
+GitHub Pages에서 바로 재생하거나, 파일을 브라우저로 열어 보세요.
 
-- [`skills/motion-graphic/assets/engine.html`](skills/motion-graphic/assets/engine.html): 예시 장면 5개가 든 엔진, 콘솔 스타일
-- [`examples/clean-style.html`](examples/clean-style.html): 같은 장면에 밝은 클린 스타일과 부드러운 그루브
+- [▶ 콘솔 스타일](https://jakeb-5.github.io/motion-graphic-skill/skills/motion-graphic/assets/engine.html) · [`skills/motion-graphic/assets/engine.html`](skills/motion-graphic/assets/engine.html): 예시 장면 5개가 든 엔진, 콘솔 스타일
+- [▶ 클린 스타일](https://jakeb-5.github.io/motion-graphic-skill/examples/clean-style.html) · [`examples/clean-style.html`](examples/clean-style.html): 같은 장면에 밝은 클린 스타일과 부드러운 그루브
 
 ## 저장소 구조
 

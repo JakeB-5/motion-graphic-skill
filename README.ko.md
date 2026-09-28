@@ -6,7 +6,7 @@
 
 [English](README.md) · **한국어**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Status: 0.1](https://img.shields.io/badge/status-0.1-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
 
 ![기본 콘솔 스타일 데모의 장면별 스틸 시트](docs/images/sheet-console.png)
 

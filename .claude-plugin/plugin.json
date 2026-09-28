@@ -1,6 +1,6 @@
 {
   "name": "motion-graphic",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Turn a brief and reference material into a single-file, beat-synced canvas motion graphic (HTML) with synthesized sound, a mobile-ready player and automated verification.",
   "author": {
     "name": "JakeB-5",

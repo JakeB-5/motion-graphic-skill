@@ -6,7 +6,7 @@ A [Claude Code](https://claude.com/claude-code) skill that turns a brief and ref
 
 **English** · [한국어](README.ko.md)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Status: 0.1](https://img.shields.io/badge/status-0.1-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Status: 0.2](https://img.shields.io/badge/status-0.2-d4a34b)](CHANGELOG.md)
 
 ![Contact sheet of the demo in the default console style: two frames per scene](docs/images/sheet-console.png)
 

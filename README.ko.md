@@ -14,7 +14,7 @@
 
 ## 샘플
 
-Claude가 이 스킬로 만든 세 편입니다. 각각 프롬프트 하나만 주고 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 Claude가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
+이 스킬로 만든 네 편입니다. 앞의 세 편은 Claude가 각각 프롬프트 하나로 만들었고, 마지막은 샘플 제작 요청을 받은 Codex가 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
 
 ### 스킬 소개 — 플랫 팝 · 30초
 
@@ -61,13 +61,22 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 </details>
 
-*영상은 영어판입니다. 한국어판은 ▶ 링크에서 볼 수 있습니다.*
-
 ### Codex Motion Studio — 종이 카드 · 30초
 
-![Codex Motion Studio 장면 미리보기](samples/codex-studio/preview.png)
+https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
 
-[인터랙티브 HTML](samples/codex-studio/index.html) · [음악 포함 MP4](samples/codex-studio/codex-studio.mp4) · [장면 미리보기](samples/codex-studio/preview.png). 전역에 설치한 Codex 스킬로 만들고 검증한 7장면 샘플입니다. 밝은 종이 카드 스타일을 사용했습니다. [출처·스토리보드](samples/codex-studio).
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) · [소스](samples/codex-studio) · 7장면, 128 BPM 일렉트로 그루브, 한국어, Codex 제작
+
+<details>
+<summary>프롬프트</summary>
+
+```text
+전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
+```
+
+</details>
+
+*앞의 세 영상은 영어판입니다. 한국어판은 각 ▶ 링크에서 볼 수 있습니다. Codex 샘플은 한국어판입니다.*
 
 ## 무엇이 나오나
 

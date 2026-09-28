@@ -14,7 +14,7 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 ## Samples
 
-Three pieces Claude made with this skill, each from a single prompt and nothing else. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md` and the `storyboard.md` Claude wrote.
+Four pieces made with this skill: the first three by Claude from a single prompt each, and the last by Codex from a sample request. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md` and the `storyboard.md` the agent wrote.
 
 ### Skill intro — flat pop · 30 s
 
@@ -61,13 +61,22 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 </details>
 
-*The videos show the English version; the ▶ links have a Korean one too.*
-
 ### Codex Motion Studio — paper cards · 30 s
 
-![Codex Motion Studio contact sheet](samples/codex-studio/preview.png)
+https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
 
-[interactive HTML](samples/codex-studio/index.html) · [MP4 with audio](samples/codex-studio/codex-studio.mp4) · [contact sheet](samples/codex-studio/preview.png). Seven scenes in a bright paper-card style, built and verified with the globally installed Codex skill. [Sources and storyboard](samples/codex-studio).
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, Korean, made with Codex
+
+<details>
+<summary>Prompt</summary>
+
+```text
+전역 코덱스 스킬로도 설치하고 샘플 하나 만들어봐줘.
+```
+
+</details>
+
+*The first three videos show the English version; their ▶ links have a Korean one too. The Codex sample is in Korean.*
 
 ## What you get
 

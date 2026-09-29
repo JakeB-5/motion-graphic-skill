@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>motion-graphic — one brief in, one motion graphic out</title>
+<meta name="description" content="A Claude Code and Codex skill that turns a brief and reference material into one beat-synced HTML motion graphic. 30 seconds, English and Korean.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="motion-graphic — one brief in, one motion graphic out">
+<meta property="og:description" content="A Claude Code and Codex skill that turns a brief and reference material into one beat-synced HTML motion graphic.">
+<meta property="og:url" content="https://github.com/JakeB-5/motion-graphic-skill">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF3D6">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&display=swap">
+<style>.cta .led{box-shadow:none!important}</style>
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const CFG = {
+  bpm: 128,                                   // 64 beats × 60 / 128 = 30.0 s
+  // pop palette: cream page, ink text, electric blue / pink / orange accents; scene colours (yellow, mint) live in style.js
+  colors: { bg: '#FFF3D6', panel: '#FFFFFF', line: '#E4D8B8', ink: '#16131F', dim: '#5B5670', grid: '#EADFC0',
+            acc: '#3D4DFF', accHi: '#FFD23F', alt: '#FF4F8B', bad: '#FF8A1F' },
+  fonts: { sans: '"Noto Sans KR","Apple SD Gothic Neo",sans-serif',
+           display: '"Archivo","Noto Sans KR",sans-serif',
+           mono: '"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit: false,                           // flat pop: slam overshoots but never RGB-splits
+  hudTitle: '',                               // no HUD frame on this topic; style.js draws scene dots only
+  hudMeta: t => '',
+  cta: { href: 'https://github.com/JakeB-5/motion-graphic-skill', newTab: true },
+  endCta: { x: 110, y: 320, w: 1140, h: 290 },           // the prize ticket on the last frame
+  endCtaBeat: 6.5,                            // the ticket has landed and its tab is open by then
+  posterT: 2.6,                               // last beat of scene 1: wordmark and machine in, left-centre empty for the play button
+  watchKey: 'motion-graphic-skill-intro-watched',
+  music: { groove: 'electro', liteScenes: [], arpScenes: ['file', 'storyboard'], tailBeats: 6 },
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+I18N.ko = {
+  ui: { title: 'motion-graphic — 브리프 하나로 모션그래픽 하나', play: '사운드와 함께 재생', playsub: '클릭 또는 스페이스', playsubtouch: '탭해서 재생', replay: '다시 재생',
+        rotate: '↻ 가로로 돌리면 크게 볼 수 있어요', fullscreen: '⤢ 전체 화면', scrub: '재생 위치',
+        canvas: '모션그래픽. 클릭하면 재생과 정지, 스페이스 재생, 방향키 이동, M 음소거, F 전체 화면',
+        ctaLab: 'GitHub에서 열기', ctaSub: 'github.com/JakeB-5/motion-graphic-skill', ctaGo: '열기', endTag: '열기', lang: 'ENGLISH' },
+  cK: 'INSERT COIN · BRIEF', word: 'motion-graphic', cL: ['브리프 하나 넣으면,', '모션그래픽 하나.'], cChip: 'Claude Code · Codex 스킬',
+  hK: 'HOPPER · MATERIAL', hH: '가진 자료, 그대로 넣으세요.', hChips: ['README.md', 'PDF', '숫자', '스크린샷', 'URL'], hS: '에이전트가 전부 읽어요.',
+  fK: 'OUT COMES · ONE FILE', fH: '파일 하나.', fL: ['빌드 없이.', '영상 없이.', '오디오 파일 없이.'], fTags: ['브라우저', '정적 호스팅', '첨부'],
+  sK: 'BEFORE THE BUILD · STORYBOARD', sH: ['만들기 전에', '스토리보드부터 확인해요.'], sS: ['이야기를 바꾸기', '가장 쉬운 순간이에요.'], sStamp: 'APPROVED',
+  bK: 'SOUND · ON THE BEAT', bH: '모든 움직임이 박자에 딱 맞아요.', bS1: '음악과 효과음을 그 자리에서 직접 만들어요.', bPill: ['SPRINGS', 'NEW IN 0.4'], bS2: '움직임은 튕기듯 나와서 자연스럽게 멈춰요.',
+  nK: 'SCORED CRITIQUE · v0.4', nH: '모든 영상이 점수 리뷰를 받아요.', nCap: ['블라인드 비교에서', '0.4가 0.3을 모두 이겼어요'], nLab: ['한 편 제작 시간', '(리뷰 라운드 포함)'], nUnit: '분', nPill: '≈ 3배 오래 걸려요',
+  pK: 'PRIZE · TRY IT', pH: '스킬, 가져가세요.', pCmd: ['$ npx skills add', '  JakeB-5/motion-graphic-skill', '  --skill motion-graphic'], pSub: 'Claude Code · Codex · MIT',
+  pT: ['github.com/JakeB-5/', 'motion-graphic-skill'], pTab: ['GitHub에서', '열기 →']
+};
+I18N.en = {
+  ui: { title: 'motion-graphic — one brief in, one motion graphic out', play: 'Play with sound', playsub: 'click or press Space', playsubtouch: 'tap to play', replay: 'Replay',
+        rotate: '↻ Turn your phone sideways for a bigger view', fullscreen: '⤢ Full screen', scrub: 'Playback position',
+        canvas: 'Motion graphic. Click to play or pause, Space to play, arrow keys to seek, M to mute, F for full screen',
+        ctaLab: 'Open on GitHub', ctaSub: 'github.com/JakeB-5/motion-graphic-skill', ctaGo: 'Open', endTag: 'Open', lang: '한국어' },
+  cK: 'INSERT COIN · BRIEF', word: 'motion-graphic', cL: ['One brief in.', 'One motion graphic out.'], cChip: 'Claude Code · Codex skill',
+  hK: 'HOPPER · MATERIAL', hH: "Feed it whatever you've got.", hChips: ['README.md', 'PDF', 'numbers', 'screenshots', 'URLs'], hS: 'The agent reads all of it.',
+  fK: 'OUT COMES · ONE FILE', fH: 'ONE FILE.', fL: ['No build step.', 'No video.', 'No audio files.'], fTags: ['browser', 'any static host', 'attach'],
+  sK: 'BEFORE THE BUILD · STORYBOARD', sH: ['You approve the', 'storyboard first.'], sS: ['The cheapest place', 'to change the story.'], sStamp: 'APPROVED',
+  bK: 'SOUND · ON THE BEAT', bH: 'Every move lands on a beat.', bS1: 'Music and effects are synthesized live.', bPill: ['SPRINGS', 'NEW IN 0.4'], bS2: 'Moves overshoot and settle.',
+  nK: 'SCORED CRITIQUE · v0.4', nH: 'Every film gets a scored review.', nCap: ['0.4 beat 0.3 in', 'blind film pairs'], nLab: ['Time per piece,', 'review rounds included'], nUnit: ' min', nPill: '≈ 3× longer',
+  pK: 'PRIZE · TRY IT', pH: 'Grab the skill.', pCmd: I18N.ko.pCmd, pSub: 'Claude Code · Codex · MIT',
+  pT: I18N.ko.pT, pTab: ['Open on', 'GitHub →']
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+// flat pop: one saturated colour block per scene, faint halftone dots, no frame (scene dots only), diagonal colour wipes
+const YEL = '#FFD23F', MINT = '#12D6A0', WHITE = '#FFFFFF', INK = C.ink;
+const THEME = {
+  coin: { bg: YEL, fg: INK }, hopper: { bg: C.acc, fg: WHITE }, file: { bg: C.alt, fg: INK }, storyboard: { bg: MINT, fg: INK },
+  beat: { bg: '#7A3CFF', fg: WHITE }, score: { bg: C.bad, fg: INK }, prize: { bg: YEL, fg: INK }
+};
+const themeOf = t => THEME[sceneAt(t).id];
+const dotPat = col => { const c = document.createElement('canvas'); c.width = c.height = 48; const g = c.getContext('2d'); g.fillStyle = col; g.beginPath(); g.arc(24, 24, 3, 0, TAU); g.fill(); return ctx.createPattern(c, 'repeat'); };
+const PAT_DARK = dotPat('rgba(22,19,31,.09)'), PAT_LIGHT = dotPat('rgba(255,255,255,.07)');
+function paintBg(th){ ctx.fillStyle = th.bg; ctx.fillRect(0, 0, W, H); ctx.fillStyle = th.bg === INK ? PAT_LIGHT : PAT_DARK; ctx.fillRect(0, 0, W, H); }
+function drawBg(t){ paintBg(themeOf(t)); }
+// a cream pill under the engine's progress bar, so the bar reads on every scene colour
+function overlay(t){ rp(56, 982, W - 112, 40, 20); ctx.fillStyle = 'rgba(255,243,214,.94)'; ctx.fill(); }
+function hud(t, sc){
+  const th = THEME[sc.id], n = SC.length;
+  for (let i = 0; i < n; i++) dot(W / 2 - (n - 1) * 20 + i * 40, 60, i === sc.i ? 10 : 6, th.fg, i === sc.i ? 1 : .32);
+}
+// the previous scene keeps playing outside a moving edge that uncovers the new scene; a stripe trails the edge (first .32 s of each scene).
+// the edge alternates: slant left→right, iris, top→bottom, right→left, bottom→top, iris
+const WIPES = [null, { a: -.35 }, { iris: 1 }, { a: Math.PI / 2 - .2 }, { a: Math.PI - .3 }, { a: -Math.PI / 2 + .2 }, { iris: 1 }];
+function transition(sc, lt){
+  const p = inv(0, .32, lt); if (p >= 1) return;
+  const prev = SC[sc.i - 1], th = THEME[prev.id], wp = WIPES[sc.i], q = 1 - Math.pow(1 - p, 2), stripe = th.bg === INK ? WHITE : INK, sw = 130 * (1 - p * .6);
+  ctx.save();
+  ctx.save(); ctx.beginPath();
+  if (wp.iris){ ctx.rect(0, 0, W, H); ctx.arc(W / 2, H / 2, lerp(0, 1180, q), 0, TAU); }
+  else { const e = lerp(-1230, 1360, q); ctx.translate(W / 2, H / 2); ctx.rotate(wp.a); ctx.rect(e, -H * 1.6, W * 3, H * 3.2); }
+  ctx.restore(); ctx.clip(wp.iris ? 'evenodd' : 'nonzero');
+  paintBg(th); try { S[prev.id].draw(prev.d + lt, prev.d); } catch (err){ console.error(err); } overlay(0);
+  ctx.restore();
+  ctx.save();
+  if (wp.iris){ ctx.beginPath(); ctx.arc(W / 2, H / 2, lerp(0, 1180, q), 0, TAU); ctx.lineWidth = sw * .6; ctx.strokeStyle = stripe; ctx.stroke(); }
+  else { const e = lerp(-1230, 1360, q); ctx.translate(W / 2, H / 2); ctx.rotate(wp.a); ctx.fillStyle = stripe; ctx.fillRect(e - sw, -H * 1.6, sw, H * 3.2); }
+  ctx.restore();
+}
+// shared shape helpers
+function rp(x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// sticker: rounded card with a thick outline and a hard offset shadow; `inner` draws in its own coordinates (origin at the centre)
+function sticker(cx, cy, w, h, r, fill, o = {}, inner){
+  const { rot = 0, s = 1, sh = 10, ln = 6, lc = INK, shc = INK, a = 1 } = o;
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(s, s);
+  if (sh){ rp(-w / 2 + sh, -h / 2 + sh, w, h, r); ctx.fillStyle = shc; ctx.fill(); }
+  rp(-w / 2, -h / 2, w, h, r); ctx.fillStyle = fill; ctx.fill(); if (ln){ ctx.lineWidth = ln; ctx.strokeStyle = lc; ctx.lineJoin = 'round'; ctx.stroke(); }
+  if (inner) inner(); ctx.restore();
+}
+const ring = (dt, k = 8, w = 24) => dt > 0 ? Math.exp(-dt * k) * Math.cos(dt * w) : 0;   // ring-down wobble, a pure function of time
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+// capsules inside the machine dome (seeded, so every frame is identical)
+const BALLS = Array.from({ length: 10 }, (_, i) => { const a = hash(i) * TAU, r = 30 + hash(i + 20) * 105;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r * .65 - 30, r: 34 + hash(i + 40) * 10, col: [C.alt, C.acc, YEL, MINT, C.bad, WHITE][i % 6], ph: hash(i + 60) * TAU }; });
+const SEQ = { x0: 110, y0: 250, cs: 62, gp: 12,
+  rows: [[C.alt, [0, 4, 8, 12]], [MINT, [4, 12]], [YEL, [2, 6, 10, 14]], [WHITE, [0, 2, 4, 6, 8, 10, 12, 14]]] };   // rows mirror the groove: kick, clap, off-beat hat, bass
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+
+// ---------- shared objects ----------
+// the capsule machine: origin at the dome centre, body bottom at local y = 520. o: coin (0..1 drop, -1 = none), squash, jig (dome shake), knob (radians)
+function machine(cx, cy, s, lt, o = {}){
+  const { coin = -1, squash = 0, jig = 0, knob = 0 } = o;
+  ctx.save(); ctx.translate(cx, cy + 520 * s); ctx.scale(s * (1 + squash * .05), s * (1 - squash * .07)); ctx.translate(0, -520);
+  // dome with capsules inside
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, 190, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,.72)'; ctx.fill(); ctx.clip();
+  for (const b of BALLS){ const by = b.y + Math.sin(lt * 6 + b.ph) * 4 + jig * Math.sin(lt * 40 + b.ph) * 10;
+    dot(b.x, by, b.r, b.col); ctx.beginPath(); ctx.arc(b.x, by, b.r, 0, TAU); ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(b.x - b.r, by); ctx.lineTo(b.x + b.r, by); ctx.stroke(); }
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(0, 0, 190, 0, TAU); ctx.lineWidth = 8; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, 150, Math.PI * 1.15, Math.PI * 1.4); ctx.lineWidth = 12; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.stroke();
+  // body, slot plate, knob, chute
+  sticker(0, 310, 440, 420, 36, C.alt, { sh: 12, ln: 8 });
+  sticker(0, 190, 190, 100, 20, YEL, { sh: 0, ln: 6 });
+  rp(-48, 182, 96, 18, 9); ctx.fillStyle = INK; ctx.fill();
+  dot(0, 350, 54, WHITE); ctx.beginPath(); ctx.arc(0, 350, 54, 0, TAU); ctx.lineWidth = 7; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.save(); ctx.translate(0, 350); ctx.rotate(knob); ctx.fillStyle = INK; rp(-36, -8, 72, 16, 8); ctx.fill(); ctx.restore();
+  sticker(0, 468, 250, 80, 16, INK, { sh: 0, ln: 0 });
+  if (coin >= 0){   // the coin falls in front and disappears into the slot
+    ctx.save(); ctx.beginPath(); ctx.rect(-300, -700, 600, 700 + 196); ctx.clip();
+    const cy2 = lerp(-560, 190, coin), sx = Math.abs(Math.cos(coin * 11)) * .8 + .2;
+    ctx.translate(0, cy2); ctx.scale(sx, 1); dot(0, 0, 46, WHITE); ctx.beginPath(); ctx.arc(0, 0, 46, 0, TAU); ctx.lineWidth = 7; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 26, 0, TAU); ctx.lineWidth = 5; ctx.strokeStyle = C.alt; ctx.stroke(); ctx.restore(); }
+  ctx.restore();
+}
+
+// ---------- 1. coin ----------
+S.coin = {
+  draw(lt, d){
+    const land = 2.2 * B, fall = clamp((lt - 1.2 * B) / B), sq = ring(lt - land, 7, 26);
+    dot(1570, 560, 330 * spring(lt - .05, ...SPRING.heavy), C.acc);
+    kicker(TXT.cK, 110, 150, lt, .05, INK);
+    const sp = spring(lt - .08, ...SPRING.snappy);
+    sticker(700 - (1 - sp) * 1000, 285, 1200, 196, 30, C.acc, { sh: 14, ln: 8 });
+    slam(TXT.word, 150, 335, lt, .12, { f: FD, w: 900, z: 160, c: WHITE, fit: 1110 });
+    rise(TXT.cL[0], 110, 855, lt, B, { f: FD, w: 800, z: 76, fit: 1150 });
+    rise(TXT.cL[1], 110, 930, lt, 1.3 * B, { f: FD, w: 800, z: 76, fit: 1150 });
+    const cp = spring(lt - 3.5 * B, ...SPRING.playful);
+    if (lt >= 3.5 * B) sticker(900, 132, 800, 78, 39, WHITE, { s: cp, sh: 8, ln: 6 }, () => T(TXT.cChip, 0, 19, { f: FK, w: 900, z: 54, al: 'center', fit: 740 }));
+    // a starburst sticker in the gap between wordmark and machine (right of the poster's play-button zone)
+    const st = spring(lt - 1.6 * B, ...SPRING.playful); if (lt >= 1.6 * B){ ctx.save(); ctx.translate(1010, 560); ctx.rotate(-.2 + lt * .25); ctx.scale(st, st);
+      ctx.beginPath(); for (let i = 0; i < 16; i++){ const a = i / 16 * TAU, r = i % 2 ? 62 : 104; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath();
+      ctx.fillStyle = INK; ctx.save(); ctx.translate(8, 8); ctx.fill(); ctx.restore(); ctx.fillStyle = WHITE; ctx.fill(); ctx.lineWidth = 6; ctx.strokeStyle = INK; ctx.lineJoin = 'round'; ctx.stroke();
+      ctx.rotate(.2 - lt * .25 + .12); T('0.4', 0, 16, { f: FD, w: 900, z: 50, c: C.alt, al: 'center' }); ctx.restore(); }
+    machine(1570, 400, 1, lt, { coin: lt > 1.2 * B && lt < land + .04 ? fall * fall : -1, squash: sq * (lt > land ? 1 : 0), jig: Math.exp(-Math.max(0, lt - land) * 5) * (lt > land ? 1 : 0), knob: (lt - land) * 4 * (lt > land ? 1 : 0) });
+  },
+  cues: d => [[0, 'power'], [.12, 'slam', .8], [2.2 * B, 'blip', 1046, .1], [2.2 * B, 'stamp', .4], [3.5 * B, 'stamp', .5]]
+};
+
+// ---------- 2. hopper ----------
+const HOP = [[690, 455, -.05, YEL], [1000, 455, .04, WHITE], [1265, 455, -.03, C.alt], [780, 345, .03, MINT], [1160, 345, -.05, C.bad]];   // [land cx, land cy, tilt, fill]
+S.hopper = {
+  draw(lt, d){
+    kicker(TXT.hK, 110, 150, lt, .2, YEL);
+    slam(TXT.hH, 110, 835, lt, .55 * B, { f: FD, w: 900, z: 116, c: WHITE, fit: 1700 });
+    const bulge = HOP.reduce((s, _, i) => s + ring(lt - (1.5 + i) * B, 8, 28), 0) * .022;   // the bowl rings when a chip lands
+    // funnel back, chips, bowl front (the chips settle into the bowl)
+    ctx.beginPath(); ctx.moveTo(300, 215); ctx.lineTo(1620, 215); ctx.lineTo(1380, 500); ctx.lineTo(540, 500); ctx.closePath(); ctx.fillStyle = '#2632B8'; ctx.fill(); ctx.lineWidth = 8; ctx.lineJoin = 'round'; ctx.strokeStyle = INK; ctx.stroke();
+    HOP.forEach(([cx, cy, tilt, fill], i) => { const t0 = (1.5 + i) * B - .2, p = spring(lt - t0, ...SPRING.playful); if (lt < t0) return;   // starts .2 s early so it lands on the beat
+      const s = TXT.hChips[i], w = mw(s, FK, 900, 52) + 76;
+      sticker(cx, cy - (1 - p) * 190, w, 104, 30, fill, { rot: tilt + (1 - p) * -.35, s: lerp(1.4, 1, clamp(p)), sh: 8, ln: 6, a: inv(t0, t0 + .08, lt) }, () => T(s, 0, 18, { f: FK, w: 900, z: 52, al: 'center' })); });
+    ctx.save(); ctx.translate(960, 660); ctx.scale(1 + bulge, 1 - bulge * 1.6); ctx.translate(-960, -660);
+    ctx.beginPath(); ctx.moveTo(470, 500); ctx.lineTo(1450, 500); ctx.lineTo(1330, 660); ctx.lineTo(590, 660); ctx.closePath();
+    ctx.fillStyle = WHITE; ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
+    rise(TXT.hS, 110, 925, lt, 6 * B, { f: FK, w: 900, z: 70, c: YEL });
+  },
+  cues: d => [[.55 * B, 'slam', .75], ...HOP.map((_, i) => [(1.5 + i) * B, 'blip', 660 + i * 150, .09]), [d - 1.1, 'riser', 1.1, .16]]
+};
+
+// ---------- 3. file ----------
+function fileCard(cx, cy, lt){   // a tiny web page: title bar, hero block, lines, a play button
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(1.15, 1.15);
+  sticker(0, 0, 300, 400, 26, WHITE, { sh: 12, ln: 7 }, () => {
+    ctx.save(); rp(-150, -200, 300, 62, 26); ctx.clip(); ctx.fillStyle = INK; ctx.fillRect(-150, -200, 300, 62); ctx.restore();
+    [C.alt, YEL, MINT].forEach((c, i) => dot(-114 + i * 34, -169, 10, c));
+    T('index.html', 150 - 24, -160, { f: FM, w: 700, z: 22, c: WHITE, al: 'right' });
+    rp(-122, -112, 244, 130, 14); ctx.fillStyle = C.acc; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-14, -70); ctx.lineTo(-14, -20); ctx.lineTo(30, -45); ctx.closePath(); ctx.fillStyle = WHITE; ctx.fill();
+    [[-122, 44, 244], [-122, 80, 190], [-122, 116, 220]].forEach(([x, y, w]) => { rp(x, y, w, 20, 10); ctx.fillStyle = '#D9D4E6'; ctx.fill(); });
+    [C.alt, YEL, MINT].forEach((c, i) => { rp(-122 + i * 84, 152, 76, 34, 10); ctx.fillStyle = c; ctx.fill(); }); });
+  ctx.restore();
+}
+S.file = {
+  draw(lt, d){
+    kicker(TXT.fK, 110, 160, lt, .2, INK);
+    T(TXT.fH, 110 + 10, 420 + 10, { f: FD, w: 900, z: 250, c: WHITE, fit: 1500, a: inv(.55 * B, .55 * B + .05, lt) });
+    slam(TXT.fH, 110, 420, lt, .55 * B, { f: FD, w: 900, z: 250, c: INK, fit: 1500 });
+    TXT.fL.forEach((s, i) => { const t0 = (3 + i * .8) * B, p = spring(lt - t0, ...SPRING.snappy); if (lt < t0) return;
+      const y = 560 + i * 82; ctx.save(); ctx.globalAlpha = inv(t0, t0 + .1, lt);
+      dot(136, y - 20, 24, INK); cross(136, y - 20, 9, WHITE, 6);
+      T(s, 190 + (1 - p) * 40, y, { f: FD, w: 800, z: 60, fit: 760 }); ctx.restore(); });
+    // pills
+    let px = 110; TXT.fTags.forEach((s, i) => { const t0 = (5.2 + i * .7) * B, w = mw(s, FK, 900, 50) + 60, p = spring(lt - t0, ...SPRING.playful);
+      if (lt >= t0) sticker(px + w / 2, 865, w, 84, 42, i === 1 ? YEL : WHITE, { s: lerp(1.3, 1, clamp(p)), sh: 7, ln: 5, a: inv(t0, t0 + .06, lt) }, () => T(s, 0, 17, { f: FK, w: 900, z: 50, al: 'center' }));
+      px += w + 28; });
+    // capsule opening: the lid tips off, the page pops out of the bowl
+    const open = spring(lt - 1.5 * B, ...SPRING.playful), grow = spring(lt - .8 * B, ...SPRING.playful);
+    const lidX = lerp(1520, 1275, open), lidY = lerp(660, 645, open), lidR = lerp(0, -.75, open), pop = 1 - Math.max(0, 1 - open);
+    ctx.save(); ctx.translate(0, (1 - grow) * 200);
+    ctx.save(); ctx.translate(lidX, lidY); ctx.rotate(lidR); ctx.beginPath(); ctx.ellipse(0, 0, 250, 150, 0, Math.PI, TAU); ctx.closePath(); ctx.fillStyle = C.acc; ctx.fill(); ctx.lineWidth = 8; ctx.lineJoin = 'round'; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, 0, 250, 150, 0, Math.PI * 1.12, Math.PI * 1.4); ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, 0, 250, 34, 0, 0, TAU); ctx.fillStyle = '#2632B8'; ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
+    if (lt >= 1.5 * B) fileCard(1520, lerp(820, 690, open), lt);
+    ctx.beginPath(); ctx.ellipse(1520, 800, 250, 140, 0, 0, Math.PI); ctx.closePath(); ctx.fillStyle = YEL; ctx.fill(); ctx.lineWidth = 8; ctx.lineJoin = 'round'; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(1520, 800, 250, 34, 0, Math.PI, TAU); ctx.lineWidth = 8; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.restore();
+  },
+  cues: d => [[.55 * B, 'impact', .8], [1.5 * B, 'stamp', .55], [3 * B, 'blip', 660, .09], [3.8 * B, 'blip', 810, .09], [4.6 * B, 'blip', 960, .09],
+    [5.2 * B, 'stamp', .4], [5.9 * B, 'stamp', .4], [6.6 * B, 'stamp', .4], [d - 1.1, 'riser', 1.1, .16]]
+};
+function cross(x, y, r, c, lw){ ctx.save(); ctx.strokeStyle = c; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x - r, y - r); ctx.lineTo(x + r, y + r); ctx.moveTo(x + r, y - r); ctx.lineTo(x - r, y + r); ctx.stroke(); ctx.restore(); }
+
+// ---------- 4. storyboard ----------
+const TILE = { x0: 110, w: 226, h: 190, gap: 19.7, y: 225 };
+S.storyboard = {
+  draw(lt, d){
+    kicker(TXT.sK, 110, 160, lt, .2, INK);
+    slam(TXT.sH[0], 110, 640, lt, .55 * B, { f: FD, w: 900, z: 116, c: INK, fit: 1700 });
+    slam(TXT.sH[1], 110, 765, lt, .55 * B + .12, { f: FD, w: 900, z: 116, c: INK, fit: 1250 });
+    const fills = [YEL, C.acc, C.alt, WHITE, C.bad, INK, YEL];
+    for (let i = 0; i < 7; i++){
+      const tA = (.5 + i * .2) * B, tF = (2.6 + i * .3) * B, pa = spring(lt - tA, ...SPRING.snappy), pf = spring(lt - tF, ...SPRING.snappy);
+      if (lt < tA) continue; const cx = TILE.x0 + TILE.w / 2 + i * (TILE.w + TILE.gap), rot = (i % 2 ? .025 : -.025), lift = lt >= tF ? pf : 0;
+      sticker(cx, TILE.y + TILE.h / 2, TILE.w, TILE.h, 20, lt >= tF ? fills[i] : WHITE, { rot, s: lerp(.6, 1, clamp(pa)) * (1 + .1 * Math.sin(Math.PI * clamp(lift))), sh: 9, ln: 6, a: inv(tA, tA + .06, lt) }, () => {
+        if (lt < tF){ ctx.setLineDash([12, 10]); ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(22,19,31,.45)'; rp(-90, -62, 180, 124, 12); ctx.stroke(); ctx.setLineDash([]); }
+        else { const f = fills[i], ic = f === INK || f === C.acc ? WHITE : INK;
+          if (i % 3 === 0) dot(0, 6, 42 * pf, ic); else if (i % 3 === 1){ ctx.fillStyle = ic; rp(-70, -24, 140 * pf, 26, 13); ctx.fill(); rp(-70, 22, 96 * pf, 26, 13); ctx.fill(); } else { ctx.fillStyle = ic; ctx.fillRect(-52 * pf, -46, 104 * pf, 92); } }
+        T(String(i + 1).padStart(2, '0'), -TILE.w / 2 + 16, -TILE.h / 2 + 34, { f: FM, w: 700, z: 26, c: lt >= tF && (fills[i] === INK || fills[i] === C.acc) ? WHITE : INK }); }); }
+    rise(TXT.sS[0], 110, 868, lt, 4.6 * B, { f: FK, w: 900, z: 62, fit: 1100 });
+    rise(TXT.sS[1], 110, 936, lt, 4.9 * B, { f: FK, w: 900, z: 62, fit: 1100 });
+    const ts = 5.5 * B, p = spring(lt - ts, ...SPRING.playful), sh = lt > ts ? ring(lt - ts, 12, 40) * 5 : 0;
+    if (lt >= ts){ ctx.save(); ctx.translate(1570 + sh, 865 + sh * .6); ctx.rotate(-.1); ctx.scale(lerp(1.7, 1, clamp(p)), lerp(1.7, 1, clamp(p))); ctx.globalAlpha = inv(ts, ts + .05, lt);
+      rp(-230, -70, 460, 140, 16); ctx.lineWidth = 10; ctx.strokeStyle = C.acc; ctx.stroke(); rp(-214, -54, 428, 108, 10); ctx.lineWidth = 4; ctx.stroke();
+      T(TXT.sStamp, 0, 28, { f: FD, w: 900, z: 84, c: C.acc, al: 'center', fit: 400 }); ctx.restore(); }
+  },
+  cues: d => [[0, 'whoosh', .25, .1], ...[0, 1, 2, 3, 4, 5, 6].map(i => [(2.6 + i * .3) * B, 'blip', 520 + i * 90, .07]), [5.5 * B, 'stamp', .8], [d - 1.1, 'riser', 1.1, .16]]
+};
+
+// ---------- 5. beat ----------
+const STEP = .25 * B, SQ_KEYS = [[0, 1440], [6 * B, 1660], [9 * B, 1500], [10.5 * B, 1690]];   // the spring square: pulled, released, pulled again, released
+S.beat = {
+  draw(lt, d){
+    kicker(TXT.bK, 110, 160, lt, .2, YEL);
+    const { x0, y0, cs, gp } = SEQ, pitch = cs + gp;
+    const step = lt >= B ? Math.floor((lt - B) / STEP) % 16 : -1;
+    SEQ.rows.forEach(([col, on], r) => { for (let s = 0; s < 16; s++){
+      const x = x0 + s * pitch, y = y0 + r * pitch, a = inv(.35 * B + s * .02, .35 * B + s * .02 + .12, lt);
+      ctx.globalAlpha = a; rp(x, y, cs, cs, 14); ctx.fillStyle = 'rgba(255,255,255,.17)'; ctx.fill(); ctx.globalAlpha = 1;
+      if (on.includes(s)){ const tOn = B + s * STEP; if (lt < tOn) continue;
+        const k = Math.floor((lt - tOn) / (4 * B)), dt = lt - (tOn + k * 4 * B), sc = (k === 0 ? spring(dt, ...SPRING.snappy) : 1) * (1 + .2 * Math.exp(-dt * 9));
+        ctx.save(); ctx.translate(x + cs / 2, y + cs / 2); ctx.scale(sc, sc); rp(-cs / 2, -cs / 2, cs, cs, 14); ctx.fillStyle = col; ctx.fill();
+        ctx.globalAlpha = .55 * Math.exp(-dt * 12); ctx.fillStyle = WHITE; ctx.fill(); ctx.restore(); } } });
+    if (step >= 0){ ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fillRect(x0 + step * pitch - gp / 2, y0 - 12, cs + gp, 4 * pitch + 12 - gp + 12);
+      ctx.beginPath(); ctx.moveTo(x0 + step * pitch + cs / 2, y0 - 8); ctx.lineTo(x0 + step * pitch + cs / 2 - 14, y0 - 32); ctx.lineTo(x0 + step * pitch + cs / 2 + 14, y0 - 32); ctx.closePath(); ctx.fillStyle = YEL; ctx.fill(); }
+    // the headline breathes on the beat
+    const bp = lt >= B ? beatPulse(lt) : 0; ctx.save(); ctx.translate(110, 775); ctx.scale(1 + .012 * bp, 1 + .012 * bp); ctx.translate(-110, -775);
+    slam(TXT.bH, 110, 775, lt, .55 * B, { f: FD, w: 900, z: 108, c: WHITE, fit: 1700 }); ctx.restore();
+    rise(TXT.bS1, 110, 855, lt, 3 * B, { f: FK, w: 900, z: 60, c: WHITE, fit: 1250 });
+    rise(TXT.bS2, 110, 930, lt, 8 * B, { f: FK, w: 900, z: 60, c: YEL, fit: 1250 });
+    // spring square on a rail (right column)
+    const pp = spring(lt - 3 * B, ...SPRING.playful), sx = track(lt, SQ_KEYS, ...SPRING.playful), vel = (track(lt + .02, SQ_KEYS, ...SPRING.playful) - sx) / .02;
+    if (lt >= 3 * B){ ctx.globalAlpha = inv(3 * B, 3 * B + .1, lt); ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(1380, 652, 430, 8);
+      dot(1660, 656, 12, WHITE); ctx.strokeStyle = WHITE; ctx.lineWidth = 5; ctx.setLineDash([14, 12]); ctx.beginPath(); ctx.moveTo(1660, 656); ctx.lineTo(sx, 656); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+      sticker(sx, 550, 190, 190, 34, C.alt, { s: lerp(.5, 1, clamp(pp)) * (1 + Math.min(.1, Math.abs(vel) / 6000)), rot: clamp(vel / 9000, -.12, .12), sh: 10, ln: 7, lc: WHITE, shc: INK }); }
+    const t0 = 6.5 * B, pl = spring(lt - t0, ...SPRING.playful);
+    if (lt >= t0) sticker(1580, 315, 440, 150, 40, C.alt, { s: lerp(1.35, 1, clamp(pl)), sh: 8, ln: 6, lc: WHITE, shc: INK, a: inv(t0, t0 + .05, lt) }, () => { T(TXT.bPill[0], 0, 8, { f: FD, w: 900, z: 62, c: WHITE, al: 'center', fit: 400 }); T(TXT.bPill[1], 0, 52, { f: FM, w: 700, z: 34, c: YEL, al: 'center', ls: 2 }); });
+  },
+  cues: d => [[.55 * B, 'slam', .7], [6 * B, 'whoosh', .3, .12], [6.5 * B, 'stamp', .6], [9 * B, 'whoosh', .25, .1], [d - 1.1, 'riser', 1.1, .16]]
+};
+
+// ---------- 6. score ----------
+S.score = {
+  draw(lt, d){
+    kicker(TXT.nK, 110, 160, lt, .2, INK);
+    slam(TXT.nH, 110, 275, lt, .55 * B, { f: FD, w: 900, z: 88, fit: 1700 });
+    // hero: 9 / 9 counts up and lands
+    const n = Math.round(9 * eO(inv(1.5 * B, 2.8 * B, lt))), s = `${n} / 9`, hp = spring(lt - 1.5 * B, ...SPRING.playful);
+    if (lt >= 1.5 * B){ ctx.save(); ctx.translate(110, 645); ctx.scale(lerp(1.3, 1, clamp(hp)), lerp(1.3, 1, clamp(hp)));
+      T(s, 10, 10, { f: FD, w: 900, z: 340, c: WHITE }); T(s, 0, 0, { f: FD, w: 900, z: 340, c: INK }); ctx.restore(); }
+    rise(TXT.nCap[0], 110, 745, lt, 3 * B, { f: FD, w: 800, z: 70, fit: 900 });
+    rise(TXT.nCap[1], 110, 830, lt, 3.3 * B, { f: FD, w: 800, z: 70, fit: 900 });
+    // honest companion: time per piece, one scale (0–45 min)
+    TXT.nLab.forEach((s2, i) => rise(s2, 1090, 415 + i * 60, lt, 3.5 * B, { f: FK, w: 900, z: 56, fit: 720 }));
+    ctx.fillStyle = INK; ctx.globalAlpha = inv(3.5 * B, 3.5 * B + .2, lt); ctx.fillRect(1086, 520, 8, 220); ctx.globalAlpha = 1;
+    [[13, 4.5, WHITE, 530], [43, 6, INK, 640]].forEach(([v, tb, col, y]) => { const p = spring(lt - tb * B, ...SPRING.default); if (lt < tb * B) return;
+      const w = Math.max(8, 420 * v / 45 * p); rp(1094, y, w, 84, 14); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 6; ctx.strokeStyle = INK; ctx.stroke();
+      T(`${v}${TXT.nUnit}`, 1094 + w + 20, y + 62, { f: FD, w: 900, z: 64, a: inv(tb * B, tb * B + .1, lt) }); });
+    const tp = 7.5 * B, pp = spring(lt - tp, ...SPRING.playful);
+    if (lt >= tp) sticker(1380, 830, 500, 100, 50, WHITE, { rot: -.05, s: lerp(1.4, 1, clamp(pp)), sh: 9, ln: 6, a: inv(tp, tp + .05, lt) }, () => T(TXT.nPill, 0, 19, { f: FD, w: 900, z: 56, al: 'center', fit: 440 }));
+  },
+  cues: d => [[.55 * B, 'slam', .6], [1.5 * B, 'slam', .75], [1.55 * B, 'roll', 1.3 * B, 9], [4.5 * B, 'blip', 660, .09], [6 * B, 'blip', 990, .1], [7.5 * B, 'stamp', .6], [d - 1.1, 'riser', 1.1, .14]]
+};
+
+// ---------- 7. prize ----------
+S.prize = {
+  draw(lt, d){
+    kicker(TXT.pK, 110, 130, lt, .2, INK);
+    slam(TXT.pH, 110, 265, lt, .55 * B, { f: FD, w: 900, z: 130, c: INK, fit: 1400 });
+    // the prize ticket drops in and settles
+    const tp = spring(lt - 1.5 * B, ...SPRING.playful), tx = 110, ty = 320, tw = 1140, th = 290;
+    if (lt >= 1.5 * B){
+      ctx.save(); ctx.translate(tx + tw / 2, ty + th / 2 - (1 - tp) * 750); ctx.rotate((1 - tp) * -.14); ctx.translate(-tw / 2, -th / 2);
+      rp(14, 14, tw, th, 36); ctx.fillStyle = INK; ctx.fill();
+      rp(0, 0, tw, th, 36); ctx.fillStyle = C.acc; ctx.fill(); ctx.save(); rp(0, 0, tw, th, 36); ctx.clip();
+      ctx.fillStyle = WHITE; ctx.fillRect(890, 0, 250, th); ctx.restore();
+      rp(0, 0, tw, th, 36); ctx.lineWidth = 8; ctx.lineJoin = 'round'; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.save(); ctx.setLineDash([12, 12]); ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.beginPath(); ctx.moveTo(890, 26); ctx.lineTo(890, th - 26); ctx.stroke(); ctx.restore();
+      dot(890, 0, 26, YEL); dot(890, th, 26, YEL); ctx.beginPath(); ctx.arc(890, 0, 26, 0, Math.PI); ctx.lineWidth = 8; ctx.strokeStyle = INK; ctx.stroke(); ctx.beginPath(); ctx.arc(890, th, 26, Math.PI, TAU); ctx.stroke();
+      T(TXT.pT[0], 56, 122, { f: FD, w: 800, z: 62, c: WHITE, fit: 800 });
+      T(TXT.pT[1], 56, 218, { f: FD, w: 900, z: 84, c: YEL, fit: 800 });
+      const ta = 5 * B, tt = spring(lt - ta, ...SPRING.playful);
+      ctx.save(); ctx.translate(1015, 150); ctx.scale(lerp(.6, 1, clamp(tt)), lerp(.6, 1, clamp(tt))); ctx.globalAlpha = inv(ta, ta + .05, lt);
+      T(TXT.pTab[0], 0, -12, { f: FK, w: 900, z: 46, al: 'center', fit: 205 }); T(TXT.pTab[1], 0, 42, { f: FK, w: 900, z: 46, c: C.acc, al: 'center', fit: 205 }); ctx.restore();
+      ctx.restore(); }
+    // install command, typed on three lines
+    if (lt >= 3 * B){ ctx.globalAlpha = inv(3 * B, 3 * B + .1, lt); rp(120, 672, 1140, 250, 24); ctx.fillStyle = 'rgba(22,19,31,.9)'; ctx.fill(); rp(110, 662, 1140, 250, 24); ctx.fillStyle = INK; ctx.fill(); ctx.globalAlpha = 1;
+      T(typeOn(TXT.pCmd[0], inv(3.1 * B, 3.8 * B, lt)), 150, 740, { f: FM, w: 700, z: 58, c: YEL, fit: 1060 });
+      T(typeOn(TXT.pCmd[1], inv(3.8 * B, 4.6 * B, lt)), 150, 812, { f: FM, w: 700, z: 58, c: WHITE, fit: 1060 });
+      T(typeOn(TXT.pCmd[2], inv(4.6 * B, 5.2 * B, lt)), 150, 884, { f: FM, w: 700, z: 58, c: WHITE, fit: 1060 }); }
+    { const w = mw(TXT.pSub, FK, 900, 44) + 72, t0 = 4 * B, p = spring(lt - t0, ...SPRING.playful);
+      if (lt >= t0) sticker(1800 - w / 2, 205, w, 78, 39, WHITE, { s: lerp(1.3, 1, clamp(p)), sh: 8, ln: 6, a: inv(t0, t0 + .06, lt) }, () => T(TXT.pSub, 0, 15, { f: FK, w: 900, z: 44, al: 'center' })); }
+    machine(1630, 514, .8, lt, { jig: 0, knob: lt * .5 });
+  },
+  cues: d => [[.55 * B, 'slam', .7], [1.9 * B, 'impact', .8], [2.1 * B, 'bell'], [3.1 * B, 'blip', 880, .07], [5 * B, 'stamp', .55]]
+};
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [
+  ['coin', 6, 'INSERT COIN'], ['hopper', 8, 'HOPPER'], ['file', 8, 'ONE FILE'], ['storyboard', 8, 'STORYBOARD'],
+  ['beat', 12, 'ON THE BEAT'], ['score', 10, 'SCORECARD'], ['prize', 12, 'PRIZE']
+];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+  // nothing to measure once: chips and pills measure their own text each frame
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

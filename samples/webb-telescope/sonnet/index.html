@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>James Webb Space Telescope — a 45-second explainer</title>
+<meta name="description" content="A 45-second motion graphic on the James Webb Space Telescope. Every figure comes from NASA's public Webb pages. English and Korean.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="James Webb Space Telescope — a 45-second explainer">
+<meta property="og:description" content="18 gold mirrors, a tennis-court sunshield and 1.5 million km of distance, in 45 seconds. Figures from NASA.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#070A14">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap">
+<style>.cta .led{box-shadow:none!important}</style>
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const CFG = {
+  bpm: 96,                                    // every timing below is written in beats (B) so picture and sound stay locked
+  colors: { bg: '#070A14', panel: '#0F1526', line: '#242E48', ink: '#F3EEE2', dim: '#B0BAD0', grid: '#151C31',
+            acc: '#F0B74A', accHi: '#FFE0A0', alt: '#6EA8FF', bad: '#FF7A5C' },   // acc = the mirror's gold, alt = cold side, bad = hot side
+  fonts: { sans: '"Noto Sans KR","Apple SD Gothic Neo",sans-serif',
+           display: '"Space Grotesk","Noto Sans KR",sans-serif',
+           mono: '"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit: false,                           // calm, museum-lobby tone: no RGB split
+  hudTitle: 'JAMES WEBB SPACE TELESCOPE · NASA',   // masthead, top-left
+  hudMeta: t => '',                           // unused: no bottom-right label in this style
+  cta: { href: 'https://science.nasa.gov/mission/webb/', newTab: true },
+  endCta: { x: 110, y: 560, w: 900, h: 290 }, // the URL plaque on the last frame
+  endCtaBeat: 3.5,                            // beats into the last scene when the plaque has settled and the link may appear
+  posterT: 2.6,                               // first-visit poster frame: title + mirror + "13.5 billion years", left-centre empty for the play button
+  watchKey: 'webb-jwst-explainer-45s-watched',
+  music: { groove: 'soft', liteScenes: ['precision', 'orbit'], arpScenes: ['payoff', 'close'], tailBeats: 7,
+           roots: [73.42, 58.27, 87.31, 65.41],   // Dm – Bb – F – C
+           chords: [[293.66, 349.23, 440], [233.08, 293.66, 349.23], [349.23, 440, 523.25], [261.63, 329.63, 392]] },
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+I18N.en = {
+  ui: { title: 'James Webb Space Telescope', play: 'Play with sound', playsub: 'click or press Space', playsubtouch: 'tap to play', replay: 'Replay',
+        rotate: '↻ Turn your phone sideways for a bigger view', fullscreen: '⤢ Full screen', scrub: 'Playback position',
+        canvas: 'Motion graphic about the James Webb Space Telescope. Click to play or pause, Space to play, arrow keys to seek, M to mute, F for full screen',
+        ctaLab: 'NASA · WEBB', ctaSub: 'science.nasa.gov/mission/webb/', ctaGo: 'Open', endTag: 'Open the NASA page', lang: '한국어' },
+  k: ['', 'STEP 02 · LIGHT', 'STEP 03 · OPTICS', 'STEP 04 · ALIGN', 'STEP 05 · SHIELD', 'STEP 06 · ORBIT', 'STEP 07 · TRIP', 'STEP 08 · LOOK', 'STEP 09 · EXPLORE'],
+  // 1 open
+  t1: 'James Webb', t2: 'Space Telescope', lb: 'Looking back over', n1: '13.5', u1: 'billion years',
+  // 2 infrared
+  h2: 'Beyond the red end of the rainbow', p2: 'Webb sees from red light deep into the infrared.', vis: 'visible light', ir: 'infrared', unit2: 'microns',
+  // 3 mirror
+  h3a: '18 gold mirrors,', h3b: 'working as one', p3a: 'Each segment is 1.32 m across.', dim3: '1.32 m',
+  b3: [["Hubble's mirror", 2.4, '2.4 m'], ["Webb's mirror", 6.5, '6.5 m']],
+  // 4 precision
+  h4a: 'Aligned to', h4b: '1/10,000', h4c: 'of a hair', p4a: 'All 18 segments,', p4b: 'lined up as one mirror.',
+  hair: "A hair's thickness", fr: ['1/10', '1/100', '1/1,000', '1/10,000'],
+  // 5 sunshield
+  h5a: 'A shield the size', h5b: 'of a tennis court', p5a: '5 layers, each thinner than a hair', p5b: 'Keeps Webb under 50 K', p5c: '(−223 °C · −370 °F)',
+  spf: 'Like SPF 1 million', spfc: "NASA's comparison", dim5: '21.2 × 14.2 m', sun: 'Sun side', cold: 'Cold side',
+  // 6 orbit
+  big6: '1.5', unit6: 'million km', from6: 'from Earth', hub: 'Hubble orbits just 560 km up', hub2: 'Zoomed in on Earth',
+  earth: 'Earth', webb: 'Webb at L2', l2: 'the second Lagrange point', toSun: 'to the Sun',
+  // 7 trip
+  h7a: 'Launched Dec 25, 2021', h7b: 'Arrived Jan 24, 2022', about: 'about', days: 'days', moon: "Moon's orbit · day 3", d0: 'Launch', d1: 'Arrival at L2',
+  // 8 payoff
+  over: 'over', big8: '13.5', unit8: 'billion years', back8: 'back in time', h8: 'The first galaxies', p8: 'born after the Big Bang', today: 'Today', fg: 'first galaxies',
+  // 9 close
+  h9: 'Explore Webb', p9a: 'Every figure here comes from', p9b: "NASA's public Webb pages.", plq: 'READ MORE', url: 'science.nasa.gov/mission/webb/'
+};
+I18N.ko = {
+  ui: { title: '제임스 웹 우주망원경', play: '사운드와 함께 재생', playsub: '클릭 또는 스페이스', playsubtouch: '탭해서 재생', replay: '다시 재생',
+        rotate: '↻ 가로로 돌리면 크게 볼 수 있어요', fullscreen: '⤢ 전체 화면', scrub: '재생 위치',
+        canvas: '제임스 웹 우주망원경 모션그래픽. 클릭하면 재생과 정지, 스페이스 재생, 방향키 이동, M 음소거, F 전체 화면',
+        ctaLab: 'NASA · WEBB', ctaSub: 'science.nasa.gov/mission/webb/', ctaGo: '열기', endTag: 'NASA 페이지 열기', lang: 'ENGLISH' },
+  k: I18N.en.k,
+  t1: '제임스 웹', t2: '우주망원경', lb: '시간을 거슬러', n1: '135', u1: '억 년 넘게',
+  h2: '무지개의 붉은 끝 너머', p2: '웹은 붉은 빛에서 적외선 깊은 곳까지 봅니다.', vis: '눈에 보이는 빛', ir: '적외선', unit2: '마이크로미터',
+  h3a: '황금 거울 18장이', h3b: '하나로 움직입니다', p3a: '조각 하나의 지름은 1.32 m.', dim3: '1.32 m',
+  b3: [['허블의 거울', 2.4, '2.4 m'], ['웹의 거울', 6.5, '6.5 m']],
+  h4a: '머리카락 굵기의', h4b: '1/10,000', h4c: '정밀도로 맞춥니다', p4a: '18개 조각 모두를', p4b: '하나의 거울처럼 정렬합니다.',
+  hair: '머리카락 굵기', fr: I18N.en.fr,
+  h5a: '테니스장만 한', h5b: '햇빛 가리개', p5a: '머리카락보다 얇은 5겹', p5b: '웹을 50 K 아래로 지켜 줍니다', p5c: '(−223 °C)',
+  spf: 'SPF 100만 수준', spfc: 'NASA의 비유', dim5: '21.2 × 14.2 m', sun: '태양 쪽', cold: '차가운 쪽',
+  big6: '150', unit6: '만 km', from6: '지구에서', hub: '허블은 상공 560 km를 돕니다', hub2: '지구를 확대한 모습',
+  earth: '지구', webb: 'L2의 웹', l2: '제2 라그랑주점', toSun: '태양 쪽',
+  h7a: '2021년 12월 25일 발사', h7b: '2022년 1월 24일 도착', about: '약', days: '일', moon: '달 궤도 · 3일째', d0: '발사', d1: 'L2 도착',
+  over: '', big8: '135', unit8: '억 년 넘게', back8: '거슬러 올라갑니다', h8: '최초의 은하', p8: '빅뱅 뒤에 태어난 은하들', today: '오늘', fg: '최초의 은하',
+  h9: '웹을 더 만나보세요', p9a: '화면 속 수치는 모두', p9b: 'NASA 웹 공개 페이지에서 가져왔습니다.', plq: '더 알아보기', url: 'science.nasa.gov/mission/webb/'
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+// space observatory: near-black navy, a slowly swaying starfield, masthead + page counter only (no technical HUD),
+// and a hexagonal iris between scenes that opens like the mirror segments. Flat fills; glow only on light sources.
+function hexPath(x, y, r, rot = 0, keep = false){   // flat-top hexagon; keep = append to the current path (for evenodd clips)
+  if (!keep) ctx.beginPath();
+  for (let k = 0; k < 6; k++){ const a = rot + k * Math.PI / 3, px = x + r * Math.cos(a), py = y + r * Math.sin(a); k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+  ctx.closePath();
+}
+const STARS = [0, 1].map(L => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d'), n = L ? 46 : 120;
+  for (let i = 0; i < n; i++){ const h = k => hash(i * 7 + k + L * 1000), x = Math.floor(h(1) * W), y = Math.floor(h(2) * H), s = L ? 2 + (h(3) > .75 ? 1 : 0) : 1 + (h(3) > .9 ? 1 : 0), q = h(4);
+    g.fillStyle = q > .92 ? rgba(C.acc, .35 + h(5) * .3) : q < .1 ? rgba(C.alt, .3 + h(5) * .3) : rgba(C.ink, (L ? .28 : .14) + h(5) * .28); g.fillRect(x, y, s, s); }
+  return c; });
+const VIG = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const r = g.createRadialGradient(W / 2, H / 2, H * .45, W / 2, H / 2, H * 1.05); r.addColorStop(0, 'rgba(0,0,0,0)'); r.addColorStop(1, 'rgba(0,0,0,.5)'); g.fillStyle = r; g.fillRect(0, 0, W, H); return c; })();
+function drawBg(t){
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  // one sway per film length, so the loop restarts on exactly the same stars
+  [45, 110].forEach((amp, L) => { const off = amp * Math.sin(TAU * t / DUR); ctx.drawImage(STARS[L], off, 0); ctx.drawImage(STARS[L], off - Math.sign(off || 1) * W, 0); });
+}
+function overlay(t){ ctx.drawImage(VIG, 0, 0); }
+function hud(t, sc){
+  hexPath(118, 64, 9); ctx.fillStyle = C.acc; ctx.fill();
+  T(CFG.hudTitle, 140, 70, { f: FM, w: 700, z: 17, c: C.dim, ls: 3 });
+  T(`${String((sc.i > 0 && t - sc.t0 < E - .05 ? sc.i : sc.i + 1)).padStart(2, '0')} / ${String(SC.length).padStart(2, '0')}`, W - 110, 70, { f: FM, w: 700, z: 17, c: C.dim, ls: 3, al: 'right' });
+  ctx.fillStyle = rgba(C.ink, .14); ctx.fillRect(110, 92, W - 220, 1);
+}
+// two cuts, both made of hexagons: an iris (the outgoing scene keeps playing outside a growing hexagon) on most cuts, and a sweep of
+// hexagonal tiles that open left → right on cuts 3, 5 and 7
+const TILES = (() => { const R = 104, a = [];
+  for (let c = -1; c <= 13; c++) for (let r = -1; r <= 7; r++){ const x = c * 1.5 * R, y = r * Math.sqrt(3) * R + (c & 1 ? Math.sqrt(3) * R / 2 : 0); a.push({ x, y, th: clamp(x / W) * .6 + hash(c * 31 + r * 7) * .14 }); }
+  return { R, a }; })();
+function transition(sc, lt){
+  const tiles = [3, 5, 7].includes(sc.i), D = tiles ? .5 : .55; if (lt >= D) return;
+  const pv = SC[sc.i - 1], t = sc.t0 + lt, u = lt / D;
+  const old = () => { drawBg(t); try { S[pv.id].draw(pv.d + lt, pv.d, t); } catch (e){} overlay(t); };
+  if (tiles){
+    if (u >= .95) return;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H);
+    for (const q of TILES.a){ const s = eO(inv(q.th, q.th + .25, u)); if (s > 0) hexPath(q.x, q.y, TILES.R * s, 0, true); }
+    ctx.clip('evenodd'); old(); ctx.restore();
+    ctx.save(); ctx.lineWidth = 3;
+    for (const q of TILES.a){ const p = inv(q.th, q.th + .25, u); if (p <= 0 || p >= 1) continue; ctx.strokeStyle = rgba(C.acc, Math.sin(Math.PI * p) * .9); hexPath(q.x, q.y, TILES.R * eO(p)); ctx.stroke(); }
+    ctx.restore(); return;
+  }
+  const p = eIO(u), R = lerp(0, 1500, p), rot = lerp(0, .52, p);
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); hexPath(W / 2, H / 2, R, rot, true); ctx.clip('evenodd'); old(); ctx.restore();
+  ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = rgba(C.acc, (1 - p) * .9); hexPath(W / 2, H / 2, R, rot); ctx.stroke();
+  ctx.lineWidth = 2; ctx.strokeStyle = rgba(C.accHi, (1 - p) * .5); hexPath(W / 2, H / 2, R * .93, rot); ctx.stroke(); ctx.restore();
+}
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+// Webb's primary mirror: 18 hexagonal segments = ring 1 (6) + ring 2 (12), no centre piece. The 3 + 3 segments in the far left and right
+// columns (|q| = 2) are the wings that fold. Flat-top hexagons in axial coordinates; x, y are in units of the circumradius.
+const MIR = (() => { const cells = [];
+  for (let q = -2; q <= 2; q++) for (let r = -2; r <= 2; r++){ const ring = Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r)); if (ring < 1 || ring > 2) continue;
+    const x = 1.5 * q, y = Math.sqrt(3) * (r + q / 2); cells.push({ q, r, ring, wing: Math.abs(q) === 2, x, y, ang: Math.atan2(y, x) }); }
+  const up = a => (a + Math.PI / 2 + TAU) % TAU;
+  cells.sort((a, b) => a.ring - b.ring || up(a.ang) - up(b.ang));
+  let n = 0; cells.forEach(h => { h.ci = h.wing ? -1 : n++; });   // ci = build order of the 12 centre segments
+  return cells; })();
+// a two-arm spiral of dots for the "first galaxies" picture, seeded so every frame is identical
+const GAL = Array.from({ length: 620 }, (_, i) => { const u = hash(i * 3 + 1), r = Math.sqrt(u), arm = i % 2, j = (hash(i * 5 + 2) - .5) * .55;
+  return { r, a0: arm * Math.PI + r * 3.4 + j, s: 1.5 + hash(i * 7 + 3) * 3, m: hash(i * 11 + 4) }; });
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+// ---- shared helpers (Latin headlines in Space Grotesk, Korean in Noto Sans KR 900; numbers always Space Grotesk)
+const HF = LANG === 'ko' ? FK : FD, HW = LANG === 'ko' ? 900 : 700;
+const hd = (z, o = {}) => ({ f: HF, w: HW, z, ...o });
+const nm = (z, o = {}) => ({ f: FD, w: 700, z, ...o });
+const bdy = (z = 38, o = {}) => ({ f: FK, w: 500, z, c: C.dim, ...o });
+const E = .36;   // entrances start after the iris has opened a little, so they are seen landing
+function slide(s, x, y, lt, t0, o = {}){ const p = spring(lt - t0, ...SPRING.snappy); if (p <= 0) return; T(s, x + (1 - p) * 90, y, { ...o, a: (o.a ?? 1) * inv(t0, t0 + .18, lt) }); }   // a spring slide in from the right, for the headline of one scene
+function sub(s, lt, t0 = 0){ rise(s, 110, 190, lt, t0, { f: FK, w: 700, z: 30, c: C.acc, ls: 4 }, .4, 14); }
+function mixHex(a, b, t){ const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), Z = p(b); return '#' + A.map((v, i) => Math.round(lerp(v, Z[i], t)).toString(16).padStart(2, '0')).join(''); }
+// the mirror: f(h, i) → null (not there yet) or { a, s | sx+px, dx, dy, lit, c }
+function drawMirror(cx, cy, R, f){
+  MIR.forEach((h, i) => { const st = f(h, i); if (!st || st.a <= 0) return;
+    const x = cx + h.x * R + (st.dx || 0), y = cy + h.y * R + (st.dy || 0);
+    ctx.save(); ctx.globalAlpha *= st.a;
+    if (st.px != null){ const px = cx + st.px; ctx.translate(px, y); ctx.scale(Math.max(.001, st.sx), 1); ctx.translate(-px, -y); }
+    else if (st.s != null && st.s !== 1){ ctx.translate(x, y); ctx.scale(st.s, st.s); ctx.translate(-x, -y); }
+    hexPath(x, y, R * .94); ctx.fillStyle = st.c || C.acc; ctx.fill();
+    hexPath(x, y, R * .66); ctx.fillStyle = `rgba(255,244,214,${.10 + .55 * (st.lit || 0)})`; ctx.fill();
+    hexPath(x, y, R * .94); ctx.strokeStyle = 'rgba(90,62,10,.55)'; ctx.lineWidth = Math.max(1.5, R / 30); ctx.stroke();
+    ctx.restore(); });
+}
+const sweepLit = (h, R, sw, w = 130) => 1 - clamp(Math.abs((h.x * .8 + h.y * .6) * R - sw) / w);   // a diagonal glint moving across the segments
+
+const GAP = LANG === 'ko' ? 8 : 26;   // Korean writes the unit right after the number (135억), Latin scripts leave a space
+function chip(str, x, y, o){ const w = mw(str, o.f || FK, o.w || 500, o.z), a = o.a ?? 1; if (a > 0){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = C.bg; ctx.fillRect(x - w / 2 - 12, y - o.z * .82, w + 24, o.z * 1.05); ctx.restore(); } T(str, x, y, { ...o, al: 'center' }); }
+
+// ---- 1 · open (6 beats): title + the mirror assembling; "13.5 billion years" lands at beat 3 (1.9 s)
+S.open = {
+  draw(lt, d){
+    const R = 86, cx = 1400, cy = 560, sw = lerp(-520, 520, inv(4 * B, 5.6 * B, lt));
+    drawMirror(cx, cy, R, (h, i) => { const t0 = h.ring === 1 ? i * B / 8 : B + (i - 6) * B / 12, p = spring(lt - t0, ...SPRING.snappy); if (p <= 0) return null;
+      const out = 260 * (1 - p); return { a: inv(t0, t0 + .1, lt), s: lerp(.55, 1, p), dx: Math.cos(h.ang) * out, dy: Math.sin(h.ang) * out, lit: sweepLit(h, R, sw) }; });
+    rise(TXT.t1, 110, 255, lt, .05, hd(96, { fit: 900 }));
+    rise(TXT.t2, 110, 350, lt, .05 + B / 4, hd(96, { fit: 900 }));
+    rise(TXT.lb, 110, 750, lt, 2 * B, bdy(58, { fit: 800 }));
+    const wn = mw(TXT.n1, FD, 700, 150);
+    rise(TXT.n1, 110, 885, lt, 3 * B, nm(150, { c: C.acc }));
+    rise(TXT.u1, 110 + wn + GAP, 885, lt, 3 * B + .08, hd(64, { c: C.acc, fit: 900 - wn }));
+    ctx.fillStyle = C.acc; ctx.fillRect(110, 910, (wn + GAP) * spring(lt - 3 * B, ...SPRING.heavy), 6);
+  },
+  cues: d => [[0, 'power'], [0, 'blip', 523, .05], [B, 'blip', 659, .05], [3 * B, 'bell'], [3 * B, 'blip', 988, .05], [4 * B, 'whoosh', .5, .06]]
+};
+
+// ---- 2 · infrared (8 beats): the rainbow, then a gold band that starts inside its red end and runs out into the dark
+const XL = l => 110 + 1700 * Math.log(l / .4) / Math.log(75);   // log wavelength axis, 0.4 → 30 µm across 1700 px
+S.infrared = {
+  draw(lt, d){
+    sub(TXT.k[1], lt, E - .05);
+    rise(TXT.h2, 110, 320, lt, E, hd(100, { fit: 1700 }));
+    rise(TXT.p2, 110, 405, lt, B, bdy(58, { fit: 1700 }));
+    const x7 = XL(.7), ty = 560, th = 92, wp = eO(inv(2 * B, 3.5 * B, lt));
+    if (wp > 0){
+      ctx.save(); ctx.beginPath(); ctx.rect(110, ty - 4, 1700 * wp, th + 8); ctx.clip();
+      ctx.fillStyle = C.panel; ctx.fillRect(110, ty, 1700, th); ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(111, ty + 1, 1698, th - 2);
+      const g = ctx.createLinearGradient(110, 0, x7, 0);
+      [['#8A5CFF', 0], ['#3F7BFF', .2], ['#2FD0D0', .34], ['#5BE07A', .48], ['#F5E050', .6], ['#FF9A3C', .72], ['#FF4B3A', .87], ['#B02A22', 1]].forEach(([c, s]) => g.addColorStop(s, c));
+      ctx.fillStyle = g; ctx.fillRect(110, ty, x7 - 110, th); ctx.restore();
+      T(TXT.vis, 110, ty - 22, bdy(50, { a: wp, fit: 420 })); T(TXT.ir, x7 + 260, ty - 22, bdy(50, { a: inv(5 * B, 5.5 * B, lt) })); }
+    const bp = spring(lt - 4 * B, 40, 13), bx0 = XL(.6), bx1 = lerp(bx0, XL(28.5), clamp(bp)), a4 = inv(4 * B, 4.4 * B, lt);
+    if (bp > 0){
+      ctx.save(); ctx.globalAlpha = a4; ctx.strokeStyle = C.acc; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(bx0, 680); ctx.lineTo(bx0, ty + 8); ctx.stroke(); ctx.restore();
+      ctx.fillStyle = C.acc; ctx.fillRect(bx0, 680, Math.max(0, bx1 - bx0), 64); dot(bx1, 712, 13, C.accHi);
+      T('0.6', bx0, 806, nm(56, { c: C.acc, al: 'center', a: a4 }));
+      T('28.5', XL(28.5) + 20, 806, nm(56, { c: C.acc, al: 'right', a: inv(6 * B, 6.4 * B, lt) })); }
+    const cv = .6 + (28.5 - .6) * clamp(bp), s1 = '0.6 – ' + cv.toFixed(1), w0 = mw('0.6 – 28.5', FD, 700, 120);
+    const ca = inv(2 * B, 2.4 * B, lt); if (ca > 0){ T(s1, 110, 940, nm(120, { c: C.acc, a: ca })); T(TXT.unit2, 110 + w0 + 30, 940, hd(64, { c: C.ink, a: ca, fit: 560 })); }
+  },
+  cues: d => [[2 * B, 'whoosh', .6, .08], [4 * B, 'scan', 1.3, .06], [4 * B, 'roll', 1.3, 10], [6 * B, 'blip', 1175, .06]]
+};
+
+// ---- 3 · mirror (10 beats): 12 centre segments snap together, 3 + 3 wings unfold, then Hubble vs Webb on one linear scale
+S.mirror = {
+  draw(lt, d){
+    const R = 80, cx = 1400, cy = 590, sw = lerp(-450, 450, inv(9 * B, 9.8 * B, lt));
+    sub(TXT.k[2], lt, E - .05);
+    rise(TXT.h3a, 110, 320, lt, E, hd(100, { fit: 820 }));
+    rise(TXT.h3b, 110, 428, lt, E + B / 4, hd(100, { fit: 820 }));
+    rise(TXT.p3a, 110, 520, lt, 5 * B, bdy(56, { c: C.ink, fit: 830 }));
+    drawMirror(cx, cy, R, (h, i) => {
+      if (h.wing){ const p = spring(lt - 4 * B, ...SPRING.snappy); if (p <= .01) return null; return { a: 1, sx: p, px: Math.sign(h.x) * 2 * R, lit: sweepLit(h, R, sw) }; }
+      const t0 = B + h.ci * B / 8, p = spring(lt - t0, ...SPRING.snappy); if (p <= 0) return null;
+      return { a: inv(t0, t0 + .1, lt), s: lerp(.4, 1, p), lit: sweepLit(h, R, sw) }; });
+    const dp = inv(5 * B, 5 * B + .2, lt);   // flat-to-flat dimension on the top segment
+    if (dp > 0){ const hy = cy - Math.sqrt(3) * 2 * R, hh = Math.sqrt(3) * R * .94 / 2;
+      ctx.save(); ctx.globalAlpha = dp; ctx.strokeStyle = C.bg; ctx.lineWidth = 3; ctx.beginPath();
+      ctx.moveTo(cx, hy - hh); ctx.lineTo(cx, hy + hh); ctx.moveTo(cx - 14, hy - hh); ctx.lineTo(cx + 14, hy - hh); ctx.moveTo(cx - 14, hy + hh); ctx.lineTo(cx + 14, hy + hh); ctx.stroke(); ctx.restore();
+      T(TXT.dim3, cx, hy - hh - 20, nm(48, { c: C.accHi, al: 'center', a: dp })); }
+    TXT.b3.forEach(([lab, v, shown], k) => { const t0 = (7 + k) * B, p = spring(lt - t0, ...SPRING.default), a = inv(t0 - .15, t0, lt); if (a <= 0) return;
+      const y = 685 + k * 140, w = Math.max(6, 780 * v / 6.5 * p), col = k ? C.acc : C.dim;
+      T(lab, 110, y, bdy(54, { a, c: k ? C.ink : C.dim })); ctx.globalAlpha = a; ctx.fillStyle = col; ctx.fillRect(110, y + 20, w, 46); ctx.globalAlpha = 1;
+      T(shown, 110 + w + 18, y + 62, nm(64, { c: k ? C.acc : C.ink, a })); });
+  },
+  cues: d => [[B, 'blip', 523, .05], [2 * B, 'blip', 659, .05], [4 * B, 'whoosh', .35, .1], [5 * B, 'blip', 1047, .06],
+              [7 * B, 'blip', 740, .06], [8 * B, 'correct'], [9 * B, 'whoosh', .4, .06]]
+};
+
+// ---- 4 · precision (8 beats): a hair's thickness cut in tenths, four times over, down to 1/10,000
+S.precision = {
+  draw(lt, d){
+    const TX = 1010;
+    sub(TXT.k[3], lt, E - .05);
+    slide(TXT.h4a, TX, 320, lt, E, hd(88, { fit: 800 }));
+    slide(TXT.h4b, TX, 458, lt, E + B / 4, hd(132, { c: C.acc, fit: 800 }));
+    slide(TXT.h4c, TX, 568, lt, E + B / 2, hd(88, { fit: 800 }));
+    rise(TXT.p4a, TX, 670, lt, B, bdy(56, { c: C.ink, fit: 800 }));
+    rise(TXT.p4b, TX, 738, lt, B, bdy(56, { c: C.ink, fit: 800 }));
+    const X0 = 130, BW = 700, BH = 52, HI = [7, 2, 6, 4], SG = BW / 10, rowY = k => 300 + k * 150;
+    for (let k = 0; k < 4; k++){
+      const t0 = (1 + k) * B, p = spring(lt - t0, ...SPRING.default), y = rowY(k); if (p <= 0.005) continue;
+      const a = inv(t0, t0 + .15, lt), xh = X0 + HI[k] * SG;
+      if (k < 3){ const pn = spring(lt - (2 + k) * B, ...SPRING.default);   // funnel from the highlighted tenth to the next, full-width row
+        if (pn > 0){ ctx.save(); ctx.globalAlpha = pn; ctx.fillStyle = rgba(C.acc, .10); ctx.beginPath(); ctx.moveTo(xh, y + BH); ctx.lineTo(xh + SG - 4, y + BH); ctx.lineTo(X0 + BW, rowY(k + 1)); ctx.lineTo(X0, rowY(k + 1)); ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = rgba(C.acc, .55); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xh, y + BH); ctx.lineTo(X0, rowY(k + 1)); ctx.moveTo(xh + SG - 4, y + BH); ctx.lineTo(X0 + BW, rowY(k + 1)); ctx.stroke(); ctx.restore(); } }
+      ctx.save(); ctx.globalAlpha = a; ctx.translate(X0, y); ctx.scale(p, 1);
+      for (let s = 0; s < 10; s++){ ctx.fillStyle = s === HI[k] ? C.acc : k === 0 ? '#CDB894' : rgba(C.ink, .2); ctx.fillRect(s * SG, 0, SG - 4, BH); }
+      ctx.restore();
+      if (k === 3 && lt >= 5 * B){ const pop = 1 + .5 * Math.sin(Math.PI * inv(5 * B, 5 * B + .5, lt)), cxh = xh + (SG - 4) / 2;   // the last tenth pops
+        ctx.save(); ctx.translate(cxh, y + BH / 2); ctx.scale(pop, pop); ctx.fillStyle = C.accHi; ctx.fillRect(-(SG - 4) / 2, -BH / 2, SG - 4, BH); ctx.restore(); }
+      if (k === 0) T(TXT.hair, X0, y - 24, bdy(46, { a, fit: 460 }));
+      chip(TXT.fr[k], xh + (SG - 4) / 2, y - 22, nm(k === 3 ? 64 : 52, { c: C.acc, a }));   // a bg-coloured chip keeps the funnel lines off the label
+    }
+    const sw = lerp(-120, 120, inv(7 * B, 8 * B, lt));
+    drawMirror(TX + 90, 862, 18, (h, i) => ({ a: inv(B + i * .03, B + i * .03 + .15, lt), s: 1, lit: sweepLit(h, 18, sw, 40) }));
+  },
+  cues: d => [[B, 'blip', 523, .04], [2 * B, 'blip', 587, .06], [3 * B, 'blip', 659, .06], [4 * B, 'blip', 740, .06], [5 * B, 'correct'], [7 * B, 'whoosh', .4, .06]]
+};
+
+// ---- 5 · sunshield (10 beats): five sheets drop in, then the heat shows: hot on the Sun side, cold below
+const isoP = (cx, cy, u, v) => [cx + (u - v) * .866, cy + (u + v) * .5];
+S.sunshield = {
+  draw(lt, d){
+    sub(TXT.k[4], lt, E - .05);
+    rise(TXT.h5a, 110, 305, lt, E, hd(92, { fit: 820 }));
+    rise(TXT.h5b, 110, 405, lt, E + B / 4, hd(92, { fit: 820 }));
+    rise(TXT.p5a, 110, 505, lt, 3 * B, bdy(52, { c: C.ink, fit: 830 }));
+    rise(TXT.p5b, 110, 580, lt, 5 * B, bdy(64, { c: C.ink, fit: 830 }));
+    rise(TXT.p5c, 110, 660, lt, 5 * B + B / 4, bdy(64, { c: C.accHi, fit: 830 }));
+    const sp = inv(8 * B, 8 * B + .2, lt);
+    if (sp > 0){ const sc = lerp(1.6, 1, eBack(sp)); ctx.save(); ctx.translate(110, 812); ctx.scale(sc, sc); ctx.globalAlpha = sp;
+      const pw = Math.min(760, mw(TXT.spf, HF, HW, 56) + 64); ctx.fillStyle = C.acc; ctx.fillRect(0, -50, pw, 100); T(TXT.spf, 32, 20, hd(56, { c: C.bg, fit: pw - 64 })); ctx.restore(); T(TXT.spfc, 110, 910, bdy(42, { a: sp, fit: 700 })); }
+    // sun, top right: a light source, so a soft glow is fine here
+    const su = inv(2 * B, 2.5 * B, lt);
+    if (su > 0){ glow(1740, 265, 150, rgba(C.bad, .5), su); dot(1740, 265, 42, C.bad, su); T(TXT.sun, 1810, 192, bdy(36, { c: C.bad, al: 'right', a: su })); }
+    const CX = 1420, L = 360, Wd = 241, heat = eIO(inv(5 * B, 6.5 * B, lt));
+    for (let k = 4; k >= 0; k--){
+      const t0 = B + k * B / 2, p = spring(lt - t0, ...SPRING.default); if (p <= .01) continue;
+      const cy = 400 + k * 80 - (1 - p) * 300, a = inv(t0, t0 + .12, lt), col = mixHex('#8A93A8', mixHex(C.bad, C.alt, k / 4), heat);
+      const pts = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([su_, sv]) => isoP(CX, cy, su_ * L / 2, sv * Wd / 2));
+      ctx.save(); ctx.globalAlpha = a;
+      ctx.fillStyle = mixHex(col, '#000000', .55); ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y + 7) : ctx.moveTo(x, y + 7)); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = col; ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = rgba(C.ink, .35); ctx.lineWidth = 1.5; ctx.stroke();
+      if (k === 0){   // tennis-court lines on the top sheet: the size comparison NASA uses
+        ctx.strokeStyle = rgba(C.bg, .55); ctx.lineWidth = 2.5; ctx.beginPath();
+        const seg = (u1, v1, u2, v2) => { const A = isoP(CX, cy, u1, v1), Z = isoP(CX, cy, u2, v2); ctx.moveTo(A[0], A[1]); ctx.lineTo(Z[0], Z[1]); }, l = L * .44, w = Wd * .42;
+        seg(-l, -w, l, -w); seg(l, -w, l, w); seg(l, w, -l, w); seg(-l, w, -l, -w); seg(0, -w, 0, w); seg(-l * .55, -w, -l * .55, w); seg(l * .55, -w, l * .55, w); seg(-l * .55, 0, l * .55, 0); ctx.stroke(); }
+      ctx.restore(); }
+    T(TXT.dim5, CX, 935, nm(44, { c: C.acc, al: 'center', a: inv(2 * B, 2.5 * B, lt) }));
+    if (su > 0){   // light from the Sun stops at the top sheet
+      ctx.save(); ctx.globalAlpha = su * .8; ctx.strokeStyle = C.bad; ctx.lineWidth = 3; ctx.setLineDash([14, 12]); ctx.lineDashOffset = -lt * 90;
+      [[1700, 300, 1560, 385], [1730, 307, 1610, 372], [1680, 295, 1500, 402]].forEach(([x1, y1, x2, y2]) => { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }); ctx.restore(); }
+    const cd = inv(5 * B, 5.5 * B, lt);
+    if (cd > 0){ drawMirror(1700, 850, 13, (h, i) => ({ a: cd, s: 1, c: C.acc })); T(TXT.cold, 1810, 935, bdy(36, { c: C.alt, al: 'right', a: cd })); }
+  },
+  cues: d => [[B, 'blip', 1047, .05], [1.5 * B, 'blip', 880, .05], [2 * B, 'blip', 740, .05], [2.5 * B, 'blip', 622, .05], [3 * B, 'blip', 523, .05],
+              [5 * B, 'whoosh', .8, .08], [5 * B, 'bell'], [8 * B, 'stamp', .45]]
+};
+
+// ---- 6 · orbit (8 beats): 1.5 million km at true scale; then Earth zoomed in to show Hubble's 560 km hairline
+S.orbit = {
+  draw(lt, d){
+    const EX = 300, WX = 1600, LY = 800, TA = 3.5 * B, p = spring(lt - B, 26, 10), wx = lerp(EX, WX, p), pc = clamp(p);
+    sub(TXT.k[5], lt, E - .05);
+    const val = LANG === 'ko' ? String(Math.round(150 * pc)) : (1.5 * pc).toFixed(1), wn = Math.max(mw(TXT.big6, FD, 700, 240), mw(LANG === 'ko' ? '000' : '0.0', FD, 700, 240));
+    T(val, 110, 480, nm(240, { c: C.acc, a: inv(E, E + .2, lt) })); rise(TXT.unit6, 110 + wn + GAP, 480, lt, E, hd(96, { c: C.ink, fit: 700 }));
+    rise(TXT.from6, 110, 565, lt, E + B / 4, hd(64, { c: C.dim, fit: 700 }));
+    // scale line, Earth, Sun direction
+    const la = inv(.5 * B, B, lt);
+    ctx.save(); ctx.globalAlpha = la * .5; ctx.strokeStyle = C.dim; ctx.lineWidth = 2; ctx.setLineDash([4, 10]); ctx.beginPath(); ctx.moveTo(EX, LY); ctx.lineTo(WX, LY); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(EX, LY); ctx.lineTo(wx, LY); ctx.stroke(); ctx.restore();
+    dot(EX, LY, 6, '#4E93FF');
+    T(TXT.earth, EX, LY + 62, bdy(48, { c: C.ink, al: 'center', a: la }));
+    ctx.save(); ctx.globalAlpha = la; ctx.strokeStyle = C.dim; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(250, LY); ctx.lineTo(140, LY); ctx.moveTo(158, LY - 9); ctx.lineTo(140, LY); ctx.lineTo(158, LY + 9); ctx.stroke(); ctx.restore();
+    T(TXT.toSun, 110, LY - 30, bdy(46, { a: la }));
+    // Webb travelling out, then circling L2
+    const arr = inv(TA, TA + 1.4, lt), oa = lt * 1.7;
+    if (p > 0){
+      if (arr > 0){ ctx.save(); ctx.globalAlpha = .8 * inv(TA, TA + .3, lt); ctx.strokeStyle = C.acc; ctx.lineWidth = 2; ctx.setLineDash([7, 7]); ctx.beginPath(); ctx.ellipse(WX, LY, 46, 27, 0, 0, TAU); ctx.stroke(); ctx.restore(); }
+      const ox = arr > 0 ? Math.cos(oa) * 46 * inv(TA, TA + .5, lt) : 0, oy = arr > 0 ? Math.sin(oa) * 27 * inv(TA, TA + .5, lt) : 0;
+      dot(wx + ox, LY + oy, 11, C.acc); dot(wx + ox, LY + oy, 4, '#fff'); }
+    const ring = inv(TA, TA + .9, lt); if (ring > 0 && ring < 1){ ctx.save(); ctx.strokeStyle = rgba(C.acc, 1 - ring); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(WX, LY, 20 + ring * 70, 0, TAU); ctx.stroke(); ctx.restore(); }
+    const wl = inv(TA, TA + .3, lt);
+    T(TXT.webb, 1810, LY + 84, hd(56, { c: C.acc, al: 'right', a: wl })); T(TXT.l2, 1810, LY + 140, bdy(46, { al: 'right', a: wl, fit: 620 }));
+    // inset: Earth zoomed in, Hubble's orbit at the true ratio (560 km up on Earth's radius), so the "hairline" becomes visible
+    const IX = 1500, IY = 390, IR = 118, hi = spring(lt - 5 * B, ...SPRING.default), ha = inv(5 * B, 5.3 * B, lt);
+    if (hi > .01){
+      ctx.save(); ctx.globalAlpha = ha * .55; ctx.strokeStyle = C.dim; ctx.lineWidth = 1.5; ctx.setLineDash([6, 8]); ctx.beginPath();
+      ctx.moveTo(EX + 5, LY - 4); ctx.lineTo(IX - IR * .72, IY + IR * .72); ctx.moveTo(EX + 5, LY - 4); ctx.lineTo(IX - IR * .1, IY + IR * 1.05); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.globalAlpha = ha; dot(IX, IY, IR * hi, '#3B82F0'); dot(IX - IR * .28, IY - IR * .3, IR * hi * .62, 'rgba(255,255,255,.10)');
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(IX, IY, IR * 1.088 * hi, 0, TAU); ctx.stroke();
+      const ha2 = lt * 1.1; dot(IX + Math.cos(ha2) * IR * 1.088, IY + Math.sin(ha2) * IR * 1.088, 9 * hi, C.ink); ctx.restore();
+      T(TXT.hub2, IX, IY - IR - 30, bdy(46, { al: 'center', a: ha, fit: 560 }));
+      T(TXT.hub, 1810, 690, bdy(56, { c: C.ink, al: 'right', a: ha, fit: 860 })); }
+  },
+  cues: d => [[B, 'whoosh', 1.2, .1], [B, 'roll', 1.3, 12], [3.5 * B, 'bell'], [5 * B, 'blip', 880, .06]]
+};
+
+// ---- 7 · trip (6 beats): a 31-day calendar wall: 3 days to the Moon's orbit, 30 to L2
+S.trip = {
+  draw(lt, d){
+    const GX = 1138, GY = 385, GP = 96, CS = 86, TA = 3.5 * B, cell = k => [GX + (k % 7) * GP, GY + Math.floor(k / 7) * GP];
+    sub(TXT.k[6], lt, E - .05);
+    rise(TXT.h7a, 110, 320, lt, E, hd(96, { fit: 960 }));
+    rise(TXT.h7b, 110, 425, lt, 2 * B, hd(96, { fit: 960 }));
+    const idx = track(lt, [[0, 0], [B, 3], [2 * B, 30]], 60, 16), lead = Math.floor(clamp(idx, 0, 30) + .02), day = Math.round(clamp(idx, 0, 30));
+    for (let k = 0; k <= 30; k++){ const [x, y] = cell(k); ctx.fillStyle = idx >= k - .02 ? C.acc : rgba(C.ink, .16); ctx.fillRect(x, y, CS, CS); }
+    { const [x, y] = cell(lead); ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.strokeRect(x + 3, y + 3, CS - 6, CS - 6); }
+    const ba = inv(B, B + .3, lt), dz = 88, wNum = mw('30', FD, 700, 230);
+    rise(TXT.about, 110, 600, lt, TA, bdy(56, { c: C.dim }), .4, 14);
+    T(String(day), 110 + wNum, 810, nm(230, { c: C.acc, al: 'right', a: ba }));
+    T(TXT.days, 110 + wNum + GAP, 810, hd(dz, { c: C.ink, a: ba }));
+    const ml = inv(B, B + .25, lt);
+    if (ml > 0){ const [x, y] = cell(3); ctx.save(); ctx.globalAlpha = ml; ctx.strokeStyle = C.ink; ctx.lineWidth = 3; ctx.strokeRect(x - 2, y - 2, CS + 4, CS + 4);
+      ctx.beginPath(); ctx.moveTo(x + CS / 2, y - 4); ctx.lineTo(x + CS / 2, GY - 78); ctx.stroke(); ctx.restore();
+      T(TXT.moon, 1810, GY - 90, bdy(54, { c: C.ink, al: 'right', a: ml, fit: 700 })); }
+    T(TXT.d0, GX, GY - 24, hd(54, { c: C.dim, fit: 300 }));
+    const [ex, ey] = cell(30); T(TXT.d1, ex + CS + 22, ey + CS - 20, hd(54, { c: C.acc, a: inv(TA, TA + .3, lt), fit: 1810 - ex - CS - 22 }));
+  },
+  cues: d => [[0, 'blip', 523, .05], [B, 'blip', 784, .06], [2 * B, 'whoosh', .8, .08], [2 * B, 'roll', 1.0, 10], [3.5 * B, 'correct']]
+};
+
+// ---- 8 · payoff (8 beats): the timeline draws back 13.5 billion years; the first galaxies bloom; the only impact in the film
+function galaxy(cx, cy, Rm, p, rot){
+  for (const g of GAL){ const a = inv(g.r * .8, g.r * .8 + .2, p); if (a <= 0) continue;
+    const ang = g.a0 + rot * (1.2 - g.r * .8), r = g.r * Rm * (.3 + .7 * eO(p)), x = cx + Math.cos(ang) * r, y = cy + Math.sin(ang) * r * .62;
+    ctx.fillStyle = g.m > .8 ? rgba(C.alt, a * .95) : rgba(mixHex(C.accHi, '#FFFFFF', g.m), a * (.5 + .5 * (1 - g.r))); ctx.fillRect(x, y, g.s, g.s); }
+  glow(cx, cy, Rm * .45, rgba(C.acc, .5), p);
+}
+S.payoff = {
+  draw(lt, d){
+    const p = spring(lt - B, 30, 11), pc = clamp(p), TLY = 830, xEnd = lerp(1700, 300, pc);
+    sub(TXT.k[7], lt, E - .05);
+    const wn = Math.max(mw(TXT.big8, FD, 700, 250), mw(LANG === 'ko' ? '000' : '00.0', FD, 700, 250)), val = LANG === 'ko' ? String(Math.round(135 * pc)) : (13.5 * pc).toFixed(1);
+    if (TXT.over) rise(TXT.over, 110, 285, lt, E, bdy(52, { c: C.dim }));
+    T(val, 110, 505, nm(250, { c: C.acc, a: inv(E, E + .2, lt) }));
+    rise(TXT.unit8, 110 + wn + GAP + 6, 400, lt, E, hd(96, { c: C.ink, fit: 700 }));
+    rise(TXT.back8, 110 + wn + GAP + 6, 495, lt, E + B / 4, bdy(58, { fit: 700 }));
+    galaxy(1500, 540, 310, spring(lt - 4 * B, ...SPRING.heavy), lt * .06);
+    slam(TXT.h8, 110, 665, lt, 4 * B, hd(110, { fit: 1100, split: false }));
+    rise(TXT.p8, 110, 745, lt, 4.5 * B, bdy(58, { c: C.ink, fit: 900 }));
+    ctx.save(); ctx.strokeStyle = C.acc; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(1700, TLY); ctx.lineTo(xEnd, TLY); ctx.stroke(); ctx.restore();
+    drawMirror(1740, TLY, 12, (h, i) => ({ a: inv(0, .3, lt), s: 1 }));
+    dot(xEnd, TLY, 10, C.accHi, inv(B, B + .2, lt));
+    T(TXT.today, 1740, TLY + 96, bdy(48, { al: 'center', a: inv(0, .3, lt) }));
+    T(TXT.fg, xEnd, TLY + 74, bdy(52, { c: C.acc, al: 'center', a: inv(4 * B, 4.5 * B, lt), fit: 520 }));
+  },
+  cues: d => [[B, 'whoosh', 1.6, .08], [B, 'roll', 1.6, 14], [4 * B, 'impact', .8]]
+};
+
+// ---- 9 · close (8 beats): the URL plaque is the link; the mirror lights up; the last frame holds
+S.close = {
+  draw(lt, d){
+    const PL = CFG.endCta, R = 78, cx = 1460, cy = 560;
+    sub(TXT.k[8], lt, E - .05);
+    drawMirror(cx, cy, R, (h, i) => { const t0 = i * B / 12; return { a: inv(t0, t0 + .3, lt), s: 1, lit: .35 * beatPulse(lt) * inv(2 * B, 3 * B, lt) }; });
+    slam(TXT.h9, 110, 350, lt, E, hd(LANG === 'ko' ? 104 : 132, { fit: 1000, split: false }));
+    rise(TXT.p9a, 110, 430, lt, B, bdy(56, { fit: 950 }));
+    rise(TXT.p9b, 110, 500, lt, B, bdy(56, { fit: 950 }));
+    const pp = spring(lt - B, ...SPRING.default), dy = (1 - pp) * 150;
+    if (pp > 0){
+      ctx.save(); ctx.translate(0, dy); ctx.globalAlpha = inv(B, B + .2, lt);
+      ctx.fillStyle = C.panel; ctx.fillRect(PL.x, PL.y, PL.w, PL.h); ctx.fillStyle = C.acc; ctx.fillRect(PL.x, PL.y, 10, PL.h);
+      ctx.strokeStyle = rgba(C.acc, .55); ctx.lineWidth = 2; ctx.strokeRect(PL.x + 1, PL.y + 1, PL.w - 2, PL.h - 2);
+      T(TXT.plq, PL.x + 56, PL.y + 84, { f: FK, w: 700, z: 34, c: C.dim, ls: 5 });
+      const u = typeOn(TXT.url, inv(2 * B, 3.5 * B, lt));
+      T(u, PL.x + 56, PL.y + 170, { f: FM, w: 700, z: 44, c: C.ink });
+      ctx.fillStyle = C.acc; ctx.fillRect(PL.x + 56, PL.y + 198, mw(TXT.url, FM, 700, 44) * inv(2 * B, 3.5 * B, lt), 4);
+      ctx.restore(); }
+    const fo = inv(d - .5, d, lt); if (fo > 0){ ctx.fillStyle = rgba(C.bg, fo * .9); ctx.fillRect(0, 0, W, H); }
+  },
+  cues: d => [[0, 'whoosh', .3, .1], [B, 'bell'], [2 * B, 'roll', 1.5 * B, 24], [3.5 * B, 'correct']]
+};
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [
+  ['open', 6, 'WEBB'], ['infrared', 8, 'STEP 02 · LIGHT'], ['mirror', 10, 'STEP 03 · OPTICS'], ['precision', 8, 'STEP 04 · ALIGN'],
+  ['sunshield', 10, 'STEP 05 · SHIELD'], ['orbit', 8, 'STEP 06 · ORBIT'], ['trip', 6, 'STEP 07 · TRIP'], ['payoff', 8, 'STEP 08 · LOOK'], ['close', 8, 'STEP 09 · EXPLORE']
+];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+  // nothing measured once: every line is fitted with T(..., { fit }) at draw time
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

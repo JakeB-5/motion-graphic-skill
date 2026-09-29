@@ -6,7 +6,7 @@
 
 [English](README.md) · **한국어**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.3](https://img.shields.io/badge/status-0.3-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.4](https://img.shields.io/badge/status-0.4-d4a34b)](CHANGELOG.md)
 
 ![기본 콘솔 스타일 데모의 장면별 스틸 시트](docs/images/sheet-console.png)
 
@@ -87,7 +87,9 @@ Make a 30-second motion graphic introducing this repository's motion-graphic ski
 - **실제 플레이어.** 클릭·탭 재생, 진행 막대 드래그, 키보드 단축키, 전체 화면, CTA 버튼이 있습니다. 한 번 끝까지 보면 마지막 장면의 도형이 링크로 열립니다.
 - **폰 대응.** 세로 화면에서는 영상 아래로 컨트롤이 붙고, 가로 화면에서는 영상이 높이를 꽉 채우고 버튼이 옆으로 갑니다.
 - **정직한 수치.** 화면의 모든 수치를 `facts.md`에 출처와 함께 적습니다. 큰 수치 옆에는 같은 척도의 보조 지표를 두고, 반올림 표기를 일관되게 맞춥니다.
-- **보기 전에 검증.** 장면별 스틸 시트, 가장자리에서 잘린 글자, 장면별 음량, 7개 기기 레이아웃, 탭 재생, 말줄임된 라벨을 확인합니다.
+- **자연스럽게 멈추는 움직임.** 닫힌 형태 스프링과 여러 목표값을 잇는 트랙으로 움직임에 오버슈트와 여운을 줍니다. 모든 프레임은 여전히 시간의 순수함수입니다.
+- **보기 전에 검증.** 장면별 스틸 시트, 폰 크기 시트, 장면 전환마다 12프레임 스트립, 결정성 검사, 가장자리에서 잘린 글자, 장면별 음량, 7개 기기 레이아웃, 탭 재생, 말줄임된 라벨을 확인합니다.
+- **감독처럼 비평.** 별도 리뷰어가 결함부터 점검한 뒤 7개 축(첫 2초 훅, 폰 크기 가독성, 모션, 다양성, 구도, 브랜드 정확도, 사운드 싱크)으로 점수를 매깁니다. 에이전트는 가장 큰 문제를 최대 3라운드까지 고칩니다.
 
 | 클린 스타일(같은 장면, 스타일만 교체) | 폰 세로 | 폰 가로 |
 |---|---|---|
@@ -185,8 +187,8 @@ Codex나 Claude가 꼭 필요한데 빠진 정보(관객·길이·링크)를 한
 2. **컨셉**: 관객이 아는 세계의 은유 하나를 고르고(웨이퍼 검사 시퀀스, 철도 관제판, 컨테이너 터미널 등), 주제·관객·브랜드에 맞는 스타일을 정합니다.
 3. **스토리보드**: 장면표(박자·메시지·화면·움직임·소리)를 보여주고 승인을 받습니다. 이야기를 바꾸기 가장 싼 지점입니다.
 4. **구현**: `assemble.py`가 엔진을 작은 파일(`config`·`style`·`copy`·`geometry`·`scenes`·`plan` 등)로 쪼갭니다. 에이전트가 이 파일들을 채운 뒤 다시 조립하고 문법을 검사합니다. 플레이어·오디오·모바일 레이아웃은 엔진 것을 그대로 씁니다.
-5. **검증**: `check.js`가 스틸 시트를 만들고 검사를 돌립니다. 에이전트가 스틸을 직접 보고, 실패가 0이 될 때까지 고칩니다.
-6. **전달**: HTML 경로, 길이, 장면 수, 검사 결과를 알려줍니다.
+5. **검증**: `check.js`가 스틸 시트(원본·폰 크기), 전환 스트립, 결정성 검사를 만들고 돌립니다. 에이전트는 실패가 0이 될 때까지 고칩니다. 이어서 점수 기반 비평을 합니다. 새 컨텍스트의 리뷰어(호스트가 띄울 수 없으면 에이전트 자신)가 파일·시각 근거를 붙인 결함표를 채우고 7개 축에 점수를 매기면, 에이전트가 가장 큰 문제 3개를 고칩니다. 결함 FAIL이 없고 모든 축이 8점 이상이며 2라운드 이상 돌았으면 납품합니다. 아니면 3라운드 뒤에 남은 문제를 `review_log.md`와 납품 보고에 적고 납품합니다.
+6. **전달**: HTML 경로, 길이, 장면 수, 검사 결과, 비평 점수를 알려줍니다. `record.js`로 만든 MP4는 ffprobe로 확인한 뒤에 보고합니다.
 
 모든 프레임은 시간의 순수함수(`render(t)`)입니다. 그래서 진행 막대로 이동하거나 특정 프레임에서 멈추거나 검증 스틸을 찍어도 실제 재생과 똑같은 화면이 나옵니다.
 
@@ -215,10 +217,10 @@ skills/motion-graphic/
   SKILL.md               Codex·Claude Code 공용 작업 순서
   agents/openai.yaml    Codex 표시 정보·기본 프롬프트
   assets/engine.html     엔진 (플레이어·오디오·헬퍼·예시 장면)
-  references/            story.md · styles.md · scene-patterns.md
+  references/            story.md · styles.md · scene-patterns.md · critique.md
   scripts/assemble.py    엔진 ↔ 편집 파일 분리·조립
-  scripts/check.js       검증: 스틸·잘림·오디오·레이아웃·탭
-  scripts/record.js      HTML → mp4 (프레임 단위 렌더 + 엔진 오디오)
+  scripts/check.js       검증: 스틸·폰 시트·전환 스트립·결정성·잘림·오디오·레이아웃·탭
+  scripts/record.js      HTML → mp4 (프레임 단위 렌더 + 엔진 오디오, ffprobe로 확인)
 samples/                 프롬프트 하나로 만든 샘플 (HTML·mp4·프롬프트·facts·스토리보드)
 examples/                스타일 예시 완성본
 docs/images/             README 이미지
@@ -231,6 +233,7 @@ docs/images/             README 이미지
 - 결과물은 영상 파일이 아니라 인터랙티브 HTML입니다. mp4가 필요하면 `node scripts/record.js <file.html> --out film.mp4`로 변환합니다(ffmpeg 필요, 진행 막대까지 영상에 들어감).
 - 아이폰 Safari는 요소 전체 화면을 지원하지 않습니다. 그래서 전체 화면 버튼을 숨기고 "가로로 돌리면 크게" 안내를 보여줍니다.
 - 검증에는 Chrome/Chromium과 Node가 필요합니다. 없어도 만들 수는 있지만 결과물을 스스로 검사하지 못합니다.
+- 점수 기반 비평 때문에 시간과 비용이 늘었습니다. 벤치마크에서 30~45초짜리 한 편이 3라운드 비평까지 30~55분 걸렸습니다. 0.3의 약 3배입니다.
 
 ## 기여
 

@@ -6,7 +6,7 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 **English** · [한국어](README.ko.md)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.3](https://img.shields.io/badge/status-0.3-d4a34b)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-257854)](LICENSE) [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-d97757)](skills/motion-graphic/SKILL.md) [![Codex skill](https://img.shields.io/badge/Codex-skill-10a37f)](skills/motion-graphic/agents/openai.yaml) [![Status: 0.4](https://img.shields.io/badge/status-0.4-d4a34b)](CHANGELOG.md)
 
 ![Contact sheet of the demo in the default console style: two frames per scene](docs/images/sheet-console.png)
 
@@ -87,7 +87,9 @@ Make a 30-second motion graphic introducing this repository's motion-graphic ski
 - **A real player.** Click or tap to play, drag the progress bar to scrub, keyboard shortcuts, full screen, a call-to-action button, and an end-frame link that unlocks after one full viewing.
 - **Phone-ready.** Portrait stacks the controls under the film; landscape gives the film the full height with a side dock.
 - **Honest numbers.** Every on-screen figure is traced to a source in `facts.md`, big metrics get a same-scale companion metric, and rounding stays consistent.
-- **Verified before you see it.** A contact sheet of stills, text clipped at the edges, audio levels per scene, 7 device layouts, touch playback, truncated labels.
+- **Motion that settles.** Closed-form springs and multi-target tracks give moves overshoot and follow-through, while every frame stays a pure function of time.
+- **Verified before you see it.** A contact sheet of stills, a phone-size sheet, 12-frame strips around every cut, a determinism check, text clipped at the edges, audio levels per scene, 7 device layouts, touch playback, truncated labels.
+- **Reviewed like a director would.** A separate reviewer scores the film on seven axes (hook in the first 2 s, readability at phone size, motion, variety, composition, brand accuracy, sound sync) after a defect check, and the agent fixes the worst problems for up to three rounds.
 
 | Clean style (same scenes, restyled) | Phone portrait | Phone landscape |
 |---|---|---|
@@ -185,8 +187,8 @@ Codex or Claude will ask once for anything essential that's missing (audience, l
 2. **Concept** — one metaphor from the audience's world (a wafer-probe sequence, a railway dispatch board, a container terminal…) and a style derived from topic, audience and brand.
 3. **Storyboard** — a scene table (beats, message, visual, motion, sound) for you to approve. The cheapest place to change the story.
 4. **Build** — `assemble.py` splits the engine into small parts (`config`, `style`, `copy`, `geometry`, `scenes`, `plan`…); the agent fills them and reassembles with a syntax check. The player, audio and mobile layout come from the engine untouched.
-5. **Verify** — `check.js` renders a contact sheet and runs the checks; the agent looks at the stills and fixes what it sees until there are zero failures.
-6. **Deliver** — the HTML path, duration, scene count and check results.
+5. **Verify** — `check.js` renders contact sheets (full and phone size), cut strips and a determinism check, and the agent fixes failures until there are none. Then a scored critique: a reviewer with a fresh context — or the agent itself when the host can't start one — fills a defect table with file-and-time evidence, scores seven axes, and the agent fixes the three worst problems. It ships when no defect fails, every axis reaches 8 and at least two rounds have run — or after three reviewed rounds, with the open issues listed in `review_log.md` and the delivery report.
+6. **Deliver** — the HTML path, duration, scene count, check results and critique scores. An MP4 from `record.js` is checked with ffprobe before it is reported.
 
 Every frame is a pure function of time (`render(t)`), so scrubbing, freezing a frame and verification stills all show exactly what playback shows.
 
@@ -215,10 +217,10 @@ skills/motion-graphic/
   SKILL.md               shared workflow for Codex and Claude Code
   agents/openai.yaml    Codex display metadata and default prompt
   assets/engine.html     the engine (player, audio, helpers, example scenes)
-  references/            story.md · styles.md · scene-patterns.md
+  references/            story.md · styles.md · scene-patterns.md · critique.md
   scripts/assemble.py    split the engine into parts / assemble them back
-  scripts/check.js       verification: stills, clipping, audio, layouts, touch
-  scripts/record.js      HTML → mp4 (frame-exact render + the engine's own audio)
+  scripts/check.js       verification: stills, phone sheet, cut strips, determinism, clipping, audio, layouts, touch
+  scripts/record.js      HTML → mp4 (frame-exact render + the engine's own audio, verified with ffprobe)
 samples/                 pieces made from one prompt each (HTML, mp4, prompt, facts, storyboard)
 examples/                prebuilt style examples
 docs/images/             README images
@@ -231,6 +233,7 @@ docs/images/             README images
 - Output is an interactive HTML page, not a video file. For an mp4, run `node scripts/record.js <file.html> --out film.mp4` (needs ffmpeg; the progress bar is part of the picture).
 - iPhone Safari has no element full screen; the full-screen button hides itself there and a "turn sideways" hint is shown instead.
 - Verification needs Chrome/Chromium and Node; without them the skill still builds, but can't check its work.
+- The scored critique makes a piece slower and costlier: in our benchmark a 30–45 s film took 30–55 minutes with three reviewed rounds, about three times longer than 0.3.
 
 ## Contributing
 

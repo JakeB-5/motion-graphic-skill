@@ -1,6 +1,6 @@
 # facts.md — motion-graphic skill intro (30 s, EN + KO)
 
-Sources (all in the repo at `/Users/jin/orca/workspaces/motion-graphic-skill/samples-v040`):
+Sources (all in this repository at the v0.4.0 release, commit b380359):
 - README = `README.md`, CHANGELOG = `CHANGELOG.md`, SKILL = `skills/motion-graphic/SKILL.md`
 - Only facts listed in the "on screen" tables go on screen. Anything not listed there does not.
 

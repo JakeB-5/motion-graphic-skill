@@ -1,7 +1,7 @@
 # facts.md — skill intro (30 s, EN + KO)
 
-Every fact, name and number that appears on screen, with its source. Paths are relative to the repository root
-(`/Users/jin/orca/workspaces/motion-graphic-skill/samples-v040`). Line numbers are from the current branch (`JakeB-5/samples-v040`, commit b380359).
+Every fact, name and number that appears on screen, with its source. Paths are relative to the repository root.
+Line numbers are from the v0.4.0 release (commit b380359).
 
 ## Names and identity
 

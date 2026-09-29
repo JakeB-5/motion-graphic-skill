@@ -14,13 +14,23 @@
 
 ## 샘플
 
-Claude Code와 Codex에서 이 스킬로 만든 모션그래픽 네 편입니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`도 함께 있습니다.
+첫 세 샘플은 v0.4.0으로 만들었습니다. Claude Opus 5.5와 Claude Sonnet 5.5가 같은 프롬프트로 한 편씩 만들었으니 나란히 비교해 보세요. 마지막 샘플은 Codex로 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`, 그리고 v0.4.0 샘플에는 점수 기반 비평 기록 `review_log.md`도 함께 있습니다. 스토리보드는 빌드 전 승인 단계에서 한 번씩 검토했습니다.
 
 ### 스킬 소개 — 플랫 팝 · 30초
 
-https://github.com/user-attachments/assets/be0d6871-4e56-49c0-91d5-90b77d540cf2
+**Opus 5.5** — 스티커가 하나씩 붙는 노트북 뚜껑
 
-[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/)) · [소스](samples/skill-intro) · 7장면, 128 BPM 일렉트로 그루브
+https://github.com/user-attachments/assets/cff67aee-17bd-4aff-a487-eba07781b96a
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/opus/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/opus/)) · [소스](samples/skill-intro/opus) · 7장면, 128 BPM 일렉트로 그루브
+
+**Sonnet 5.5** — 캡슐 뽑기 기계
+
+https://github.com/user-attachments/assets/bcf7a0ce-7537-4bf6-90e6-34d1f37131d9
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/sonnet/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/sonnet/)) · [소스](samples/skill-intro/sonnet) · 7장면, 128 BPM 일렉트로 그루브
+
+제작 비용과 시간(비평 3라운드 포함): Opus 5.5 $17.06 · 52분 / Sonnet 5.5 $9.43 · 41분
 
 <details>
 <summary>프롬프트</summary>
@@ -31,11 +41,21 @@ Make a 30-second motion graphic that introduces this repository's motion-graphic
 
 </details>
 
-### 제임스 웹 우주망원경 — 밤하늘 천체관 · 45초
+### 제임스 웹 우주망원경 — 깊은 우주와 금빛 거울 · 45초
 
-https://github.com/user-attachments/assets/03088c20-9c28-4d23-9669-7edb0c5e0aeb
+**Opus 5.5** — 금빛 타임머신
 
-[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/)) · [소스](samples/webb-telescope) · 8장면, 90 BPM 드럼 없는 펄스 그루브, 모든 수치 NASA 출처
+https://github.com/user-attachments/assets/0ccf1637-1888-45f5-b94c-a544b3f66c2b
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/opus/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/opus/)) · [소스](samples/webb-telescope/opus) · 9장면, 120 BPM 소프트 그루브, 모든 수치 NASA 출처
+
+**Sonnet 5.5** — 한 단계씩 펼쳐지는 망원경
+
+https://github.com/user-attachments/assets/8c317f24-4814-454c-8190-1673ae609434
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/sonnet/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/sonnet/)) · [소스](samples/webb-telescope/sonnet) · 9장면, 96 BPM 소프트 그루브, 모든 수치 NASA 출처
+
+제작 비용과 시간(비평 3라운드 포함): Opus 5.5 $19.24 · 58분 / Sonnet 5.5 $9.57 · 44분
 
 <details>
 <summary>프롬프트</summary>
@@ -46,11 +66,21 @@ Make a 45-second explainer motion graphic about the James Webb Space Telescope f
 
 </details>
 
-### V60 핸드드립 가이드 — 따뜻한 카페 일러스트 · 31초
+### V60 핸드드립 가이드 — 따뜻한 카페 일러스트 · 30초
 
-https://github.com/user-attachments/assets/bba61e37-23db-41b9-89be-78fe5fbb94a8
+**Opus 5.5** — 저울 눈금으로 읽는 브루 바
 
-[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/)) · [소스](samples/pour-over) · 7장면, 124 BPM 소프트 그루브, 레시피는 Hario·SCA 기준
+https://github.com/user-attachments/assets/14931d4c-3f9e-4431-8ff3-78e5b3bbf71d
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/opus/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/opus/)) · [소스](samples/pour-over/opus) · 7장면, 104 BPM 소프트 그루브, 레시피는 SCA, 기법은 Hario 기준
+
+**Sonnet 5.5** — 배울수록 차오르는 한 잔
+
+https://github.com/user-attachments/assets/b40f14da-2def-4fda-ba0b-bcc3791f79fe
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/sonnet/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/sonnet/)) · [소스](samples/pour-over/sonnet) · 7장면, 100 BPM 소프트 그루브, 레시피는 SCA, 기법은 Hario 기준
+
+제작 비용과 시간(비평 3라운드 포함): Opus 5.5 $18.79 · 57분 / Sonnet 5.5 $9.96 · 50분
 
 <details>
 <summary>프롬프트</summary>
@@ -76,7 +106,7 @@ Make a 30-second motion graphic introducing this repository's motion-graphic ski
 
 </details>
 
-*앞의 세 영상은 영어판, Codex 영상은 한국어판입니다. 각 재생 링크에서 한·영 버전을 선택할 수 있습니다.*
+*스킬 소개·웹 망원경·핸드드립 영상은 영어판, Codex 영상은 한국어판입니다. 각 재생 링크에서 한·영 버전을 선택할 수 있습니다.*
 
 ## 무엇이 나오나
 
@@ -221,7 +251,7 @@ skills/motion-graphic/
   scripts/assemble.py    엔진 ↔ 편집 파일 분리·조립
   scripts/check.js       검증: 스틸·폰 시트·전환 스트립·결정성·잘림·오디오·레이아웃·탭
   scripts/record.js      HTML → mp4 (프레임 단위 렌더 + 엔진 오디오, ffprobe로 확인)
-samples/                 프롬프트 하나로 만든 샘플 (HTML·mp4·프롬프트·facts·스토리보드)
+samples/                 프롬프트 하나로 만든 샘플 (HTML·mp4·프롬프트·facts·스토리보드, opus/·sonnet/ 버전)
 examples/                스타일 예시 완성본
 docs/images/             README 이미지
 ```

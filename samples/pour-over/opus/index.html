@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>Your first V60 pour-over · 처음 내려보는 V60 핸드드립</title>
+<meta name="description" content="A 30-second, step-by-step guide to brewing pour-over coffee with a Hario V60 — 22 g coffee, 400 g water at 93 °C, a 30-second bloom, done by 3:00. Recipe from the SCA brewing guidelines and Hario's V60 instructions.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Your first V60 pour-over">
+<meta property="og:description" content="Five easy steps to a pour-over for two: 22 g coffee · 400 g water at 93 °C · 30 s bloom · done by 3:00.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F4ECE0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Jua&display=swap">
+<style>/* no call to action here, so the desktop dock holds only the language link: give it room so the link isn't pushed below the page */
+@media (min-width:1101px){ body .dock{min-height:46px} }</style>
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const CFG = {
+  bpm: 104,                                   // every timing below is written in beats (B) so picture and sound stay locked
+  colors: { bg: '#F4ECE0', panel: '#FFFBF4', line: '#E2D5C3', ink: '#2B1E16', dim: '#7A6756', grid: '#E9DDCC',
+            acc: '#C4553A', accHi: '#E8937A', alt: '#4F8CA6', bad: '#D89A2B' },
+  // Nunito for Latin, Jua picks up Hangul in the same stack (Jua has one weight — scenes use WT() so Korean is never faux-bolded)
+  fonts: { sans: '"Nunito","Jua",sans-serif',
+           display: '"Nunito","Jua",sans-serif',
+           mono: '"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit: false,
+  hudTitle: '', hudMeta: t => '',
+  cta: { href: '', newTab: true },            // no call to action: this plays on a café screen
+  endCta: null,
+  endCtaBeat: 6.5,
+  posterT: 3.1,                               // open scene, everything landed; left-centre stays clear for the play button
+  watchKey: 'v60-pour-over-watched',
+  // warm 4-bar loop: Fmaj7 – Em7 – Dm7 – Cmaj7
+  music: { groove: 'soft', liteScenes: ['dose', 'bloom'], arpScenes: ['pour'], tailBeats: 6,
+           roots: [43.65, 41.2, 36.71, 32.7],
+           chords: [[349.23, 440, 523.25, 659.25], [329.63, 392, 493.88, 587.33], [293.66, 349.23, 440, 523.25], [261.63, 329.63, 392, 493.88]] },
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+I18N.en = {
+  ui: { title: 'Your first V60 pour-over', play: 'Play with sound', playsub: 'click or press Space', playsubtouch: 'tap to play', replay: 'Replay',
+        rotate: '↻ Turn your phone sideways for a bigger view', fullscreen: '⤢ Full screen', scrub: 'Playback position',
+        canvas: 'Motion graphic: how to brew pour-over coffee with a V60 in five steps. Click to play or pause, Space to play, arrow keys to seek, M to mute, F for full screen',
+        ctaLab: '', ctaSub: '', ctaGo: '', endTag: '', lang: '한국어' },
+  stepOf: ['STEP 1 OF 5', 'STEP 2 OF 5', 'STEP 3 OF 5', 'STEP 4 OF 5', 'STEP 5 OF 5'],
+  oK: 'HOW TO BREW', oH: ['Your first', 'V60 pour-over'], oS: 'For two cups · 5 easy steps',
+  rH: ['Fold and rinse', 'the filter'], rS: 'Then tip that water out.',
+  dH: ['Add 22 g', 'of coffee'], dS: ['Medium-fine, shaken level.', 'Then zero the scale.'], tare: 'ZERO THE SCALE',
+  bH: ['Pour 50 g,', 'wait 30 s'], bS: ['It puffs up:', "that's the bloom."], temp: '93 °C', sped: 'TIMER SPED UP',
+  pH: ['Slow spirals,', 'up to 400 g'], pS: ['Start in the centre.', 'Keep off the paper.'], top: 'VIEW FROM ABOVE', no: 'not here',
+  fH: ['Done by 3:00'], fS: ['Aim for 2:30–3:00,', 'then lift the dripper off.'], zone: '2:30–3:00',
+  eH: 'Enjoy your cup.', eS: 'Recipe: SCA brewing guidelines · Hario V60',
+  cT: 'V60 · FOR TWO CUPS',
+  cR: [['Coffee', '22 g · medium-fine'], ['Water', '400 g · 93 °C'], ['Bloom', '50 g · 30 s'], ['Brewing time', 'Done by 3:00']]
+};
+I18N.ko = {
+  ui: { title: '처음 내려보는 V60 핸드드립', play: '사운드와 함께 재생', playsub: '클릭 또는 스페이스', playsubtouch: '탭해서 재생', replay: '다시 재생',
+        rotate: '↻ 가로로 돌리면 크게 볼 수 있어요', fullscreen: '⤢ 전체 화면', scrub: '재생 위치',
+        canvas: '모션그래픽: V60으로 핸드드립 커피를 내리는 다섯 단계. 클릭하면 재생과 정지, 스페이스 재생, 방향키 이동, M 음소거, F 전체 화면',
+        ctaLab: '', ctaSub: '', ctaGo: '', endTag: '', lang: 'ENGLISH' },
+  stepOf: ['5단계 중 1', '5단계 중 2', '5단계 중 3', '5단계 중 4', '5단계 중 5'],
+  oK: '핸드드립 가이드', oH: ['처음 내려보는', 'V60 핸드드립'], oS: '두 잔 분량 · 쉬운 5단계',
+  rH: ['필터를 접어', '헹궈요'], rS: '헹군 물은 버려요',
+  dH: ['커피 22 g을', '담아요'], dS: ['중간보다 조금 가늘게', '흔들어 평평하게 펴고', '저울을 0으로 맞춰요'], tare: '저울 영점 맞추기',
+  bH: ['50 g 붓고', '30초 기다려요'], bS: ['커피가 부풀어 올라요', "이게 '뜸'이에요"], temp: '93 °C', sped: '타이머 빠르게 재생',
+  pH: ['400 g까지', '천천히 원을 그리며'], pS: ['가운데부터 시작해서', '종이에는 닿지 않게'], top: '위에서 본 모습', no: '여기는 피해요',
+  fH: ['3분 안에 끝나요'], fS: ['2:30–3:00이면 딱 좋아요', '물이 거의 빠지면 드리퍼를 내려요'], zone: '2:30–3:00',
+  eH: '맛있게 드세요.', eS: '레시피: SCA 추출 가이드 · 하리오 V60',
+  cT: 'V60 · 두 잔',
+  cR: [['원두', '22 g · 중간보다 조금 가늘게'], ['물', '400 g · 93 °C'], ['뜸', '50 g · 30초'], ['추출 시간', '3분 안에']]
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+// warm café bench: cream kraft paper with fine grain, a wooden counter along the bottom, a step pill instead of a HUD,
+// and cuts that sweep the copy column with a coffee-brown wave (the brew bar on the right stays put and keeps its state)
+const BENCH = 880;
+const grain = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), R = rng(7), im = g.createImageData(256, 256);
+  for (let i = 0; i < im.data.length; i += 4){ const v = R() > .5 ? 60 : 255; im.data[i] = v; im.data[i + 1] = v * .85; im.data[i + 2] = v * .7; im.data[i + 3] = 10 + R() * 12; }
+  g.putImageData(im, 0, 0); return ctx.createPattern(c, 'repeat'); })();
+const warmth = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const r = g.createRadialGradient(W * .68, H * .42, 80, W * .6, H * .5, W * .75); r.addColorStop(0, 'rgba(255,248,236,.55)'); r.addColorStop(1, 'rgba(214,190,160,.28)');
+  g.fillStyle = r; g.fillRect(0, 0, W, H);
+  // counter: warm wood with a lit front edge and a few long grain lines
+  g.fillStyle = '#E3CFB6'; g.fillRect(0, BENCH, W, H - BENCH); g.fillStyle = '#D2B899'; g.fillRect(0, BENCH, W, 6); g.fillStyle = 'rgba(255,250,240,.55)'; g.fillRect(0, BENCH + 6, W, 3);
+  const R = rng(3); g.strokeStyle = 'rgba(150,110,75,.16)'; g.lineWidth = 2;
+  for (let k = 0; k < 9; k++){ const y = BENCH + 22 + k * 20 + R() * 8; g.beginPath(); g.moveTo(0, y); for (let x = 0; x <= W; x += 120) g.lineTo(x, y + Math.sin(x * .004 + k) * 4); g.stroke(); }
+  return c; })();
+function drawBg(t){ ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); ctx.drawImage(warmth, 0, 0); }
+function overlay(t){ ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H); }
+// step pill: five segments + "STEP n OF 5"; only on the five step scenes
+function hud(t, sc){
+  const n = sc.i, lt = t - sc.t0; if (n < 1 || n > 5) return;
+  const a = (sc.i === 1 ? inv(0, .3, lt) : 1) * (sc.i === 5 ? 1 - eIO(inv(sc.d - .26, sc.d - .03, lt)) : 1);
+  for (let k = 0; k < 5; k++){ const x = 110 + k * 44, on = k === n - 1, done = k < n - 1;
+    const wgt = on ? lerp(32, 36, spring(lt - .05, ...SPRING.snappy)) : 32;
+    ctx.globalAlpha = a; ctx.fillStyle = on ? C.acc : done ? rgba(C.ink, .55) : rgba(C.ink, .14);
+    ctx.beginPath(); ctx.roundRect(x, 68, wgt, 10, 5); ctx.fill(); ctx.globalAlpha = 1; }
+  T(TXT.stepOf[n - 1], 110 + 5 * 44 + 18, 82, { f: FH, w: WT(800), z: 26, c: C.dim, a, ls: KO ? 0 : 2 });
+}
+// two cuts from the same world: a coffee-brown wave sweeping the copy column left → right, and for the pouring
+// steps (and the close) a pour from above — a stream-coloured edge running down the column and uncovering it
+// the covered part shows the paper with the previous scene's copy, frozen as it was at the cut
+function coverWith(sc){
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); ctx.drawImage(warmth, 0, 0);
+  const pv = SC[sc.i - 1]; if (pv && S[pv.id].copy){ ctx.save(); try { S[pv.id].copy(pv.d); } catch (e){ console.error(e); } ctx.restore(); }
+  ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H);
+}
+const POUR_CUT = { bloom: C.alt, pour: C.alt, close: '#6B3F24' };
+function transition(sc, lt){
+  if (POUR_CUT[sc.id]){ const p = eIO(inv(0, .45, lt)); if (p >= 1) return;
+    const y = lerp(-40, BENCH + 40, p), wave = x => y + Math.sin(x * .014 + lt * 8) * 14;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(0, BENCH); ctx.lineTo(1080, BENCH); for (let x = 1080; x >= 0; x -= 20) ctx.lineTo(x, Math.min(BENCH, wave(x))); ctx.closePath();
+    ctx.save(); ctx.clip(); coverWith(sc); ctx.restore();
+    ctx.beginPath(); for (let x = 0; x <= 1080; x += 20) ctx.lineTo(x, Math.min(BENCH, wave(x)) - 22); for (let x = 1080; x >= 0; x -= 20) ctx.lineTo(x, Math.min(BENCH, wave(x))); ctx.closePath();
+    ctx.fillStyle = rgba(POUR_CUT[sc.id], .8 * (1 - p * .6) * (1 - inv(.7, 1, p))); ctx.fill(); ctx.restore(); return; }
+  const p = eIO(inv(0, .5, lt)); if (p >= 1) return;
+  const x = lerp(-60, 1080, p), wave = y => x + Math.sin(y * .012 + lt * 9) * 18;
+  ctx.save(); ctx.beginPath(); ctx.moveTo(1080, 0); ctx.lineTo(1080, BENCH);
+  for (let y = BENCH; y >= 0; y -= 20) ctx.lineTo(wave(y), y); ctx.closePath();
+  ctx.save(); ctx.clip(); coverWith(sc); ctx.restore();
+  ctx.beginPath(); for (let y = 0; y <= BENCH; y += 20) ctx.lineTo(wave(y) - 26, y); for (let y = BENCH; y >= 0; y -= 20) ctx.lineTo(wave(y), y); ctx.closePath();
+  ctx.fillStyle = rgba('#6B3F24', .85 * (1 - p * .6) * (1 - inv(.75, 1, p))); ctx.fill(); ctx.restore();
+}
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+// language: Jua (Hangul) has a single weight, so Korean text asks for 400 and is never faux-bolded
+const KO = LANG === 'ko';
+const FH = KO ? '"Jua","Nunito",sans-serif' : FK;
+const WT = w => KO ? 400 : w;
+// the brew bar, side view. Everything hangs off CX (dripper + server axis) and the counter line BENCH (style.js)
+const CX = 1340;
+const SCALE = { x: 1120, y: 770, w: 440, h: 110 };                 // body; top plate sits on y = 770
+const LCD = { x: 1146, y: 786, w: 388, h: 78 };
+const SRV = { top: 604, bot: 770 };                                  // glass server
+const CONE = { top: 392, bot: 574, wt: 300, wb: 62 };                // V60 outer cone
+const INNER = { top: 398, bot: 566, wt: 268, wb: 30 };               // inside of the cone (paper / grounds / water)
+const BED = { full: 486 };                                           // y of the coffee bed surface with 22 g in
+const coneW = y => lerp(INNER.wt, INNER.wb, (y - INNER.top) / (INNER.bot - INNER.top));
+// kettle: pose = spout tip (x, y) and tilt; resting on the counter vs pouring over the cone
+const KREST = { x: 1600, y: 690, r: 0 }, KPOUR = { x: CX + 18, y: 262, r: -.52 };
+// grounds: seeded grains for the pour stream and the mound
+const GRAINS = Array.from({ length: 90 }, (_, i) => ({ o: hash(i * 3 + 1), x: (hash(i * 7 + 2) - .5) * 12, r: 2 + hash(i * 5 + 3) * 2.5 }));
+const BUBBLES = Array.from({ length: 14 }, (_, i) => ({ x: (hash(i + 40) - .5) * .8, t: hash(i + 70), r: 3 + hash(i + 90) * 5 }));
+// top-down spiral for the pour inset: from the centre out to 70 % of the radius (the paper edge stays dry)
+const SPIRAL = (() => { const pts = []; for (let k = 0; k <= 240; k++){ const f = k / 240, a = f * TAU * 3.2, r = f * .7; pts.push([Math.cos(a) * r, Math.sin(a) * r]); } return pts; })();
+const STEAM = [0, 1, 2].map(i => ({ ph: hash(i + 5) * TAU, dx: (i - 1) * 22 }));
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+
+/* ---------------------------------------------------------------- brew bar: shared drawing */
+const COF = '#5B3522', GRD = '#A9784F', GRDW = '#4E2E1D', PAPER = '#FFFDF8';
+const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const mix = (a, b, t) => { const p = hexRgb(a), q = hexRgb(b); return `rgb(${p.map((v, i) => Math.round(lerp(v, q[i], t))).join(',')})`; };
+const sT = id => SC.find(s => s.id === id).t0;
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+// the brew clock (sped up): starts with the first pour, 0:30 at the end of the bloom, stops at 2:45 inside the 2:30–3:00 window
+function clock(t){
+  const b0 = sT('bloom'), p0 = sT('pour'), d0 = sT('done');
+  const K = [[b0 + B, 0], [b0 + 7 * B, 30], [p0, 35], [d0, 134], [d0 + 3 * B, 165]];
+  if (t <= K[0][0]) return 0;
+  for (let i = 1; i < K.length; i++) if (t <= K[i][0]) return lerp(K[i - 1][1], K[i][1], (t - K[i - 1][0]) / (K[i][0] - K[i - 1][0]));
+  return K[K.length - 1][1];
+}
+const pose = (lt, keys, pr = SPRING.default) => ({ x: track(lt, keys.map(([t, k]) => [t, k.x]), ...pr), y: track(lt, keys.map(([t, k]) => [t, k.y]), ...pr), r: track(lt, keys.map(([t, k]) => [t, k.r]), ...pr) });
+const KHOVER = { x: CX + 22, y: 244, r: -.2 };
+
+function scaleBody(on, g, tm, o = {}){
+  const { gA = 1, flash = 0, squash = 1 } = o;
+  ctx.fillStyle = '#CDBBA6'; ctx.beginPath(); ctx.roundRect(SCALE.x + 26, SCALE.y - 12, SCALE.w - 52, 16, 8); ctx.fill();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.roundRect(SCALE.x, SCALE.y, SCALE.w, SCALE.h, 18); ctx.fill();
+  ctx.fillStyle = mix('#4A3A30', '#E3EBD6', on); ctx.beginPath(); ctx.roundRect(LCD.x, LCD.y, LCD.w, LCD.h, 10); ctx.fill();
+  if (flash > 0){ ctx.strokeStyle = rgba(C.acc, flash); ctx.lineWidth = 6; ctx.beginPath(); ctx.roundRect(LCD.x - 5, LCD.y - 5, LCD.w + 10, LCD.h + 10, 14); ctx.stroke(); }
+  if (on <= 0) return;
+  ctx.save(); ctx.translate(0, LCD.y + LCD.h / 2); ctx.scale(1, squash); ctx.translate(0, -(LCD.y + LCD.h / 2));
+  T(`${g.toFixed(1)} g`, LCD.x + 22, LCD.y + 57, { f: FM, w: 700, z: 46, c: C.ink, a: on * gA });
+  ctx.restore();
+  if (tm != null){ ctx.fillStyle = rgba(C.ink, .18 * on); ctx.fillRect(LCD.x + 244, LCD.y + 14, 2, LCD.h - 28);
+    T(mmss(tm), LCD.x + LCD.w - 22, LCD.y + 57, { f: FM, w: 700, z: 46, c: C.ink, a: on, al: 'right' }); }
+}
+function srvPath(){ const t = SRV.top, b = SRV.bot; ctx.beginPath();
+  ctx.moveTo(CX - 100, t); ctx.lineTo(CX + 96, t);
+  ctx.bezierCurveTo(CX + 104, t + 30, CX + 132, t + 48, CX + 132, t + 96); ctx.lineTo(CX + 132, b - 22); ctx.quadraticCurveTo(CX + 132, b, CX + 110, b);
+  ctx.lineTo(CX - 110, b); ctx.quadraticCurveTo(CX - 132, b, CX - 132, b - 22); ctx.lineTo(CX - 132, t + 96);
+  ctx.bezierCurveTo(CX - 132, t + 48, CX - 108, t + 30, CX - 112, t - 6); ctx.closePath(); }
+// the glass server. level 0..1 in its upright frame; px/py/tilt rotate it about a pivot; the liquid surface stays level in world space
+function server(level, col, o = {}){
+  const { tilt = 0, px = CX - 132, py = SRV.bot, dx = 0, dy = 0, surf = null } = o;
+  ctx.save(); ctx.translate(dx, dy); ctx.translate(px, py); ctx.rotate(tilt); ctx.translate(-px, -py);
+  ctx.strokeStyle = rgba(C.ink, .38); ctx.lineWidth = 10; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(CX + 128, SRV.top + 70); ctx.quadraticCurveTo(CX + 186, SRV.top + 76, CX + 180, SRV.top + 118); ctx.quadraticCurveTo(CX + 176, SRV.top + 150, CX + 130, SRV.top + 150); ctx.stroke();
+  srvPath(); ctx.fillStyle = 'rgba(255,255,255,.42)'; ctx.fill();
+  if (level > 0 || surf != null){ ctx.save(); srvPath(); ctx.clip();
+    ctx.translate(px, py); ctx.rotate(-tilt); ctx.translate(-px, -py); ctx.translate(-dx, -dy);
+    const y = surf != null ? surf : lerp(SRV.bot, SRV.top + 34, level) + dy;
+    ctx.fillStyle = col; ctx.fillRect(0, y, W, H); ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(0, y, W, 5); ctx.restore(); }
+  srvPath(); ctx.strokeStyle = rgba(C.ink, .55); ctx.lineWidth = 4; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(CX - 110, SRV.top + 70); ctx.lineTo(CX - 110, SRV.bot - 30); ctx.stroke();
+  ctx.restore();
+}
+// world position of the server's pouring lip for a given tilt about the pivot
+const lipAt = (tilt, px = CX - 132, py = SRV.bot, dx = 0, dy = 0) => { const x = CX - 112 - px, y = SRV.top - 6 - py;
+  return [px + dx + x * Math.cos(tilt) - y * Math.sin(tilt), py + dy + x * Math.sin(tilt) + y * Math.cos(tilt)]; };
+const innerPath = (top = INNER.top, wt = INNER.wt) => { ctx.beginPath(); ctx.moveTo(CX - wt / 2, top); ctx.lineTo(CX + wt / 2, top); ctx.lineTo(CX + INNER.wb / 2, INNER.bot); ctx.lineTo(CX - INNER.wb / 2, INNER.bot); ctx.closePath(); };
+const bedTop = amt => INNER.bot - (INNER.bot - BED.full) * Math.cbrt(clamp(amt));
+const surfY = (x, top, bump) => { const hw = coneW(top) / 2, u = clamp(Math.abs(x - CX) / hw); return top - bump * (1 - u * u); };
+// the V60, drawn as a cutaway so the paper, grounds and water inside stay visible
+function dripper(s){
+  const { dx = 0, dy = 0, a = 1, filter = 0, bed = 0, mound = 0, dome = 0, wet = 0, water = null, waterCol = rgba(C.alt, .4), bubbles = null } = s;
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(dx, dy); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  innerPath(); ctx.fillStyle = rgba(C.acc, .1); ctx.fill();
+  if (filter > 0){ innerPath(362, INNER.wt + 12); ctx.fillStyle = PAPER; ctx.fill(); ctx.strokeStyle = rgba(C.ink, .12); ctx.lineWidth = 2; ctx.stroke(); }
+  ctx.save(); innerPath(); ctx.clip();
+  const top = bedTop(bed), bump = mound + dome;
+  if (water != null){ ctx.fillStyle = waterCol; ctx.fillRect(0, water, W, INNER.bot - water + 10); }
+  if (bed > 0){ const hw = coneW(top) / 2 + 20; ctx.beginPath(); ctx.moveTo(CX - hw, top); ctx.quadraticCurveTo(CX, top - bump * 2, CX + hw, top); ctx.lineTo(CX + hw, INNER.bot + 10); ctx.lineTo(CX - hw, INNER.bot + 10); ctx.closePath();
+    ctx.fillStyle = mix(GRD, GRDW, wet); ctx.fill();
+    // speckle so it reads as grounds, not a flat shape
+    for (let i = 0; i < 70; i++){ const x = CX + (hash(i + 300) - .5) * 2 * hw, y = lerp(top - bump + 6, INNER.bot, hash(i + 500)); if (y < surfY(x, top, bump) + 5) continue;
+      ctx.fillStyle = rgba(wet > .5 ? '#2E1A10' : '#7A5236', .55); ctx.fillRect(x, y, 3, 3); }
+    if (bubbles) for (const [bx, r, ba] of bubbles){ const x = CX + bx * coneW(top) / 2; dot(x, surfY(x, top, bump) - r * .4, r, rgba('#E9D2B4', .75 * ba)); } }
+  ctx.restore();
+  if (filter > 0){ ctx.fillStyle = PAPER; ctx.beginPath(); ctx.moveTo(CX - 146, 362); ctx.lineTo(CX + 146, 362); ctx.lineTo(CX + 141, 386); ctx.lineTo(CX - 141, 386); ctx.closePath(); ctx.fill(); ctx.strokeStyle = rgba(C.ink, .14); ctx.lineWidth = 2; ctx.stroke(); }
+  ctx.strokeStyle = C.acc; ctx.lineWidth = 14;
+  ctx.beginPath(); ctx.moveTo(CX - CONE.wt / 2, CONE.top); ctx.lineTo(CX - CONE.wb / 2, CONE.bot); ctx.moveTo(CX + CONE.wt / 2, CONE.top); ctx.lineTo(CX + CONE.wb / 2, CONE.bot); ctx.stroke();
+  ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(CX + 122, 432); ctx.quadraticCurveTo(CX + 204, 420, CX + 198, 470); ctx.quadraticCurveTo(CX + 192, 514, CX + 84, 512); ctx.stroke();
+  ctx.fillStyle = C.acc; ctx.beginPath(); ctx.roundRect(CX - 166, 380, 332, 18, 9); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(CX - 106, 578, 212, 22, 9); ctx.fill();
+  ctx.fillStyle = rgba('#FFFFFF', .35); ctx.beginPath(); ctx.roundRect(CX - 150, 384, 120, 6, 3); ctx.fill();
+  ctx.fillStyle = '#7E2F1E'; ctx.fillRect(CX - 9, 596, 18, 5);
+  ctx.restore();
+}
+function kettle(k, a = 1){
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(k.x, k.y); ctx.rotate(k.r); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 13; ctx.beginPath(); ctx.moveTo(224, 88); ctx.lineTo(258, 88); ctx.quadraticCurveTo(280, 90, 274, 114); ctx.lineTo(256, 176); ctx.stroke();
+  ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(100, 176); ctx.quadraticCurveTo(62, 170, 58, 118); ctx.quadraticCurveTo(54, 40, 28, 10); ctx.quadraticCurveTo(14, -2, 2, 2); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(92, 196); ctx.lineTo(236, 196); ctx.quadraticCurveTo(246, 196, 244, 184); ctx.lineTo(226, 92); ctx.quadraticCurveTo(220, 62, 190, 60);
+  ctx.lineTo(138, 60); ctx.quadraticCurveTo(108, 62, 102, 92); ctx.lineTo(84, 184); ctx.quadraticCurveTo(82, 196, 92, 196); ctx.fill();
+  ctx.fillStyle = C.acc; ctx.fillRect(90, 150, 150, 10);
+  ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(118, 100); ctx.lineTo(106, 140); ctx.stroke();
+  ctx.fillStyle = '#4A382C'; ctx.beginPath(); ctx.roundRect(126, 46, 76, 16, 8); ctx.fill(); dot(164, 40, 9, '#4A382C');
+  ctx.restore();
+}
+// a falling stream: starts at tOn (head drops from y0), cuts at tOff (tail follows). x wobbles a little
+function stream(lt, x, y0, y1, tOn, tOff, col = C.alt, w = 7){
+  if (lt < tOn) return; const v = 1500, head = Math.min(y1, y0 + (lt - tOn) * v), tail = lt > tOff ? Math.min(y1, y0 + (lt - tOff) * v) : y0; if (tail >= head) return;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.beginPath();
+  for (let y = tail; y <= head; y += 10) ctx.lineTo(x + Math.sin(y * .05 + lt * 20) * 1.5, y); ctx.stroke(); ctx.restore();
+}
+function steam(x, y, lt, a = 1, h = 90){
+  if (a <= 0) return;
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = 7;
+  STEAM.forEach((s, i) => { const ph = (lt * .55 + i / 3) % 1, al = Math.sin(ph * Math.PI) * .22 * a; if (al <= 0) return;
+    ctx.strokeStyle = rgba(C.dim, al); ctx.beginPath();
+    for (let k = 0; k <= 12; k++){ const f = k / 12, yy = y - f * h - ph * 30; ctx.lineTo(x + s.dx + Math.sin(f * 5 + lt * 2.4 + s.ph) * 12, yy); } ctx.stroke(); });
+  ctx.restore();
+}
+// water temperature pill: a fixed spot left of the stream, drawn above the bar (and outside the camera), while water is poured
+function tempPill(p){
+  if (p <= 0) return;
+  ctx.save(); ctx.translate(1256, 302); ctx.scale(lerp(.6, 1, p), lerp(.6, 1, p)); ctx.globalAlpha *= clamp(p * 2);
+  ctx.fillStyle = C.panel; ctx.strokeStyle = C.acc; ctx.lineWidth = 5; ctx.beginPath(); ctx.roundRect(-80, -34, 160, 68, 34); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.alt; ctx.beginPath(); ctx.moveTo(-52, -14); ctx.quadraticCurveTo(-40, 2, -40, 8); ctx.arc(-52, 8, 12, 0, Math.PI); ctx.quadraticCurveTo(-64, 2, -52, -14); ctx.fill();
+  T(TXT.temp, 16, 15, { f: FH, w: WT(900), z: 40, c: C.acc, al: 'center' }); ctx.restore();
+}
+
+// camera: scale the brew bar about a point on the counter (copy column untouched)
+const ZF = CX - 200;   // bloom close-up focus (on the counter, left of the dripper, so the bar grows up and right)
+function cam(z, fx = CX){ ctx.translate(fx, BENCH); ctx.scale(z, z); ctx.translate(-fx, -BENCH); }
+// a dark pill on the counter under the scale (tare note, sped-up timer note)
+function benchTag(s, a, lift = 0){
+  if (a <= 0) return; const w = mw(s, FH, WT(900), 44, KO ? 0 : 2) + 64, x = CX - w / 2, y = 950 + lift;
+  ctx.save(); ctx.globalAlpha *= clamp(a); ctx.fillStyle = C.ink; ctx.beginPath(); ctx.roundRect(x, y - 50, w, 66, 33); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(CX - 13, y - 50); ctx.lineTo(CX, y - 64); ctx.lineTo(CX + 13, y - 50); ctx.fill();
+  T(s, CX, y, { f: FH, w: WT(900), z: 44, c: C.bg, al: 'center', ls: KO ? 0 : 2 }); ctx.restore();
+}
+
+/* ---------------------------------------------------------------- copy column */
+// objects in the copy column (ring, inset) leave in the last .25 s of a scene. Copy itself stays to the cut:
+// each scene's copy() is redrawn frozen by the cut's wipe (style.js), so the wipe clears old copy and uncovers new copy in one pass
+const exitA = (lt, d) => d ? 1 - eIO(inv(d - .26, d - .03, lt)) : 1;
+function stepBadge(n, lt, d){
+  const p = spring(lt - .08, ...SPRING.snappy) * exitA(lt, d); if (p <= 0) return;
+  ctx.save(); ctx.translate(156, 290); ctx.scale(p, p); dot(0, 0, 46, C.ink); T(String(n), 0, 20, { f: FK, w: 900, z: 56, c: C.bg, al: 'center' }); ctx.restore();
+}
+function copyBlock(lt, lines, sub, o = {}){
+  const { y = 450, z = 104, gap = 112, t0 = .1, fit = 780, d = 0 } = o, a = exitA(lt, d), dy = (1 - a) * -14;
+  lines.forEach((s, i) => rise(s, 110, y + dy + i * gap, lt, t0 + i * .12, { f: FH, w: WT(900), z, fit, c: C.ink, a }, .5, 26));
+  if (sub) [].concat(sub).forEach((s, i) => rise(s, 110, dy + (o.sy ?? (y + (lines.length - 1) * gap + 100)) + i * 70, lt, t0 + .42 + i * .1, { f: FH, w: WT(800), z: 58, fit, c: C.dim, a }, .5, 16));
+}
+
+/* ---------------------------------------------------------------- scenes */
+S.open = {
+  draw(lt, d, t){
+    const lcd = inv(1.5 * B, 1.5 * B + .15, lt);
+    scaleBody(lcd, 0, 0, { flash: (1 - inv(1.5 * B, 2.4 * B, lt)) * (lcd > 0 ? .8 : 0) });
+    server(0, COF);
+    dripper({ dy: -150 * (1 - spring(lt, ...SPRING.heavy)), a: inv(0, .2, lt) });
+    kettle(KREST); steam(KREST.x + 4, KREST.y - 16, lt, inv(.4, 1.2, lt));
+    S.open.copy(lt);
+  },
+  copy(lt){
+    const ea = 1;
+    T(TXT.oK, 110, 140, { f: FH, w: WT(800), z: 34, c: C.acc, ls: KO ? 0 : 4, a: inv(.1, .35, lt) });
+    copyBlock(lt, TXT.oH, null, { y: 248, z: 124, gap: 120, t0: .15, fit: 880 });
+    rise(TXT.oS, 110, 748, lt, 1.1, { f: FH, w: WT(800), z: 50, c: C.dim, fit: 780 }, .5, 16);
+    // five numbered dots spring in one per half beat: the whole lesson at a glance
+    for (let i = 0; i < 5; i++){ const p = spring(lt - (2.5 + i * .5) * B, ...SPRING.playful) * ea; if (p <= 0) continue;
+      ctx.save(); ctx.translate(140 + i * 76, 826); ctx.scale(p, p); dot(0, 0, 28, i ? C.ink : C.acc); T(String(i + 1), 0, 11, { f: FK, w: 900, z: 32, c: C.bg, al: 'center' }); ctx.restore();
+      if (i < 4){ const q = inv((2.75 + i * .5) * B, (3 + i * .5) * B, lt) * ea; if (q > 0){ ctx.fillStyle = rgba(C.ink, .3); ctx.fillRect(140 + i * 76 + 32, 824, 12 * q, 4); } } }
+  },
+  cues: d => [[0, 'bell'], ...[0, 1, 2, 3, 4].map(i => [(2.5 + i * .5) * B, 'blip', [523, 587, 659, 784, 880][i], .045]), [0, 'pad', [174.61, 220, 261.63, 329.63], d + .3, .07], [0, 'bass', 87.31, .08, 'triangle'], [2 * B, 'bass', 87.31, .07, 'triangle'], [4 * B, 'bass', 82.41, .07, 'triangle'], [0, 'whoosh', .35, .08], [B, 'stamp', .35], [1.5 * B, 'blip', 880, .05], [d - 1.1, 'riser', 1.1, .08]]
+};
+
+S.rinse = {
+  draw(lt, d, t){
+    // tip-out: dripper lifts, server tips its rinse water away, everything settles back
+    const lift = -120 * (spring(lt - 4.5 * B, ...SPRING.default) - spring(lt - 6 * B, ...SPRING.default));
+    const tilt = -.4 * (spring(lt - 4.75 * B, ...SPRING.default) - spring(lt - 5.75 * B, ...SPRING.default));
+    const fill = .3 * eIO(inv(3 * B, 4.5 * B, lt)), drain = eIO(inv(5 * B, 5.75 * B, lt)), lvl = fill * (1 - drain);
+    scaleBody(1, 0, 0);
+    server(lvl, rgba(C.alt, .45), { tilt });
+    if (lvl > .01 && tilt < -.2){ const [lx, ly] = lipAt(tilt); stream(lt, lx - 6, ly, BENCH - 4, 5 * B, 5.6 * B, rgba(C.alt, .7), 8); }
+    // filter: a flat fan folds along its seam in the air, then drops into the dripper
+    const drop = spring(lt - (1.5 * B - .12), ...SPRING.snappy), seated = drop > .6 ? 1 : 0;
+    const water = lt > 3 * B && lt < 4.75 * B ? lerp(INNER.bot, 470, Math.sin(Math.PI * inv(3 * B, 4.75 * B, lt))) : null;
+    dripper({ dy: lift, filter: seated, water, waterCol: rgba(C.alt, .35) });
+    if (!seated){
+      const fold = eIO(inv(.5 * B, 1.3 * B, lt)), oy = -230 * (1 - drop), top = 362 + oy, bot = INNER.bot + oy, hw = lerp(230, (INNER.wt + 12) / 2, fold);
+      const a = inv(0, .2, lt);
+      ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = PAPER; ctx.strokeStyle = rgba(C.ink, .25); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(CX - hw, top); ctx.quadraticCurveTo(CX, top - 30 * (1 - fold), CX + hw, top); ctx.lineTo(CX + INNER.wb / 2, bot); ctx.lineTo(CX - INNER.wb / 2, bot); ctx.closePath(); ctx.fill(); ctx.stroke();
+      // the seam flap: sticks out to the right, then creases over (width goes + → −)
+      const fw = 34 * Math.cos(Math.PI * fold); ctx.fillStyle = '#EFE7D8';
+      ctx.beginPath(); ctx.moveTo(CX + hw, top); ctx.lineTo(CX + INNER.wb / 2, bot); ctx.lineTo(CX + INNER.wb / 2 + fw * .2, bot - 10); ctx.lineTo(CX + hw + fw, top + 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.moveTo(CX + hw - 4, top + 6); ctx.lineTo(CX + INNER.wb / 2, bot - 6); ctx.stroke(); ctx.restore();
+    }
+    const k = pose(lt, [[0, KREST], [2.5 * B, KPOUR], [4.5 * B, KREST]]);
+    stream(lt, KPOUR.x, KPOUR.y + 4, 540 + lift, 3 * B, 4.25 * B);
+    kettle(k);
+    this.copy(lt, d);
+  },
+  copy(lt){ stepBadge(1, lt); copyBlock(lt, TXT.rH, TXT.rS); },
+  cues: d => [[.5 * B, 'tick', .04], [1.5 * B, 'stamp', .35], [3 * B, 'whoosh', 1.2, .07], [4.5 * B, 'blip', 520, .04], [5 * B, 'down', .12], [6 * B, 'tick', .03]]
+};
+
+S.dose = {
+  draw(lt, d, t){
+    const pourOn = B, pourOff = 3.5 * B, amt = eIO(inv(pourOn, pourOff, lt));
+    const shakeP = inv(4.5 * B, 6 * B, lt), sx = Math.sin(shakeP * TAU * 3) * 10 * (1 - shakeP) * (shakeP > 0 && shakeP < 1 ? 1 : 0);
+    const mound = 30 * Math.min(1, amt * 1.4) * (1 - eO(shakeP));
+    const tare = lt >= 6.5 * B, fl = inv(6.5 * B - .06, 6.5 * B + .06, lt), sq = fl > 0 && fl < 1 ? Math.abs(1 - 2 * fl) : 1;
+    const g = tare ? 0 : 22 * amt, land = inv(pourOff, pourOff + .6, lt);
+    // slow creep in on the bar (the copy column is not zoomed)
+    const z = 1 + .035 * Math.sin(Math.PI * clamp(lt / d));   // creeps in and back out, so the cut into bloom doesn't jump
+    ctx.save(); ctx.translate(CX, 700); ctx.scale(z, z); ctx.translate(-CX, -700);
+    scaleBody(1, g, 0, { flash: land > 0 && land < 1 ? (1 - land) : 0, squash: sq });
+    kettle(KREST);
+    ctx.save(); ctx.translate(sx, 0); server(0, COF); dripper({ filter: 1, bed: amt, mound }); ctx.restore();
+    // dosing cup comes in, tips, pours a stream of grounds, leaves
+    const cp = pose(lt, [[0, { x: CX + 300, y: -140, r: 0 }], [0, { x: CX + 10, y: 262, r: 0 }], [.5 * B, { x: CX + 10, y: 262, r: -1.2 }], [3.5 * B, { x: CX + 10, y: 262, r: -.2 }], [4 * B, { x: CX + 320, y: -160, r: 0 }]]);
+    if (lt < pourOff + 1.6 * B){ const top = bedTop(amt) - mound, head = Math.min(top, 262 + (lt - pourOn) * 1400), tail = lt > pourOff ? 262 + (lt - pourOff) * 1400 : 262;
+      if (lt > pourOn) for (const gr of GRAINS){ const y = lerp(262, top, (gr.o + lt * 1.9) % 1); if (y > head || y < tail) continue; dot(CX + gr.x * (y - 262) / 200 + 4, y, gr.r, GRDW, .9); }
+      ctx.save(); ctx.translate(cp.x, cp.y); ctx.rotate(cp.r); ctx.translate(46, 36);
+      ctx.fillStyle = C.panel; ctx.strokeStyle = rgba(C.ink, .35); ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(-46, -36, 92, 76, 14); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = rgba(C.acc, .85); ctx.fillRect(-46, 4, 92, 12); ctx.restore(); }
+    ctx.restore();
+    // "zero the scale" tag under the scale after the tare
+    const tp = spring(lt - 6.5 * B, ...SPRING.snappy);
+    benchTag(TXT.tare, tp * 2 * exitA(lt, d), (1 - tp) * 20);
+    this.copy(lt, d);
+  },
+  copy(lt){ stepBadge(2, lt); copyBlock(lt, TXT.dH, TXT.dS); },
+  cues: d => [[B, 'roll', 2.5 * B, 16], [3.5 * B, 'stamp', .45], [4 * B, 'whoosh', .2, .04], [4.5 * B, 'tick', .05], [5 * B, 'tick', .05], [5.5 * B, 'tick', .05], [6.5 * B, 'blip', 990, .06], [d - 1.1, 'riser', 1.1, .06]]
+};
+
+S.bloom = {
+  draw(lt, d, t){
+    const on = B, off = 2.5 * B, wet = inv(on + .3, off, lt), g = 50 * inv(on, off, lt), tm = clock(t);
+    const dome = 30 * spring(lt - off - .2, 60, 15) + 8 * inv(off, d, lt);
+    const bubbles = BUBBLES.map(b => { const ta = off + .4 + b.t * 4 * B, p = inv(ta, ta + .5, lt); return [b.x, 1.6 * b.r * Math.sin(Math.PI * p), p > 0 && p < 1 ? 1 : 0]; }).filter(b => b[2] > 0);
+    const z = 1 + .4 * spring(lt - off, ...SPRING.heavy);
+    benchTag(TXT.sped, spring(lt - on, ...SPRING.snappy) * 2);
+    ctx.save(); cam(z, ZF);
+    scaleBody(1, g, tm);
+    server(.04 * inv(off, d, lt), COF);
+    const water = lt > on && lt < off + 1.2 ? lerp(bedTop(1) + 4, bedTop(1) - 14, Math.sin(Math.PI * inv(on, off + 1.2, lt))) : null;
+    dripper({ filter: 1, bed: 1, wet, dome, bubbles, water, waterCol: rgba('#7A4A2C', .45) });
+    const k = pose(lt, [[0, KREST], [0, KPOUR], [off, KHOVER]]);
+    stream(lt, KPOUR.x, KPOUR.y + 4, bedTop(1) - 6, on, off);
+    kettle(k);
+    ctx.restore();
+    tempPill(spring(lt - .5 * B, ...SPRING.snappy) * (1 - inv(2.75 * B, 3 * B, lt)));
+    // 30-second ring (sped up), between the copy and the bar
+    const rp = spring(lt - .8 * B, ...SPRING.snappy) * exitA(lt, d);
+    if (rp > 0){ const cx = 1010, cy = 520, r = 78;
+      ctx.save(); ctx.translate(cx, cy); ctx.scale(rp, rp);
+      dot(0, 0, r + 22, C.panel); ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.stroke();
+      const f = clamp(tm / 30); if (f > 0){ ctx.strokeStyle = f >= 1 ? C.acc : C.alt; ctx.beginPath(); ctx.arc(0, 0, r, -Math.PI / 2, -Math.PI / 2 + TAU * f); ctx.stroke(); }
+      T(mmss(Math.min(tm, 30)), 0, 16, { f: FK, w: 900, z: 46, c: C.ink, al: 'center' });
+      ctx.restore();
+      }
+    this.copy(lt, d);
+  },
+  copy(lt){ stepBadge(3, lt); copyBlock(lt, TXT.bH, TXT.bS); },
+  cues: d => [[.5 * B, 'blip', 700, .04], [B, 'whoosh', 1.4, .07], [2.5 * B, 'down', .05], ...[3, 4, 5, 6].map(i => [i * B, 'tick', .035]), ...[3.5, 4.5, 5.5, 6.5].map(i => [i * B, 'tick', .025]), [7 * B, 'bell']]
+};
+
+S.pour = {
+  draw(lt, d, t){
+    const on = .5 * B, off = 6 * B, tm = clock(t);
+    const G = [[0, 50], [.5 * B, 50], [1.5 * B, 100], [3 * B, 200], [4.5 * B, 300], [6 * B, 400]];
+    let g = 400; for (let i = 1; i < G.length; i++) if (lt < G[i][0]){ g = lerp(G[i - 1][1], G[i][1], inv(G[i - 1][0], G[i][0], lt)); break; }
+    const top = bedTop(1) - 20, lvl = lerp(top, 440, spring(lt - on, ...SPRING.heavy)) + (lt > off ? (top - 440) * eIO(inv(off, d + 2.5 * B, lt)) : 0);
+    benchTag(TXT.sped, 1);
+    ctx.save(); cam(lerp(1.4, 1, spring(lt, ...SPRING.heavy)), ZF);
+    scaleBody(1, g, tm);
+    server(lerp(.04, .6, inv(.8 * B, d, lt)), COF);
+    dripper({ filter: 1, bed: 1, wet: 1, dome: lerp(38, 22, spring(lt - on, ...SPRING.heavy)), water: lvl, waterCol: rgba('#7A4A2C', .5) });
+    // the kettle circles gently while it pours, then goes home
+    const sw = Math.sin(inv(on, off, lt) * TAU * 3.2) * 12 * (lt > on && lt < off ? 1 : 0);
+    const k = pose(lt, [[0, KHOVER], [0, KPOUR], [off, KHOVER], [7 * B, KREST]]); k.x += sw;
+    stream(lt, KPOUR.x + sw, KPOUR.y + 4, lvl, on, off);
+    kettle(k);
+    ctx.restore();
+    tempPill(spring(lt - .5 * B, ...SPRING.snappy) * (1 - inv(6 * B, 6.3 * B, lt)));
+    // top-down inset: the spiral from the centre, never out to the paper
+    const ip = spring(lt - .25 * B, ...SPRING.default) * exitA(lt, d);
+    if (ip > 0){ const cx = 1005, cy = 425, r = 150;
+      ctx.save(); ctx.translate(cx, cy); ctx.scale(ip, ip);
+      dot(0, 0, r + 10, C.acc); dot(0, 0, r - 6, PAPER); dot(0, 0, r * .74, GRDW);
+      ctx.save(); ctx.setLineDash([10, 9]); ctx.strokeStyle = rgba(C.acc, .7); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, r * .87, 0, TAU); ctx.stroke(); ctx.restore();
+      const sp = eIO(inv(.5 * B, 6 * B, lt)); ctx.strokeStyle = C.alt; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      const e = polyPartial(SPIRAL.map(([x, y]) => [x * r, y * r]), sp);
+      if (sp > 0 && sp < 1){ dot(e[0], e[1], 13, C.panel); dot(e[0], e[1], 8, C.alt); }
+      ctx.restore();
+      // "not here": a cross on the paper ring
+      const xp = spring(lt - 2 * B, ...SPRING.snappy) * exitA(lt, d);
+      if (xp > 0){ const a = -Math.PI * .75, px = cx + Math.cos(a) * r * .87, py = cy + Math.sin(a) * r * .87, s = 16 * xp;
+        dot(px, py, 22 * xp, C.panel); ctx.strokeStyle = C.acc; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(px - s * .6, py - s * .6); ctx.lineTo(px + s * .6, py + s * .6); ctx.moveTo(px + s * .6, py - s * .6); ctx.lineTo(px - s * .6, py + s * .6); ctx.stroke();
+        T(TXT.no, px - 30, py - 20, { f: FH, w: WT(900), z: 36, c: C.acc, a: clamp(xp), al: 'right' }); }
+      T(TXT.top, cx, cy + r + 54, { f: FH, w: WT(800), z: 30, c: C.dim, al: 'center', ls: KO ? 0 : 2, a: inv(.6 * B, 1 * B, lt) * exitA(lt, d) }); }
+    this.copy(lt, d);
+  },
+  copy(lt){ stepBadge(4, lt); copyBlock(lt, TXT.pH, TXT.pS, { fit: 700 }); },
+  cues: d => [[.5 * B, 'blip', 700, .04], [.5 * B, 'scan', 5.5 * B, .05], ...[1.5, 3, 4.5, 6].map((b, i) => [b * B, 'blip', [660, 784, 988, 1175][i], .06]), [2 * B, 'tick', .05], [6 * B, 'correct', .1], [7 * B, 'blip', 520, .03]]
+};
+
+// drips land further and further apart; each drop lands on its quarter-beat grid time
+const DRIPS = [1, 1.5, 2.25, 3.25];
+S.done = {
+  draw(lt, d, t){
+    const tm = clock(t), lift = spring(lt - 3.5 * B, ...SPRING.heavy), da = 1 - inv(3.75 * B, 5 * B, lt);
+    const top = bedTop(1) - 20, lvl = lerp(440 + (top - 440) * eIO(inv(6 * B, sT('done') - sT('pour') + 2.5 * B, sT('done') - sT('pour'))), top, eIO(inv(0, 2.2 * B, lt)));
+    scaleBody(1, 400, tm, { flash: lt > 3 * B ? (1 - inv(3 * B, 3.8 * B, lt)) : 0 });
+    const sl = lerp(.6, .8, eO(inv(0, 3.4 * B, lt)));
+    server(sl, COF);
+    // drips from the tip, further and further apart, until the dripper lifts
+    const surf = lerp(SRV.bot, SRV.top + 34, sl);
+    DRIPS.forEach(b => { const t0 = b * B, p = inv(t0 - .2, t0, lt); if (p <= 0 || p >= 1 || lt > 3.5 * B) return; dot(CX, lerp(606, surf, p * p), 6, COF); });
+    dripper({ dy: -330 * lift, a: da, filter: 1, bed: 1, wet: 1, dome: 22 * (1 - inv(0, 2.4 * B, lt) * .6), water: lvl, waterCol: rgba('#7A4A2C', .5) });
+    if (lt < 2.2 * B) stream(lt, CX, 604, surf, -1, 2.2 * B, COF, 6);
+    kettle(KREST); steam(CX, SRV.top - 12, lt, inv(4 * B, 5 * B, lt), 120);
+    benchTag(TXT.sped, exitA(lt, d));
+    this.copy(lt, d);
+  },
+  copy(lt){
+    stepBadge(5, lt); copyBlock(lt, TXT.fH, TXT.fS);
+    // 0:00–3:00 timeline under the copy, with the 2:30–3:00 window
+    const tm = clock(sT('done') + lt), bx = 110, bw = 680, by = 780, gp = spring(lt - .3 * B, ...SPRING.default), X = s => bx + bw * s / 180;
+    if (gp > 0){ ctx.save(); ctx.globalAlpha *= clamp(gp * 1.5);
+      ctx.fillStyle = C.grid; ctx.beginPath(); ctx.roundRect(bx, by, bw * gp, 22, 11); ctx.fill();
+      ctx.fillStyle = rgba(C.bad, .45); ctx.beginPath(); ctx.roundRect(X(150), by, (X(180) - X(150)) * inv(.4, 1, gp), 22, 11); ctx.fill();
+      ctx.fillStyle = C.alt; ctx.beginPath(); ctx.roundRect(bx, by, Math.max(22, X(tm) - bx) * gp, 22, 11); ctx.fill();
+      const stop = lt >= 3 * B, mp = stop ? eBack(inv(3 * B, 3 * B + .25, lt)) : 1; dot(X(tm), by + 11, 16 * mp + (stop ? 0 : 0), stop ? C.acc : C.alt); dot(X(tm), by + 11, 7, C.panel);
+      ['0:00', '1:00', '2:00', '3:00'].forEach((s, i) => T(s, X(i * 60), by + 66, { f: FK, w: 800, z: 30, c: C.dim, al: i === 0 ? 'left' : i === 3 ? 'right' : 'center' }));
+      T(TXT.zone, X(180) + 14, by - 24, { f: FK, w: 900, z: 52, c: '#9A6512', al: 'right', a: inv(.6 * B, 1 * B, lt) });
+      ctx.restore(); }
+  },
+  cues: d => [...DRIPS.map((b, i) => [b * B, 'blip', 1320, .03 - i * .003]), [3 * B, 'stamp', .45], [3.5 * B, 'whoosh', .45, .08], [d - 1.1, 'riser', 1.1, .06]]
+};
+
+S.close = {
+  draw(lt, d, t){
+    // mug on the counter; the server pours into it, then the bar slides away and the recipe card slides in
+    const mp = spring(lt - .75 * B, ...SPRING.heavy), mx = 560, ms = 1.55;
+    const S0 = { x: 0, y: 0, r: 0 }, SP = { x: 640 - (CX - 112), y: -8, r: -1.05 };
+    // the scale and kettle bow out while the pour happens; the server rights itself beside the mug and fades before the card lands
+    const sp = pose(lt, [[0, S0], [.75 * B, SP], [2.25 * B, { x: SP.x + 120, y: -30, r: 0 }]], SPRING.default), out = 180 * spring(lt - 1.25 * B, ...SPRING.default), barA = 1 - inv(1.25 * B, 1.9 * B, lt), srvA = 1 - inv(2.25 * B, 2.5 * B, lt);
+    const [lx, ly] = lipAt(sp.r, CX - 112, SRV.top - 6, sp.x, sp.y);
+    const pourA = inv(1.25 * B, 1.35 * B, lt) * (1 - inv(2.25 * B, 2.35 * B, lt)), mugFill = eIO(inv(1.25 * B, 2.25 * B, lt));
+    ctx.save(); ctx.translate(out, 0); ctx.globalAlpha *= barA;
+    scaleBody(1, 400, 165);
+    kettle(KREST);
+    ctx.restore();
+    // mug
+    if (mp > 0){ ctx.save(); ctx.translate(mx, BENCH); ctx.scale(lerp(1.1, ms, mp), lerp(1.1, ms, mp)); ctx.globalAlpha *= clamp(mp * 2);
+      ctx.strokeStyle = '#FFF6EA'; ctx.lineWidth = 16; ctx.beginPath(); ctx.arc(78, -66, 30, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+      ctx.strokeStyle = rgba(C.ink, .18); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(78, -66, 38, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+      ctx.fillStyle = '#FFF6EA'; ctx.beginPath(); ctx.moveTo(-82, -140); ctx.lineTo(82, -140); ctx.lineTo(74, -16); ctx.quadraticCurveTo(72, 0, 56, 0); ctx.lineTo(-56, 0); ctx.quadraticCurveTo(-72, 0, -74, -16); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = rgba(C.ink, .18); ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = C.acc; ctx.fillRect(-79, -96, 158, 14);
+      ctx.fillStyle = '#E8D9C4'; ctx.beginPath(); ctx.ellipse(0, -140, 82, 14, 0, 0, TAU); ctx.fill();
+      if (mugFill > 0){ ctx.fillStyle = COF; ctx.beginPath(); ctx.ellipse(0, -140, 76 * lerp(.6, 1, mugFill), 11 * lerp(.6, 1, mugFill), 0, 0, TAU); ctx.fill(); }
+      ctx.restore();
+      steam(mx, BENCH - 150 * ms - 20, lt, inv(2.25 * B, 3.25 * B, lt) * (.7 + .3 * beatPulse(lt)), 110); }
+    // server (moves with the pour, then away with the bar)
+    const sl = lerp(.8, .25, mugFill);
+    const up = lerp(SRV.bot, SRV.top + 34, sl) + sp.y, surf = sp.r < -.02 ? lerp(up, lerp(ly + 6, ly + 60, mugFill), clamp(-sp.r / 1.05)) : null;
+    if (srvA > 0){ ctx.save(); ctx.globalAlpha *= srvA; server(sl, COF, { tilt: sp.r, px: CX - 112, py: SRV.top - 6, dx: sp.x, dy: sp.y, surf }); ctx.restore(); }
+    if (pourA > 0) stream(lt, lx - 4, ly + 6, BENCH - 140 * ms + 8, 1.25 * B, 2.25 * B, COF, 10);
+    // recipe card
+    const cp = spring(lt - 2.5 * B, ...SPRING.heavy);
+    if (cp > 0){ const cx = 1440, cy = 490 - (1 - cp) * 80, w = 720, h = 610, rot = lerp(.07, -.022, cp);
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(lerp(.86, 1, cp), lerp(.86, 1, cp)); ctx.globalAlpha *= clamp(cp * 2.2);
+      ctx.fillStyle = rgba(C.ink, .1); ctx.beginPath(); ctx.roundRect(-w / 2 + 10, -h / 2 + 14, w, h, 18); ctx.fill();
+      ctx.fillStyle = C.panel; ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, 18); ctx.fill();
+      ctx.fillStyle = C.acc; ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, 92, [18, 18, 0, 0]); ctx.fill();
+      T(TXT.cT, -w / 2 + 40, -h / 2 + 60, { f: FH, w: WT(900), z: 36, c: C.panel, ls: KO ? 0 : 3, fit: w - 80 });
+      dot(0, -h / 2 + 4, 13, C.ink); dot(-4, -h / 2, 4, 'rgba(255,255,255,.5)');
+      TXT.cR.forEach(([lab, val], i) => { const t0 = (2.75 + i * .5) * B, a = inv(t0, t0 + .2, lt), y = -h / 2 + 168 + i * 118; if (a <= 0) return;
+        ctx.strokeStyle = C.line; ctx.lineWidth = 2; if (i) { ctx.beginPath(); ctx.moveTo(-w / 2 + 40, y - 52); ctx.lineTo(w / 2 - 40, y - 52); ctx.stroke(); }
+        dot(-w / 2 + 62, y + 4, 20, rgba(C.acc, .14));
+        ctx.strokeStyle = C.acc; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; polyPartial([[-w / 2 + 51, y + 4], [-w / 2 + 59, y + 13], [-w / 2 + 75, y - 7]], inv(t0 + .05, t0 + .3, lt));
+        T(lab, -w / 2 + 104, y - 12, { f: FH, w: WT(800), z: 38, c: C.dim, a, fit: w - 150, ls: KO ? 0 : 1 });
+        T(val, -w / 2 + 104 + (1 - spring(lt - t0, ...SPRING.snappy)) * 24, y + 42, { f: FH, w: WT(900), z: 52, c: C.ink, a, fit: w - 150 }); });
+      ctx.restore(); }
+    S.close.copy(lt);
+  },
+  copy(lt){
+    copyBlock(lt, [TXT.eH], null, { y: 300, z: 116, t0: .1, fit: 820 });
+    rise(TXT.eS, 110, 394, lt, B, { f: FH, w: WT(800), z: 44, c: C.dim, fit: 880 }, .5, 14);
+  },
+  cues: d => [[0, 'pad', [174.61, 220, 261.63, 329.63], d + .3, .06], [0, 'bass', 87.31, .08, 'triangle'], [2 * B, 'bass', 65.41, .08, 'triangle'], [4 * B, 'bass', 87.31, .08, 'triangle'], [.75 * B, 'tick', .04], [1.25 * B, 'whoosh', 1, .06], [2.5 * B, 'stamp', .3], ...[0, 1, 2, 3].map(i => [(2.75 + i * .5) * B, 'blip', [660, 784, 988, 1175][i], .05]), [4.75 * B, 'chord', 3], [5.25 * B, 'bell']]
+};
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [
+  ['open', 6, 'START'], ['rinse', 7, 'STEP 1'], ['dose', 8, 'STEP 2'], ['bloom', 8, 'STEP 3'], ['pour', 9, 'STEP 4'], ['done', 7, 'STEP 5'], ['close', 7, 'ENJOY']
+];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+  // build font-dependent caches here (e.g. buildDots())
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

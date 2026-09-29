@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>Pour-over, made simple · V60 guide</title>
+<meta name="description" content="A 30-second guide to brewing your first pour-over coffee with a Hario V60.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pour-over, made simple">
+<meta property="og:description" content="A 30-second guide to brewing your first pour-over coffee with a Hario V60.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F6EFE4">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Jua&display=swap">
+<style>.dock{min-height:46px}</style>
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const KO = new URLSearchParams(location.search).get('lang') === 'ko';   // Korean swaps the display face (Jua has one heavy weight; Nunito 900 for Latin)
+const CFG = {
+  bpm: 100,                                   // every timing below is written in beats (B) so picture and sound stay locked
+  colors: { bg: '#F6EFE4', panel: '#FFFDF7', line: '#D9CBB5', ink: '#2B1D14', dim: '#8A7565', grid: '#EBDFCB',
+            acc: '#C8632B', accHi: '#E89A66', alt: '#5F8F6B', bad: '#B8352A' },
+  fonts: { sans: KO ? '"Noto Sans KR","Nunito",sans-serif' : '"Nunito","Noto Sans KR",sans-serif',
+           display: KO ? '"Jua","Nunito",sans-serif' : '"Nunito","Jua",sans-serif',
+           mono: '"JetBrains Mono",ui-monospace,Menlo,monospace' },
+  textSplit: false,                           // calm style: no RGB split
+  hudTitle: '', hudMeta: t => '',              // unused: the frame is a five-dot step counter only (see style.js)
+  cta: { href: '', newTab: false },           // no call to action: dock button and end hotspot stay hidden
+  endCta: null,
+  endCtaBeat: 6.5,
+  posterT: 2.2,                               // scene 1 with the headline and dripper in place; left third empty for the play button
+  watchKey: 'v60-pour-over-watched',
+  music: { groove: 'soft', liteScenes: ['water', 'bloom'], arpScenes: ['pour', 'done'], tailBeats: 4,
+           roots: [65.41, 55, 43.65, 49],     // C – Am – F – G, one bass root per bar
+           chords: [[523.25, 659.25, 783.99], [440, 523.25, 659.25], [349.23, 440, 523.25], [392, 493.88, 587.33]] },
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+I18N.en = {
+  ui: { title: 'Pour-over, made simple', play: 'Play with sound', playsub: 'click or press Space', playsubtouch: 'tap to play', replay: 'Replay',
+        rotate: '↻ Turn your phone sideways for a bigger view', fullscreen: '⤢ Full screen', scrub: 'Playback position',
+        canvas: 'Motion graphic: how to brew pour-over coffee with a V60. Click to play or pause, Space to play, arrow keys to seek, M to mute, F for full screen',
+        ctaLab: '', ctaSub: '', ctaGo: '', endTag: '', lang: '한국어' },
+  hello: { k: 'V60 POUR-OVER · FOR BEGINNERS', h: ['Pour-over,', 'made simple.'], s: ['A 30-second guide to', 'your first V60 cup.'] },
+  prep:  { k: 'STEP 1 · PREP', h: ['Rinse, then add', '22 g coffee.'], hl: ['22 g'], s: ['Fresh grounds,', 'medium-fine grind.'], tag: '22 g' },
+  water: { k: 'STEP 2 · WATER', h: ['Water at', '93.5 °C.'], hl: ['93.5 °C'], s: ['Take it off the boil,', 'let it settle.'], tag: '93.5 °C' },
+  bloom: { k: 'STEP 3 · BLOOM', h: ['Bloom: pour', '50 g of water.'], hl: ['50 g'], s: ['Wet every bit,', 'then wait 30 s.'], tag: '50 g', ring: '30 s' },
+  pour:  { k: 'STEP 4 · POUR', h: ['Pour the rest', 'slowly,', 'in spirals.'], s: ['350 g more,', 'from the centre', 'outward.'], note: ['Keep water', 'off the paper.'], tag: '400 g' },
+  done:  { k: 'DONE · YOUR RECIPE', h: ['Ready within', '3 minutes.'], hl: ['3 minutes'], rows: [['22 g', 'coffee'], ['400 g', 'water'], ['93.5 °C', 'temperature'], ['2:30–3:00', 'brew time']] },
+  enjoy: { h: ['Enjoy your', 'first cup.'], s: ['Pour slower for', 'a richer cup.'] },
+};
+I18N.ko = {
+  ui: { title: '핸드드립, 어렵지 않아요', play: '사운드와 함께 재생', playsub: '클릭 또는 스페이스', playsubtouch: '탭해서 재생', replay: '다시 재생',
+        rotate: '↻ 가로로 돌리면 크게 볼 수 있어요', fullscreen: '⤢ 전체 화면', scrub: '재생 위치',
+        canvas: '모션그래픽: V60으로 핸드드립 커피 내리는 법. 클릭하면 재생과 정지, 스페이스 재생, 방향키 이동, M 음소거, F 전체 화면',
+        ctaLab: '', ctaSub: '', ctaGo: '', endTag: '', lang: 'ENGLISH' },
+  hello: { k: 'V60 핸드드립 · 처음 시작하는 분께', h: ['핸드드립,', '어렵지 않아요'], s: ['30초로 배우는', 'V60 첫 한 잔'] },
+  prep:  { k: '1단계 · 준비', h: ['필터를 헹구고', '원두 22 g'], hl: ['22 g'], s: ['갓 간 원두,', '중간보다 조금 곱게'], tag: '22 g' },
+  water: { k: '2단계 · 물', h: ['물 온도는', '93.5 °C'], hl: ['93.5 °C'], s: ['불에서 내려', '잠시 기다려요'], tag: '93.5 °C' },
+  bloom: { k: '3단계 · 뜸 들이기', h: ['뜸 들이기,', '물 50 g'], hl: ['50 g'], s: ['골고루 적시고', '30초 기다려요'], tag: '50 g', ring: '30초' },
+  pour:  { k: '4단계 · 붓기', h: ['나머지는 천천히,', '원을 그리며'], s: ['가운데에서', '바깥으로, 350 g 더'], note: ['종이엔', '닿지 않게요.'], tag: '400 g' },
+  done:  { k: '완성 · 오늘의 레시피', h: ['3분 안에 완성'], hl: ['3분'], rows: [['22 g', '원두'], ['400 g', '물'], ['93.5 °C', '물 온도'], ['2:30–3:00', '추출 시간']] },
+  enjoy: { h: ['첫 한 잔,', '맛있게 드세요'], s: ['천천히 부으면', '더 진한 맛이 나요'] },
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+// warm cream paper: faint grain, a wooden counter along the bottom, a five-dot step counter, and a coffee-ring iris between scenes
+const grain = (() => { const c = document.createElement('canvas'); c.width = 256; c.height = 256; const g = c.getContext('2d'), R = rng(7), im = g.createImageData(256, 256);
+  for (let i = 0; i < im.data.length; i += 4){ const v = 90 + R() * 120; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 11; } g.putImageData(im, 0, 0); return ctx.createPattern(c, 'repeat'); })();
+function drawBg(t){
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#EBDDC6'; ctx.fillRect(0, TBL, W, H - TBL);
+  ctx.fillStyle = '#D8C5A6'; ctx.fillRect(0, TBL, W, 6);
+  ctx.fillStyle = rgba(C.ink, .05); for (const y of [TBL + 64, TBL + 132, TBL + 190]) ctx.fillRect(0, y, W, 2);
+}
+function overlay(t){ ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H); }
+// step counter: dots for prep · water · bloom · pour · done; none on the opening, all filled on the close
+function hud(t, sc){
+  const idx = { prep: 0, water: 1, bloom: 2, pour: 3, done: 4 }[sc.id], fin = sc.id === 'enjoy';
+  if (idx === undefined && !fin) return;
+  for (let i = 0; i < 5; i++){
+    const x = 122 + i * 40, on = i === idx, past = fin || i < idx;
+    if (fin){ const pp = clamp(spring(t - sc.t0 - (1 + i * .5) * B, ...SPRING.default)); dot(x, 74, 8 + 5 * Math.sin(pp * Math.PI), mix(C.ink, C.alt, pp)); }
+    else if (on) dot(x, 74, 8 + 5 * spring(t - sc.t0 - .05, ...SPRING.snappy), C.acc);
+    else if (past) dot(x, 74, 8, C.ink);
+    else { ctx.save(); ctx.strokeStyle = rgba(C.ink, .3); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, 74, 7, 0, TAU); ctx.stroke(); ctx.restore(); }
+  }
+}
+const OPEN = { done: .6, enjoy: .75 };   // the last two cuts open slower, so the ending breathes
+// scene cut, opening half: the new scene is uncovered by a growing coffee-ring iris (the closing half lives in each scene: exitIris)
+function transition(sc, lt){ const p = eO(inv(0, OPEN[sc.id] || .42, lt)); if (p >= 1) return; irisCover(lerp(IR0, IR, p)); }
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+// shared drawing kit: the table, the V60 rig, kettle, cup and text helpers. Nothing here keeps state: every call is a pure function of time.
+const TBL = 860, LW = 5, IR = Math.hypot(W, H) / 2 + 60;
+const COF = '#5A3420', COFW = '#3A2113', WATER = '#A9CBD8', PAPER = '#FFFCF5', LCDC = '#DCE7CF', DARK = '#3A2C22';
+const WD = KO ? 400 : 900, WB = KO ? 700 : 800;          // display and body weights per language
+const FN = '"Nunito","Jua",sans-serif';                  // digits and Latin units stay in Nunito 900 in both languages (Jua's Latin sits low)
+const HAN = /[\u3131-\uD79D]/, fnt = str => HAN.test(str) ? [FD, WD] : [FN, 900];
+const rr = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
+const poly = pts => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); };
+const ink = (fill, lw = LW) => { if (fill){ ctx.fillStyle = fill; ctx.fill(); } ctx.lineWidth = lw; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke(); };
+const mix = (a, b, t) => { const x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), f = (s) => Math.round(lerp(x >> s & 255, y >> s & 255, t));
+  return '#' + [16, 8, 0].map(s => f(s).toString(16).padStart(2, '0')).join(''); };
+const eI = t => t * t * t;
+
+// coffee-ring iris: cover everything except a wobbly circle of radius r; used to open (transition) and close (exitIris) a scene
+function irisCover(r){
+  ctx.save(); ctx.fillStyle = C.bg; ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.arc(W / 2, H / 2, Math.max(r, 0), 0, TAU, true); ctx.fill('evenodd');
+  if (r > 3 && r < IR - 30){
+    for (const [dr, lw, a] of [[0, 16, .95], [-26, 6, .4]]){ ctx.beginPath();
+      for (let k = 0; k <= 96; k++){ const q = k / 96 * TAU, rad = r + dr + 6 * Math.sin(q * 3 + 1) + 4 * Math.sin(q * 5 + 2), x = W / 2 + Math.cos(q) * rad, y = H / 2 + Math.sin(q) * rad; k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.strokeStyle = rgba(C.acc, a); ctx.lineWidth = lw; ctx.stroke(); } }
+  ctx.restore();
+}
+const IR0 = 34;   // both halves of the iris meet on the same small ring, so the cut has no blank frame
+const exitIris = (lt, d, dur = .3) => { const p = inv(d - dur, d, lt); if (p > 0) irisCover(lerp(IR, IR0, eI(p))); };
+
+// text helpers ---------------------------------------------------------------
+function kick(s, x, y, lt, t0, o = {}){ const p = inv(t0, t0 + .35, lt); if (p <= 0) return; T(s, x, y + (1 - eO(p)) * 14, { f: FK, w: WB, z: 40, c: C.acc, ls: KO ? 1 : 3, a: eO(p), ...o }); }
+// headline: array of lines, each 0.12 s after the last; substrings in `hl` take the accent colour. Entrance mode per scene:
+// rise (fade + lift) · wipe (revealed left to right) · slide (springs in from the right) · drop (springs down from above)
+function headline(lines, x, y0, lt, t0, o = {}, hl = []){
+  const z0 = o.z || 100, lh = o.lh || z0 * 1.16, mode = o.mode || 'rise';
+  lines.forEach((s, i) => { const t = t0 + i * .12, el = lt - t; if (el <= 0) return;
+    const [f0, w0] = fnt(s), tw = mw(s, f0, w0, z0), z = o.fit && tw > o.fit ? z0 * o.fit / tw : z0, y = y0 + i * lh;
+    let k = -1, h = ''; for (const q of hl){ const j = s.indexOf(q); if (j >= 0){ k = j; h = q; break; } }
+    const parts = k < 0 ? [[s, C.ink]] : [[s.slice(0, k), C.ink], [h, C.acc], [s.slice(k + h.length), C.ink]].filter(p => p[0]);
+    let a = 1, dx = 0, dy = 0, clipW = null;
+    if (mode === 'rise'){ const e = eO(inv(t, t + .5, lt)); a = e; dy = (1 - e) * 26; }
+    else if (mode === 'wipe'){ const e = eO(inv(t, t + .55, lt)); clipW = (mw(s, f0, w0, z) + 40) * e; a = clamp(el / .1); dx = -(1 - e) * 24; }
+    else if (mode === 'slide'){ const e = spring(el, ...SPRING.heavy); dx = (1 - e) * 150; a = clamp(el / .16); }
+    else if (mode === 'slideL'){ const e = spring(el, ...SPRING.heavy); dx = -(1 - e) * 150; a = clamp(el / .16); }
+    else if (mode === 'drop'){ const e = spring(el, ...SPRING.heavy); dy = -(1 - e) * 100; a = clamp(el / .16); }
+    ctx.save(); if (clipW != null){ ctx.beginPath(); ctx.rect(x - 30, y - z * 1.15, clipW, z * 1.5); ctx.clip(); }
+    let px = x + dx; for (const [str, col] of parts){ const [f, w] = col === C.acc ? fnt(str) : [f0, w0]; T(str, px, y + dy, { f, w, z, c: col, a }); px += mw(str, f, w, z); }
+    ctx.restore(); });
+}
+function subline(lines, x, y, lt, t0, o = {}){ (Array.isArray(lines) ? lines : [lines]).forEach((s, i) => rise(s, x, y + i * (o.gap || 82), lt, t0 + i * .1, { f: FK, w: WB, z: 72, c: mix(C.dim, C.ink, .3), fit: o.fit || 760 }, .5, 16)); }
+// number chip: pops in with a small overshoot
+function tag(s, x, y, t0, lt, z = 50){
+  const el = lt - t0; if (el <= 0) return; const sc = lerp(.6, 1, spring(el, ...SPRING.playful)), [f, w] = fnt(s), tw = mw(s, f, w, z) + 60, h = z * 1.75;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.globalAlpha *= clamp(el / .18); rr(-tw / 2, -h / 2, tw, h, h / 2); ink(C.acc); T(s, 0, z * .34, { f, w, z, c: C.panel, al: 'center' }); ctx.restore();
+}
+
+// objects ---------------------------------------------------------------------
+// falling drops for a loop: n drops share one cycle of `period` seconds; returns progress 0..1 per drop (0 = not falling)
+const loopDrops = (lt, t0, t1, period, n) => Array.from({ length: n }, (_, i) => { if (lt < t0 || lt > t1) return 0; const u = ((lt - t0) / period + i / n) % 1; return u; });
+// front-on cutaway of a V60 on a scale over a glass server. Origin = table centre, up is negative.
+function rig(cx, sc, o = {}){
+  const { dy = 0, a = 1, lcd = null, wet = 0, bed = 0, bedWet = 0, dome = 0, pool = 0, level = 0, lvlCol = COF, drops = [], dropCol = COF, ripple = 0, bub = 0, bubT = 0 } = o;
+  ctx.save(); ctx.translate(cx, TBL + dy); ctx.scale(sc, sc); ctx.globalAlpha *= a;
+  ctx.fillStyle = rgba(C.ink, .1); ctx.beginPath(); ctx.ellipse(0, 6, 262, 16, 0, 0, TAU); ctx.fill();
+  // scale
+  rr(-240, -78, 480, 78, 22); ink(DARK); rr(-176, -90, 352, 14, 7); ink('#5B4636', 4);
+  rr(58, -62, 152, 46, 8); ink(lcd ? LCDC : '#A9B79D', 3); if (lcd) T(lcd, 198, -27, { f: FM, w: 700, z: 34, c: C.ink, al: 'right' });
+  // server: liquid first, then the glass on top
+  const glass = () => { ctx.beginPath(); ctx.moveTo(-140, -92); ctx.lineTo(140, -92); ctx.bezierCurveTo(158, -92, 162, -150, 150, -200); ctx.bezierCurveTo(140, -240, 92, -262, 86, -300);
+    ctx.lineTo(86, -326); ctx.lineTo(-86, -326); ctx.lineTo(-86, -300); ctx.bezierCurveTo(-92, -262, -140, -240, -150, -200); ctx.bezierCurveTo(-162, -150, -158, -92, -140, -92); ctx.closePath(); };
+  ctx.beginPath(); ctx.moveTo(150, -236); ctx.bezierCurveTo(250, -246, 252, -118, 156, -128); ctx.lineWidth = 26; ctx.strokeStyle = C.ink; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineWidth = 14; ctx.strokeStyle = '#EFE7D8'; ctx.stroke();
+  const top = -92 - level * 160;
+  if (level > 0){ ctx.save(); glass(); ctx.clip(); ctx.fillStyle = lvlCol; ctx.fillRect(-140, top, 280, 200); ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fillRect(-140, top, 280, 7);
+    if (ripple > 0 && ripple < 1){ ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, top + 2, 12 + 70 * ripple, 4 + 8 * ripple, 0, 0, TAU); ctx.globalAlpha *= 1 - ripple; ctx.stroke(); } ctx.restore(); }
+  glass(); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round'; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-116, -128); ctx.lineTo(-124, -205); ctx.stroke();
+  // dripper: collar, cone, rim
+  rr(-76, -346, 152, 24, 9); ink(C.acc, 4);
+  poly([[-172, -566], [172, -566], [36, -334], [-36, -334]]); ink(C.acc);
+  ctx.strokeStyle = rgba('#7A3410', .55); ctx.lineWidth = 4; for (const s of [-1, 1]) for (const [y0, y1, x0, x1] of [[-548, -500, 160, 138], [-470, -420, 122, 100], [-392, -352, 86, 70]]){ ctx.beginPath(); ctx.moveTo(s * x0, y0); ctx.lineTo(s * x1, y1); ctx.stroke(); }
+  rr(-188, -580, 376, 20, 10); ink(C.acc);
+  // paper filter (cutaway), water, grounds
+  const fw = y => lerp(26, 154, (-y - 342) / 222);
+  poly([[-154, -562], [154, -562], [26, -342], [-26, -342]]); ctx.fillStyle = PAPER; ctx.fill(); ctx.strokeStyle = '#CDBFA5'; ctx.lineWidth = 3; ctx.stroke();
+  if (wet > 0){ poly([[-154, -562], [154, -562], [26, -342], [-26, -342]]); ctx.fillStyle = rgba(WATER, .55 * wet); ctx.fill(); }
+  const yb = -342 - bed * 70;
+  if (pool > 0){ const yp = yb - 8 - pool * 96; poly([[-fw(yp), yp], [fw(yp), yp], [26, -342], [-26, -342]]); ctx.fillStyle = rgba(WATER, .85); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(-fw(yp) + 6, yp, 2 * fw(yp) - 12, 5); }
+  if (bed > 0){ const w = fw(yb) - 2, cy = yb - dome * 44; ctx.beginPath(); ctx.moveTo(-26, -342); ctx.lineTo(-w, yb); ctx.quadraticCurveTo(0, cy - 6, w, yb); ctx.lineTo(26, -342); ctx.closePath(); ctx.fillStyle = mix(COF, COFW, bedWet); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 6; i++){ const bx = (hash(i + 3) - .5) * w * 1.5; ctx.fillRect(bx, yb - dome * 30 * (1 - Math.pow(bx / w, 2)) + 8 + hash(i) * 14, 9, 4); }
+    if (bub > 0) for (let i = 0; i < 9; i++){ const ph = (bubT * 1.1 + hash(i + 40)) % 1, bx = (hash(i + 2) - .5) * w * 1.3, r = 4 + 7 * hash(i + 5), by = yb - 4 - dome * 40 * (1 - Math.pow(bx / w, 2)) - 2, al = Math.sin(ph * Math.PI) * bub;
+      if (al > .02){ ctx.strokeStyle = rgba(C.accHi, al); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(bx, by - r * ph, r * (.6 + .5 * ph), 0, TAU); ctx.stroke(); } } }
+  // falling drops from the outlet into the server
+  for (const u of drops){ if (u <= 0 || u >= 1) continue; const y = lerp(-334, top - 4, u * u); ctx.fillStyle = dropCol; ctx.beginPath(); ctx.ellipse(0, y, 8, 12, 0, 0, TAU); ctx.fill(); }
+  ctx.restore();
+}
+const rx = (cx, sc, lx) => cx + lx * sc, ry = (sc, ly, dy = 0) => TBL + dy + ly * sc;   // rig-local point → canvas
+// gooseneck kettle. (x, y) = bottom centre when rot = 0; rot tilts it about the body centre (clockwise pours to the right)
+const KT = [240, -129];
+const kettleTip = (x, y, rot, s = 1, flip = false) => { const c = Math.cos(rot), sn = Math.sin(rot); return [x + (flip ? -1 : 1) * s * (KT[0] * c - KT[1] * sn), y - 75 * s + s * (KT[0] * sn + KT[1] * c)]; };
+const kettleAt = (tx, ty, rot, s = 1, flip = false) => { const c = Math.cos(rot), sn = Math.sin(rot); return [tx - (flip ? -1 : 1) * s * (KT[0] * c - KT[1] * sn), ty - s * (KT[0] * sn + KT[1] * c) + 75 * s]; };
+function kettle(x, y, rot = 0, s = 1, a = 1, flip = false){
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x, y - 75 * s); if (flip) ctx.scale(-1, 1); ctx.rotate(rot); ctx.scale(s, s); ctx.translate(0, 75);
+  ctx.beginPath(); ctx.moveTo(-100, -128); ctx.bezierCurveTo(-196, -142, -196, -30, -100, -30); ctx.lineWidth = 26; ctx.strokeStyle = C.ink; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineWidth = 15; ctx.strokeStyle = '#8A6A55'; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(90, -40); ctx.bezierCurveTo(190, -56, 215, -120, 214, -196); ctx.lineTo(240, -204); ctx.lineWidth = 26; ctx.strokeStyle = C.ink; ctx.stroke(); ctx.lineWidth = 15; ctx.strokeStyle = DARK; ctx.stroke();
+  rr(-105, -150, 210, 150, 36); ctx.fillStyle = DARK; ctx.fill(); ctx.save(); rr(-105, -150, 210, 150, 36); ctx.clip(); ctx.fillStyle = C.acc; ctx.fillRect(-110, -96, 220, 24); ctx.restore();
+  rr(-105, -150, 210, 150, 36); ctx.lineWidth = LW; ctx.strokeStyle = C.ink; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.2)'; rr(-84, -132, 14, 30, 7); ctx.fill();
+  rr(-46, -172, 92, 26, 12); ink('#5B4636'); ctx.beginPath(); ctx.arc(0, -184, 11, 0, TAU); ink('#8A6A55', 4);
+  ctx.restore();
+}
+// falling water: head leaves the tip at pStart, tail follows at pEnd, both ease down to y1
+function stream(x, y0, y1, pS, pE, lt, w = 9){
+  if (pS <= 0) return; const yh = lerp(y0, y1, eO(pS)), yt = lerp(y0, y1, eI(pE)); if (yt >= yh - 1) return;
+  ctx.save(); ctx.strokeStyle = WATER; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.beginPath();
+  for (let s = 0; s <= 12; s++){ const yy = lerp(yt, yh, s / 12); s ? ctx.lineTo(x + Math.sin(lt * 20 + s * .8) * 1.6, yy) : ctx.moveTo(x, yy); } ctx.stroke(); ctx.restore();
+}
+function steam(x, y, lt, n = 3, a = 1, h = 150){
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = 8;
+  for (let i = 0; i < n; i++){ const ox = (i - (n - 1) / 2) * 34, ph = lt * 1.3 + i * .37;
+    for (let s = 0; s < 14; s++){ const q0 = s / 14, q1 = (s + 1) / 14, f = q => x + ox + Math.sin(q * 5.5 + ph * 2.2 + i * 1.7) * (8 + q * 16), g = q => y - q * h;
+      ctx.strokeStyle = rgba(C.dim, a * .38 * Math.sin(q0 * Math.PI) * (.6 + .4 * Math.sin(ph * 3 + i))); ctx.beginPath(); ctx.moveTo(f(q0), g(q0)); ctx.lineTo(f(q1), g(q1)); ctx.stroke(); } }
+  ctx.restore();
+}
+// cup on a saucer; origin = table centre
+function cup(cx, dy, a = 1, sc = 1){
+  ctx.save(); ctx.translate(cx, TBL + dy); ctx.scale(sc, sc); ctx.globalAlpha *= a;
+  ctx.fillStyle = rgba(C.ink, .1); ctx.beginPath(); ctx.ellipse(0, 6, 250, 16, 0, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0, -16, 215, 30, 0, 0, TAU); ink(PAPER);
+  ctx.beginPath(); ctx.moveTo(128, -170); ctx.bezierCurveTo(230, -184, 232, -70, 108, -84); ctx.lineWidth = 32; ctx.strokeStyle = C.ink; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineWidth = 20; ctx.strokeStyle = PAPER; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-136, -200); ctx.lineTo(136, -200); ctx.bezierCurveTo(136, -100, 96, -32, 0, -32); ctx.bezierCurveTo(-96, -32, -136, -100, -136, -200); ctx.closePath(); ink(PAPER);
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-136, -200); ctx.lineTo(136, -200); ctx.bezierCurveTo(136, -100, 96, -32, 0, -32); ctx.bezierCurveTo(-96, -32, -136, -100, -136, -200); ctx.clip(); ctx.fillStyle = C.acc; ctx.fillRect(-140, -128, 280, 26); ctx.restore();
+  ctx.beginPath(); ctx.ellipse(0, -200, 136, 24, 0, 0, TAU); ink(COF); ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.beginPath(); ctx.ellipse(-30, -204, 60, 8, 0, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+const drift = (lt, t0, dur) => eO(inv(t0, t0 + dur, lt));
+// small ceramic dosing cup, tilted to pour grounds; (x, y) = its centre, lip = where the grounds leave it
+const lipAt = (x, y, rot) => { const c = Math.cos(rot), sn = Math.sin(rot); return [x + 60 * c + 45 * sn, y + 60 * sn - 45 * c]; };
+function dosingCup(x, y, rot, a = 1){
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x, y); ctx.rotate(rot);
+  ctx.beginPath(); ctx.moveTo(-58, -20); ctx.bezierCurveTo(-118, -30, -118, 32, -56, 24); ctx.lineWidth = 22; ctx.strokeStyle = C.ink; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineWidth = 12; ctx.strokeStyle = PAPER; ctx.stroke();
+  rr(-60, -45, 120, 90, 22); ink(PAPER); ctx.fillStyle = COF; ctx.beginPath(); ctx.ellipse(28, -44, 30, 8, 0, 0, TAU); ctx.fill(); ctx.restore();
+}
+// recipe card ring and the spiral passes of the pour scene
+function timerRing(x, y, r, p, lt, marks, label, z = 60){
+  ctx.save(); ctx.translate(x, y); ctx.lineCap = 'round'; ctx.lineWidth = 24; ctx.strokeStyle = rgba(C.ink, .12); ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.stroke();
+  if (p > 0){ ctx.strokeStyle = C.acc; ctx.beginPath(); ctx.arc(0, 0, r, -Math.PI / 2, -Math.PI / 2 + TAU * p); ctx.stroke(); }
+  marks.forEach((tm, i) => { const q = -Math.PI / 2 + (i + 1) * Math.PI / 2, pop = spring(lt - tm, ...SPRING.snappy), mx = Math.cos(q) * (r + 34), my = Math.sin(q) * (r + 34);
+    dot(mx, my, 6 + 5 * pop, pop > .05 ? C.alt : rgba(C.ink, .25)); });
+  T(label, 0, z * .36, { f: FD, w: WD, z, al: 'center', fit: r * 1.5 }); ctx.restore();
+}
+const SPIR = [0, 1, 2].map(k => Array.from({ length: 140 }, (_, i) => { const q = i / 139, th = q * TAU * 2.4 + k * 2.09, r = 16 + q * 112; return [Math.cos(th) * r, Math.sin(th) * r]; }));
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+// beats → cue table. Every motion below reads the same beat numbers, so picture and sound land together (cue-check.md is generated from Q)
+const Q = {
+  hello: [[0, 'headline rises', 'bell'], [0, 'warm chord under the headline', 'pad', [261.63, 329.63, 392, 523.25], 3.4, .05], [.5, 'dripper drops in', 'whoosh', .3, .12], [1, 'subline rises', 'blip', 659, .05],
+          [2, 'scale powers on (LCD lights)', 'blip', 784, .05], [3, 'first drip lands in the server (pool grows); the headline underline starts', 'blip', 880], [4, 'second drip lands (pool grows again); the underline finishes', 'blip', 988]],
+  prep:  [[0, 'kettle drops in from above', 'whoosh', .3, .12], [1, 'rinse stream starts', 'blip', 700], [3, 'rinse water is discarded (server drains)', 'whoosh', .4, .1], [3.5, 'grounds fall into the filter', 'whoosh', .5, .07],
+          [5, '"22 g" pops on the scale', 'correct'], [6, 'tare button press: scale back to 0', 'blip', 520]],
+  water: [[0, 'kettle slides in from the right', 'whoosh', .3, .12], [1, 'mercury starts climbing', 'scan', 2 * B, .05], [3, 'mercury reaches the mark, "93.5 °C" chip pops', 'bell'], [4, 'steam starts to thin: the water settles', 'blip', 520, .04]],
+  bloom: [[0, 'kettle drops in from the right and tilts', 'whoosh', .3, .12], [1, 'thin stream starts', 'blip', 700], [2, '"50 g" pops on the scale', 'correct'], [2.5, 'grounds swell into a dome', 'whoosh', .6, .07],
+          [4, 'timer ring quarter 1', 'blip', 1046, .04], [5, 'timer ring quarter 2', 'blip', 1046, .04], [6, 'timer ring quarter 3', 'blip', 1046, .04], [7, 'timer ring closes', 'bell']],
+  pour:  [[0, 'kettle drops in and tilts', 'whoosh', .3, .12], [1, 'pass 1 begins', 'blip', 660], [4, 'pass 2 begins', 'blip', 784], [7, 'pass 3 begins', 'blip', 880], [11, '"400 g" pops on the scale', 'correct']],
+  done:  [[1, 'recipe card lands', 'impact', .4], [1, 'row 1 stamps', 'blip', 660], [1.5, 'row 2 stamps', 'blip', 784], [2, 'row 3 stamps', 'blip', 880], [2.5, 'row 4 stamps', 'blip', 1046], [5, 'last drip and ripple', 'bell']],
+  enjoy: [[0, 'cup rises', 'bell'], [0, 'cup lands (soft)', 'impact', .4], [1, 'step dot 1 turns sage', 'blip', 523, .04], [1.5, 'step dot 2 turns sage', 'blip', 587, .04], [2, 'step dot 3 turns sage', 'blip', 659, .04],
+          [2.5, 'step dot 4 turns sage', 'blip', 784, .04], [3, 'step dot 5 turns sage', 'blip', 880, .04]],
+};
+const cuesOf = id => Q[id].map(([b, , n, ...a]) => [b * B, n, ...a]);
+const LX = 110;   // left text margin
+
+S.hello = {
+  draw(lt, d){
+    const X = TXT.hello, dp = spring(lt - .5 * B, ...SPRING.playful), drops = [inv(2.5 * B, 3 * B, lt), inv(3.5 * B, 4 * B, lt)];
+    const lvl = .10 * eO(inv(3 * B, 3.4 * B, lt)) + .12 * eO(inv(4 * B, 4.4 * B, lt)), rip = lt < 4 * B ? inv(3 * B, 3 * B + .5, lt) : inv(4 * B, 4 * B + .5, lt);
+    // a coffee-ring stain (the iris motif) is printed on the paper behind the copy-free left-centre, so the poster's play button sits on decoration only
+    const st = eO(inv(.1, .9, lt)); if (st > 0){ ctx.save(); ctx.strokeStyle = rgba(C.acc, .2 * st); ctx.lineWidth = 18; ctx.beginPath();
+      for (let k = 0; k <= 96; k++){ const q = k / 96 * TAU, rad = 132 * lerp(.7, 1, st) + 8 * Math.sin(q * 3 + 1) + 5 * Math.sin(q * 5 + 2), x = 420 + Math.cos(q) * rad, y = 545 + Math.sin(q) * rad; k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.lineWidth = 8; ctx.strokeStyle = rgba(C.acc, .14 * st); ctx.beginPath(); for (let k = 0; k <= 96; k++){ const q = k / 96 * TAU, rad = 104 * lerp(.7, 1, st) + 6 * Math.sin(q * 4), x = 420 + Math.cos(q) * rad, y = 545 + Math.sin(q) * rad; k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); ctx.restore(); }
+    rig(1440, 1, { dy: (1 - dp) * -1150, lcd: lt < 2 * B ? '' : '0', level: lvl, drops, ripple: rip });
+    // text sits above and below the play button's band (left-centre of the poster), never inside it
+    kick(X.k, LX, 96, lt, .05);
+    headline(X.h, LX, 192, lt, 0, { z: 104, lh: 104, fit: 780, mode: 'rise' });
+    const uw = Math.min(mw(X.h[1], ...fnt(X.h[1]).slice(0, 1), fnt(X.h[1])[1], 104), 780) * eO(inv(3 * B, 4 * B, lt));   // a marker underline sweeps under the second line
+    if (uw > 2){ ctx.save(); ctx.strokeStyle = C.accHi; ctx.lineWidth = 11; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(LX + 4, 322); ctx.quadraticCurveTo(LX + uw / 2, 330, LX + uw, 320); ctx.stroke(); ctx.restore(); }
+    subline(X.s, LX, 766, lt, B, { fit: 760, gap: 78 });
+    exitIris(lt, d);
+  },
+  cues: d => cuesOf('hello')
+};
+
+S.prep = {
+  draw(lt, d){
+    const X = TXT.prep, cx = 1500;
+    kick(X.k, LX, 290, lt, .15);
+    headline(X.h, LX, 420, lt, .2, { z: 100, fit: 800, mode: 'wipe' }, X.hl);
+    subline(X.s, LX, 640, lt, .6, { fit: 780 });
+    // rig: rinse wets the paper and the server briefly fills, then drains; grounds fall in; scale shows 22 g, then tare
+    const rinse = inv(B, 1.6 * B, lt), drain = eIO(inv(3 * B, 3.6 * B, lt));
+    const bed = .55 * eO(inv(3.6 * B, 5.2 * B, lt)), lcd = lt < 5 * B ? '0' : lt < 6 * B ? '22 g' : '0';
+    rig(cx, 1, { lcd, wet: rinse * (1 - .6 * inv(3 * B, 4 * B, lt)), level: .32 * eO(inv(1.4 * B, 2.6 * B, lt)) * (1 - drain), lvlCol: WATER, bed, dropCol: WATER, drops: loopDrops(lt, 1.5 * B, 2.7 * B, .4, 3) });
+    // kettle in, rinse, out; then the dosing cup in, pour, out (both come and go from above, clear of the text)
+    const [kx, ky] = kettleAt(cx - 5, 235, .36), kin = spring(lt, ...SPRING.default), kout = eIO(inv(2.4 * B, 3 * B, lt)), tilt = .36 * spring(lt - .25, 60, 12) * (1 - inv(2.2 * B, 2.6 * B, lt)), koff = (1 - kin) * 560 + kout * 560;
+    if (kout < 1){ kettle(kx, ky - koff, tilt, 1); const [tx, ty] = kettleTip(kx, ky - koff, tilt, 1); stream(tx, ty, TBL - 440, inv(B, B + .15, lt), inv(2.5 * B, 2.5 * B + .2, lt), lt); }
+    const cin = spring(lt - 2.9 * B, ...SPRING.default), cout = eIO(inv(5.2 * B, 6 * B, lt)), crot = .9 * spring(lt - 3 * B, 90, 13) * (1 - inv(5 * B, 5.4 * B, lt)), coff = (1 - cin) * 560 + cout * 560;
+    const [lx0, ly0] = [cx + 20, 255], cxp = lx0 - 72.5, cyp = ly0 - 19 - coff;
+    if (lt > 2.8 * B && cout < 1){ dosingCup(cxp, cyp, crot); const [lx, ly] = lipAt(cxp, cyp, crot);
+      const go = inv(3.5 * B, 3.6 * B, lt) * (1 - inv(5 * B, 5.1 * B, lt)); if (go > 0) for (let i = 0; i < 22; i++){ const u = ((lt - 3.5 * B) * 1.7 + i / 22) % 1;
+        ctx.fillStyle = COF; ctx.beginPath(); ctx.ellipse(lx + (hash(i) - .5) * 16 + (hash(i + 9) - .5) * 20 * u, lerp(ly, TBL - 392, u * u), 6, 4, 0, 0, TAU); ctx.globalAlpha = go; ctx.fill(); ctx.globalAlpha = 1; } }
+    tag(X.tag, 1130, 700, 5 * B, lt);
+    exitIris(lt, d);
+  },
+  cues: d => cuesOf('prep')
+};
+
+S.water = {
+  draw(lt, d){
+    const X = TXT.water, ks = spring(lt, ...SPRING.default), kx = 700 + (1 - ks) * 900, TX = 1190, KS = 1.5;
+    kick(X.k, TX, 290, lt, .15);
+    headline(X.h, TX, 420, lt, .2, { z: 100, fit: 620, mode: 'slide' }, X.hl);
+    subline(X.s, TX, 640, lt, .6, { fit: 620 });
+    // a standing thermometer with one mark: the mercury climbs to it and the chip names the value; a gooseneck kettle steams beside it
+    const x = 215, yMark = 380, fr = spring(lt - B, 30, 10), yM = lerp(805, yMark, fr), ta = clamp(lt / .3);
+    ctx.save(); ctx.globalAlpha *= ta;
+    for (let i = 0; i < 12; i++){ ctx.fillStyle = rgba(C.ink, .4); ctx.fillRect(x - 64, 290 + i * 46, i % 5 ? 20 : 34, 4); }
+    rr(x - 24, 250, 48, 590, 24); ink(PAPER); ctx.beginPath(); ctx.arc(x, 828, 48, 0, TAU); ink(C.acc); rr(x - 12, yM, 24, 830 - yM, 12); ctx.fillStyle = C.acc; ctx.fill();
+    const mp = inv(3 * B, 3 * B + .25, lt); if (mp > 0){ ctx.fillStyle = C.alt; ctx.fillRect(x + 30, yMark - 3, 60 * eO(mp), 6); }
+    ctx.restore();
+    tag(X.tag, x + 230, yMark, 3 * B, lt);
+    kettle(kx, TBL, 0, KS);
+    const [tx, ty] = kettleTip(kx, TBL, 0, KS);
+    steam(tx, ty - 6, lt, 3, ks * (1 - .8 * eO(inv(4 * B, 6 * B, lt))), 230);
+    exitIris(lt, d);
+  },
+  cues: d => cuesOf('water')
+};
+
+S.bloom = {
+  draw(lt, d){
+    const X = TXT.bloom, cx = 1000, sc = .9;
+    kick(X.k, LX, 200, lt, .15);
+    headline(X.h, LX, 320, lt, .2, { z: 96, fit: 640, mode: 'slideL' }, X.hl);
+    subline(X.s, LX, 530, lt, .6, { fit: 640 });
+    const dome = spring(lt - 2.5 * B, 60, 11);
+    rig(cx, sc, { lcd: lt < 2 * B ? '0' : '50 g', bed: .55 + .06 * dome, bedWet: .9 * inv(1.2 * B, 2.4 * B, lt), dome, bub: inv(3 * B, 3.5 * B, lt), bubT: lt,
+      level: .07 * eO(inv(2.8 * B, 8 * B, lt)), drops: loopDrops(lt, 2.6 * B, d, .55, 2) });
+    // the kettle comes in from the right this time, and leaves upward once the water is in
+    const [kx, ky] = kettleAt(cx + 5, 235, .36, 1, true), kin = spring(lt, ...SPRING.default), kout = eIO(inv(2.2 * B, 3.2 * B, lt)), tilt = .36 * spring(lt - .25, 60, 12) * (1 - inv(2 * B, 2.4 * B, lt)), koff = (1 - kin) * 560 + kout * 560;
+    if (kout < 1){ kettle(kx, ky - koff, tilt, 1, 1, true); const [tx, ty] = kettleTip(kx, ky - koff, tilt, 1, true); stream(tx, ty, ry(sc, -384), inv(B, B + .15, lt), inv(2 * B, 2 * B + .2, lt), lt); }
+    tag(X.tag, 1345, 745, 2 * B, lt);
+    // 30-second ring: the hero of the right side; fills over four beats, a dot lights at each quarter
+    const rp = inv(2.6 * B, 3 * B, lt), rx = 1600, ry0 = 640; if (rp > 0){ ctx.save(); ctx.translate(rx, ry0); ctx.scale(lerp(.6, 1, spring(lt - 2.6 * B, ...SPRING.playful)), lerp(.6, 1, spring(lt - 2.6 * B, ...SPRING.playful))); ctx.translate(-rx, -ry0); ctx.globalAlpha *= clamp(rp * 3);
+      timerRing(rx, ry0, 140, inv(3 * B, 7 * B, lt), lt, [4, 5, 6, 7].map(b => b * B), X.ring, 88); ctx.restore(); }
+    exitIris(lt, d);
+  },
+  cues: d => cuesOf('bloom')
+};
+
+S.pour = {
+  draw(lt, d){
+    const X = TXT.pour, PS = [[B, 4 * B], [4 * B, 7 * B], [7 * B, 10 * B]], cx = 900, sc = .85, TX = 1250;
+    kick(X.k, TX, 190, lt, .15);
+    headline(X.h, TX, 280, lt, .2, { z: 84, lh: 88, fit: 560, mode: 'wipe' });
+    subline(X.s, TX, 590, lt, .6, { fit: 560 });
+    // which pass is drawing, and where its pen tip is: the kettle follows the same point
+    const k = lt < 4 * B ? 0 : lt < 7 * B ? 1 : 2, pp = inv(PS[k][0], PS[k][1], lt), pen = lt < B ? [0, 0] : SPIR[k][Math.min(139, Math.floor(eIO(pp) * 139))];
+    const lvl = track(lt, [[0, .07], [2.5 * B, .3], [5.5 * B, .52], [8.5 * B, .74], [11 * B, .86]], 14, 7.5), pool = .55 * inv(.9 * B, 1.4 * B, lt) * (1 - .75 * inv(10 * B, 12 * B, lt));
+    rig(cx, sc, { lcd: lt < 11 * B ? '.'.repeat(1 + Math.floor(lt / .3) % 3) : '400 g', bed: .6, bedWet: .9, dome: .25, pool, level: lvl, drops: loopDrops(lt, 1.6 * B, d, .5, 3) });
+    const [kx, ky] = kettleAt(895 + pen[0] * .5, 305, .36), kin = spring(lt, ...SPRING.default), tilt = .36 * spring(lt - .25, 60, 12), koff = (1 - kin) * 560;
+    kettle(kx, ky - koff, tilt, 1); const [tx, ty] = kettleTip(kx, ky - koff, tilt, 1); stream(tx, ty, ry(sc, -430), inv(B, B + .15, lt), inv(10 * B, 10 * B + .2, lt), lt);
+    tag(X.tag, 1500, 815, 11 * B, lt);
+    // top-down inset on the left: the paper, the bed and three spiral passes that never touch the rim
+    const ip = spring(lt - .3, ...SPRING.default); ctx.save(); ctx.translate(300, 500); ctx.scale(lerp(.6, 1, ip), lerp(.6, 1, ip)); ctx.globalAlpha *= clamp(ip * 2);
+    ctx.beginPath(); ctx.arc(0, 0, 160, 0, TAU); ink(C.acc); ctx.beginPath(); ctx.arc(0, 0, 140, 0, TAU); ink(PAPER, 3); ctx.beginPath(); ctx.arc(0, 0, 126, 0, TAU); ctx.fillStyle = COFW; ctx.fill();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.scale(.98, .98);
+    PS.forEach(([t0, t1], j) => { const p = inv(t0, t1, lt); if (p <= 0) return; const cur = j === k && p < 1, n = Math.max(2, Math.floor(eIO(p) * 139)); ctx.beginPath();
+      SPIR[j].slice(0, n).forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.strokeStyle = cur ? C.accHi : rgba(PAPER, .5); ctx.lineWidth = cur ? 11 : 8; ctx.stroke(); });
+    if (lt > B && lt < 10 * B) dot(pen[0], pen[1], 11, C.accHi);
+    ctx.restore();
+    X.note.forEach((ln, i) => T(ln, LX + 30, 730 + i * 66, { f: FK, w: WB, z: 60, c: C.dim, fit: 420, a: inv(.9, 1.3, lt) }));
+    exitIris(lt, d, .45);
+  },
+  cues: d => cuesOf('pour')
+};
+
+S.done = {
+  draw(lt, d){
+    const X = TXT.done;
+    kick(X.k, LX, 190, lt, .15);
+    headline(X.h, LX, 300, lt, .2, { z: 100, fit: 800, mode: 'slide' }, X.hl);
+    // the full server and the last drip
+    rig(430, .7, { lcd: '400 g', bed: .6, bedWet: .9, dome: .1, level: .88, drops: [inv(4.6 * B, 5 * B, lt)], ripple: inv(5 * B, 5 * B + .5, lt) });
+    const ck = spring(lt - .3, ...SPRING.snappy);
+    ctx.save(); ctx.translate(1385, 545); ctx.rotate(-.03 + (1 - ck) * .09); ctx.translate(0, (1 - ck) * 720);
+    ctx.fillStyle = rgba(C.ink, .1); rr(-422, -294, 860, 620, 30); ctx.fill(); rr(-430, -310, 860, 620, 30); ink(PAPER);
+    rr(-70, -334, 140, 44, 8); ctx.fillStyle = rgba(C.accHi, .85); ctx.fill();
+    const hp = eO(inv(3.5 * B, 4.5 * B, lt)); if (hp > 0){ ctx.fillStyle = rgba(C.accHi, .3); rr(-410, -175 + 3 * 135 - 62, 820 * hp, 124, 16); ctx.fill(); }   // the brew-time row is marked once all four are in
+    X.rows.forEach(([v, lab], i) => { const t0 = (1 + i * .5) * B, p = inv(t0, t0 + .28, lt), y = -175 + i * 135; if (i){ ctx.strokeStyle = rgba(C.ink, .14); ctx.lineWidth = 3; ctx.setLineDash([12, 12]); ctx.beginPath(); ctx.moveTo(-370, y - 68); ctx.lineTo(370, y - 68); ctx.stroke(); ctx.setLineDash([]); }
+      if (p <= 0) return; const s = lerp(1.12, 1, eBack(p)), [vf, vw] = fnt(v);
+      ctx.save(); ctx.translate(-370, y); ctx.scale(s, s); ctx.globalAlpha *= clamp(p * 3); dot(0, -14, 24, C.alt);
+      ctx.strokeStyle = C.panel; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(-10, -13); ctx.lineTo(-3, -5); ctx.lineTo(11, -24); ctx.stroke();
+      T(v, 50, 14, { f: vf, w: vw, z: 80, c: C.ink, fit: 330 }); T(lab, 730, 8, { f: FK, w: WB, z: 62, c: mix(C.dim, C.ink, .3), al: 'right', fit: 320 }); ctx.restore(); });
+    ctx.restore();
+    exitIris(lt, d, .45);
+  },
+  cues: d => cuesOf('done')
+};
+
+S.enjoy = {
+  draw(lt, d){
+    const X = TXT.enjoy, p = spring(lt, ...SPRING.playful), cx = 560, cs = 1.35, TX = 1030;
+    headline(X.h, TX, 470, lt, B, { z: 116, fit: 780, mode: 'rise' });
+    subline(X.s, TX, 720, lt, 2 * B, { fit: 780 });
+    cup(cx, (1 - p) * 150, clamp(p * 3), cs);
+    // ripples cross the coffee on beats 1–4; steam curls up
+    for (let k = 1; k <= 4; k++){ const t = (lt - k * B) / .9; if (t > 0 && t < 1){ ctx.save(); ctx.strokeStyle = rgba(PAPER, .5 * (1 - t)); ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(cx, TBL - 200 * cs, 24 + 100 * cs * t, 5 + 16 * t, 0, 0, TAU); ctx.stroke(); ctx.restore(); } }
+    steam(cx, TBL - 235 * cs, lt, 3, inv(.5, 1.1, lt), 220);
+  },
+  cues: d => cuesOf('enjoy')
+};
+window.__cueTable = () => ({ B, Q, SC: SC.map(s => ({ id: s.id, t0: s.t0, d: s.d })), cues: SC.map(s => S[s.id].cues(s.d).map(c => [c[0], c[1]])) });   // read by the cue-check script
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [
+  ['hello', 5, 'HELLO'], ['prep', 7, 'STEP 1'], ['water', 7, 'STEP 2'], ['bloom', 8, 'STEP 3'], ['pour', 12, 'STEP 4'], ['done', 6, 'DONE'], ['enjoy', 5, 'ENJOY']
+];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+  // nothing to measure once: every line is laid out per frame from the loaded fonts
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

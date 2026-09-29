@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- @@head -->
+<title>James Webb Space Telescope · a 45-second explainer</title>
+<meta name="description" content="How the James Webb Space Telescope looks back more than 13.5 billion years: its gold mirror, its sunshield, its journey to L2 and what it has seen. Every number from NASA's Webb pages.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="James Webb Space Telescope · a 45-second explainer">
+<meta property="og:description" content="A golden time machine: how Webb sees light that left over 13.5 billion years ago. English and Korean.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#05070D">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<!-- @@/head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap">
+<style>
+/* colours are overwritten at boot from CFG.colors so the canvas and the DOM share one palette */
+:root{
+  color-scheme: dark;
+  --bg:#06080B; --line:#1E262F; --ink:#E8ECEF; --dim:#7A848F; --acc:#FFB224; --alt:#3FE0D0;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --bar-y:92.87%; --page:#020203; --glass:rgba(6,8,11,.84);
+}
+html,body{height:100%;background:var(--page);color:var(--ink)}
+[hidden]{display:none!important}
+body{font-family:var(--sans);margin:0;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr)}
+.stage{position:relative;min-height:0;background:var(--page);container-type:size;overflow:hidden;cursor:pointer}
+.screen{position:absolute;left:50%;top:50%;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9;transform:translate(-50%,-50%);container-type:inline-size}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.start{position:absolute;left:4.5%;top:50%;transform:translateY(-50%);width:max-content;height:max-content;display:flex;align-items:center;gap:1cqw;
+  padding:1cqw 1.6cqw 1cqw 1.15cqw;background:var(--glass);border:1px solid var(--acc);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:clamp(10px,1.3cqw,24px);font-weight:700;backdrop-filter:blur(6px)}
+.start:hover{border-color:var(--alt)}
+.start:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+.start .tri{width:0;height:0;border-left:1.4cqw solid var(--acc);border-top:.9cqw solid transparent;border-bottom:.9cqw solid transparent}
+.start small{display:block;font-family:var(--sans);font-size:clamp(8px,.78cqw,14px);font-weight:500;color:var(--dim);margin-top:.25cqw}
+/* hit area over the canvas HUD progress bar; left/width are set from BAR at boot */
+.scrub{position:absolute;top:calc(var(--bar-y) - 2.4%);height:4.8%;cursor:pointer;touch-action:none}
+.scrub:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+/* end-frame hotspot: an object drawn on the last frame becomes the link (position set from CFG.endCta) */
+.endcta{position:absolute;display:block;cursor:pointer;color:var(--acc);text-decoration:none}
+.endcta .rt{position:absolute;inset:0;animation:lock .857s cubic-bezier(.2,.7,.2,1) infinite}
+.endcta .rt i{position:absolute;width:14%;height:14%;border:3px solid var(--acc)}
+.endcta .rt i:nth-child(1){left:-4%;top:-4%;border-right:0;border-bottom:0}
+.endcta .rt i:nth-child(2){right:-4%;top:-4%;border-left:0;border-bottom:0}
+.endcta .rt i:nth-child(3){left:-4%;bottom:-4%;border-right:0;border-top:0}
+.endcta .rt i:nth-child(4){right:-4%;bottom:-4%;border-left:0;border-top:0}
+@keyframes lock{0%{transform:scale(1.14);opacity:.25}35%{transform:scale(1);opacity:1}100%{transform:scale(1.02);opacity:.7}}
+.endcta .tag{position:absolute;left:104%;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;border:1px solid var(--acc);
+  background:var(--glass);font-family:var(--sans);font-size:clamp(12px,1.35vw,20px);font-weight:900;color:var(--ink)}
+.endcta .tag::before{content:"";position:absolute;right:100%;top:50%;width:clamp(12px,2.2vw,40px);height:1px;background:var(--acc)}
+.endcta:hover .rt,.endcta:focus-visible .rt{animation:none;transform:scale(.97)}
+.endcta:hover .rt i,.endcta:focus-visible .rt i{border-color:var(--alt)}
+.endcta:hover,.endcta:focus-visible{outline:none}
+/* dock under the film: CTA button + language link */
+.dock{position:relative;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;padding:6px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--page)}
+.cta{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;min-width:0;box-sizing:border-box;padding:12px 16px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
+.cta .led{flex:none;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:led .857s steps(2) infinite}
+@keyframes led{50%{opacity:.25}}
+.cta .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cta .lab b{font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--acc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta .lab small{font-size:12px;color:var(--dim)}
+.cta .go{margin-left:auto;flex:none;font-weight:900;font-size:16px;padding:9px 14px;background:var(--acc);color:var(--bg);white-space:nowrap}
+.cta:hover .go,.cta:focus-visible .go{background:var(--alt)}
+.cta:focus-visible{outline:2px solid var(--alt);outline-offset:3px}
+.lang{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line);padding:7px 11px;text-decoration:none}
+.lang:hover,.lang:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (max-width:1100px){ .lang{position:static;transform:none} }
+@media (prefers-reduced-motion: reduce){ .endcta .rt,.cta .led{animation:none} }
+@media (max-width:640px){ .endcta .tag{display:none} .cta .go{font-size:14px;padding:8px 10px} .cta .lab b{white-space:normal;letter-spacing:.04em} }
+/* touch devices: rotate hint + full-screen button, finger-sized start button and progress bar */
+.mob{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;width:100%}
+.rot{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--dim)}
+.fsb{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid var(--line);padding:8px 12px;cursor:pointer}
+.fsb:active,.fsb:focus-visible{color:var(--acc);border-color:var(--acc);outline:none}
+@media (pointer:coarse){
+  .mob{display:flex}
+  .start{font-size:clamp(13px,1.3cqw,24px);gap:max(1cqw,8px);padding:max(1cqw,9px) max(1.6cqw,14px) max(1cqw,9px) max(1.15cqw,11px)}
+  .start .tri{border-left-width:max(1.4cqw,11px);border-top-width:max(.9cqw,7px);border-bottom-width:max(.9cqw,7px)}
+  .start small{font-size:clamp(10px,.78cqw,14px)}
+  .scrub{top:calc(var(--bar-y) - max(2.4%,16px));height:max(4.8%,32px)}
+}
+/* portrait: film at full width, controls stacked right under it instead of a letterboxed stage */
+@media (orientation:portrait){
+  .app{grid-template-rows:auto auto;align-content:center;gap:12px}
+  .stage{aspect-ratio:16/9;height:auto}
+}
+@media (orientation:landscape){ .rot{display:none} }
+/* phone landscape: the dock moves to a narrow side column so the film gets the full height */
+@media (orientation:landscape) and (max-height:540px){
+  .app{box-sizing:border-box;grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+  .dock{box-sizing:border-box;width:136px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:10px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)) 8px}
+  .cta{flex-direction:column;align-items:stretch;gap:8px;padding:10px 8px}
+  .cta .lab,.cta .led{display:none}
+  .cta .go{margin-left:0;white-space:normal;text-align:center;font-size:13px;line-height:1.35;padding:8px 6px}
+  .lang{text-align:center;padding:7px 6px}
+  .fsb{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="stage" id="stage">
+    <div class="screen">
+      <canvas id="cv" width="1920" height="1080"></canvas>
+      <button class="start" id="start" type="button"><span class="tri" aria-hidden="true"></span><span><span id="startMain"></span><small id="startSub"></small></span></button>
+      <div class="scrub" id="scrub" role="slider" tabindex="0" aria-valuemin="0" aria-valuenow="0"></div>
+      <a class="endcta" id="endcta" hidden>
+        <span class="rt" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="tag" id="endTag"></span>
+      </a>
+    </div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="mob">
+      <span class="rot" id="rot"></span>
+      <button class="fsb" id="fsb" type="button" hidden></button>
+    </div>
+    <a class="cta" id="cta" hidden>
+      <span class="led" aria-hidden="true"></span>
+      <span class="lab"><b id="ctaLab"></b><small id="ctaSub"></small></span>
+      <span class="go" id="ctaGo"></span>
+    </a>
+    <a class="lang" id="lang" hidden></a>
+  </div>
+</main>
+
+<script>
+(() => {
+'use strict';
+/* ================================================================ CONFIG — edit this block first */
+// @@config
+const CFG = {
+  bpm: 120,                                   // every timing below is written in beats (B = 0.5 s); 90 beats = 45.0 s
+  colors: { bg: '#05070D', panel: '#0C1220', line: '#1F2940', ink: '#F3EFE6', dim: '#8C95A8', grid: '#18203A',
+            acc: '#E9B44C', accHi: '#F7D98B', alt: '#69C8FF', bad: '#FF5B45' },   // acc = Webb-mirror gold · alt = cold side · bad = the Sun's heat
+  fonts: { sans: '"Inter","Noto Sans KR","Apple SD Gothic Neo",sans-serif',
+           display: '"Inter","Noto Sans KR","Apple SD Gothic Neo",sans-serif',
+           mono: '"DM Mono",ui-monospace,Menlo,monospace' },   // NASA's Webb pages use Inter + DM Mono
+  textSplit: false,                           // calm public explainer: no RGB split
+  hudTitle: 'JAMES WEBB SPACE TELESCOPE',     // museum-sign wordmark, top-left
+  hudMeta: t => '',
+  cta: { href: 'https://science.nasa.gov/mission/webb/', newTab: true },
+  endCta: { x: 110, y: 390, w: 760, h: 280 },  // the "Explore Webb" card in the last scene
+  endCtaBeat: 6,
+  posterT: 2.4,                               // mirror assembled, title up, left-centre empty for the play button
+  watchKey: 'webb-explainer-watched',
+  music: { groove: 'soft', liteScenes: ['cold'], arpScenes: ['reach', 'orbit'], tailBeats: 6 },
+};
+// @@/config
+
+/* ================================================================ BASE */
+const W = 1920, H = 1080, BPM = CFG.bpm, B = 60 / BPM, TAU = Math.PI * 2;
+const C = CFG.colors;
+const FK = CFG.fonts.sans, FD = CFG.fonts.display, FM = CFG.fonts.mono;
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const lerp = (a, b, t) => a + (b - a) * t;
+const eO = t => 1 - Math.pow(1 - t, 3);
+const eIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+function rng(seed){ let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const beatPulse = t => Math.pow(1 - ((t / B) % 1), 3);
+
+/* ================================================================ COPY
+   Every on-screen string lives here, per language. Scenes read TXT.*, the DOM reads TXT.ui.*.
+   Add or remove languages freely; ?lang=xx picks one, otherwise <html lang>, otherwise the first key. */
+const I18N = {};
+// @@copy
+// every figure below is in facts.md (F1–F23) with its NASA source
+I18N.en = {
+  ui: { title: 'James Webb Space Telescope · a 45-second explainer', play: 'Play with sound', playsub: 'click or press Space', playsubtouch: 'tap to play', replay: 'Replay',
+        rotate: '↻ Turn your phone sideways for a bigger view', fullscreen: '⤢ Full screen', scrub: 'Playback position',
+        canvas: 'Animated explainer about the James Webb Space Telescope. Click to play or pause, Space to play, arrow keys to seek, M to mute, F for full screen',
+        ctaLab: 'EXPLORE WEBB', ctaSub: 'science.nasa.gov/mission/webb', ctaGo: 'Open', endTag: 'Open NASA page', lang: '한국어' },
+  title: 'James Webb Space Telescope', titleSub: 'The largest telescope ever placed in space',
+  k: { open: 'A GOLDEN TIME MACHINE', oldlight: 'LIGHT TAKES TIME', reach: 'LOOK-BACK TIME', mirror: 'THE LIGHT BUCKET', cold: 'INFRARED', fold: 'ORIGAMI', orbit: 'DESTINATION L2', seen: 'FIRST LIGHT' },
+  o2: { head: 'Looking far means looking back in time.', unit: ' s', cap: 'Moonlight is 1.3 seconds old when it reaches us.' },
+  r: { pre: 'Webb sees light that left over', big: v => v.toFixed(1), unit: 'billion years ago', post: 'from the first galaxies born after the Big Bang',
+       bang: 'Big Bang', today: 'Today', age: 'Universe: about 13.8 billion years old' },
+  m: { head: '18 gold mirrors act as one', badge: "≈ 6× Hubble's light-collecting area", webb: 'Webb · 6.5 m', hub: 'Hubble · 2.4 m' },
+  c: { head: 'Old light arrives as infrared: faint heat', sub: 'A five-layer sunshield the size of a tennis court keeps Webb cold',
+       hotL: 'SUN SIDE', coldL: 'SPACE SIDE', hotF: '185 °F', coldF: '−388 °F', spf: 'SPF', spfN: '1 million' },
+  f: { head: 'It folded to fit inside the rocket', sub: '…and unfolded in space over two weeks', lab: '50+ DEPLOYMENTS · 178 RELEASE MECHANISMS' },
+  o: { head: 'Its home: 1.5 million km from Earth', miles: '(1 million miles)', moon: "Moon's orbit · about a quarter of the way",
+       launchK: 'LAUNCH', launch: 'Dec 25, 2021', arriveK: 'ARRIVED AT L2', arrive: 'Jan 24, 2022', dist: '1.5 million km' },
+  s: { aK: 'July 2022', aH: ['Thousands of galaxies', 'in a single image'], illus: 'ILLUSTRATION',
+       bH: ['The farthest confirmed galaxy:', 'About 280 million years after the Big Bang'], rec: 'Seen by Webb · confirmed 2025',
+       bang: 'Big Bang', today: 'Today', span: '1 billion years', webb: 'Webb · MoM-z14', hub: 'Hubble · about 500 million years' },
+  e: { ag: 'NASA · ESA · CSA', people: 'Built by thousands of people from 14 countries', card: 'Explore Webb', url: 'science.nasa.gov/mission/webb' }
+};
+I18N.ko = {
+  ui: { title: '제임스 웹 우주망원경 · 45초 설명 영상', play: '사운드와 함께 재생', playsub: '클릭 또는 스페이스', playsubtouch: '탭해서 재생', replay: '다시 재생',
+        rotate: '↻ 가로로 돌리면 크게 볼 수 있어요', fullscreen: '⤢ 전체 화면', scrub: '재생 위치',
+        canvas: '제임스 웹 우주망원경 설명 모션그래픽. 클릭하면 재생과 정지, 스페이스 재생, 방향키 이동, M 음소거, F 전체 화면',
+        ctaLab: '웹 망원경 알아보기', ctaSub: 'science.nasa.gov/mission/webb', ctaGo: '열기', endTag: 'NASA 페이지 열기', lang: 'ENGLISH' },
+  title: '제임스 웹 우주망원경', titleSub: '우주에 올린 가장 큰 망원경',
+  k: { open: '황금빛 타임머신', oldlight: '빛에도 시간이 걸린다', reach: '과거를 보는 망원경', mirror: '빛을 모으는 양동이', cold: '적외선', fold: '종이접기', orbit: '목적지 L2', seen: '첫 빛' },
+  o2: { head: '멀리 볼수록, 더 먼 과거를 봅니다', unit: '초', cap: '달빛도 1.3초 전에 출발한 빛입니다.' },
+  r: { pre: '웹 망원경이 보는 빛은', big: v => Math.round(v * 10) + '억', unit: '년', post: '넘게 날아온 빛, 빅뱅 직후 첫 은하들의 빛입니다',
+       bang: '빅뱅', today: '오늘', age: '우주 나이 약 138억 년' },
+  m: { head: '금빛 거울 18장이 하나처럼', badge: '빛 모으는 면적, 허블의 약 6배', webb: '웹 · 6.5 m', hub: '허블 · 2.4 m' },
+  c: { head: '오래된 빛은 적외선, 희미한 열로 옵니다', sub: '테니스장만 한 5겹 차양막이 망원경을 차갑게 지킵니다',
+       hotL: '태양 쪽', coldL: '우주 쪽', hotF: '', coldF: '', spf: 'SPF', spfN: '100만' },
+  f: { head: '로켓에 싣기 위해 접었습니다', sub: '우주에서 2주에 걸쳐 펼쳐졌습니다', lab: '50단계 이상 전개 · 해제 장치 178개' },
+  o: { head: '지구에서 150만 km 떨어진 곳', miles: '', moon: '달 궤도 · 약 4분의 1 지점',
+       launchK: '발사', launch: '2021년 12월 25일', arriveK: 'L2 도착', arrive: '2022년 1월 24일', dist: '150만 km' },
+  s: { aK: '2022년 7월', aH: ['사진 한 장에', '은하 수천 개'], illus: '그림으로 표현한 모습',
+       bH: ['가장 멀리서 확인된 은하,', '빅뱅 후 약 2억 8천만 년'], rec: '웹이 관측 · 2025년 확인',
+       bang: '빅뱅', today: '오늘', span: '10억 년', webb: '웹 · MoM-z14', hub: '허블 · 약 5억 년' },
+  e: { ag: 'NASA · ESA · CSA', people: '14개국 수천 명이 함께 만들었습니다', card: '웹 망원경 더 알아보기', url: 'science.nasa.gov/mission/webb' }
+};
+// @@/copy
+const LANGS = Object.keys(I18N);
+const qLang = new URLSearchParams(location.search).get('lang');
+const LANG = LANGS.includes(qLang) ? qLang : LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : LANGS[0];
+const TXT = I18N[LANG];
+
+/* ================================================================ DRAW HELPERS */
+function font(f, w, z, ls){ ctx.font = `${w} ${z}px ${f}`; if ('letterSpacing' in ctx) ctx.letterSpacing = (ls || 0) + 'px'; }
+function T(s, x, y, o = {}){
+  const { f = FK, w = 900, c = C.ink, al = 'left', bl = 'alphabetic', ls = 0, a = 1, fit = 0 } = o;
+  let { z = 64 } = o;
+  if (!s || a <= 0) return;
+  if (fit > 0){ const tw = mw(s, f, w, z, ls); if (tw > fit) z = z * fit / tw; }   // shrink long (e.g. translated) lines to their box
+  ctx.save(); ctx.globalAlpha *= a; font(f, w, z, ls); ctx.fillStyle = c; ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(s, x, y); ctx.restore();
+}
+function mw(s, f, w, z, ls = 0){ ctx.save(); font(f, w, z, ls); const m = ctx.measureText(s).width; ctx.restore(); return m; }
+const typeOn = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+// headline hit: overshoot scale + RGB split for the first frames
+function slam(s, x, y, lt, t0, o = {}){
+  const p = inv(t0, t0 + .2, lt); if (p <= 0) return;
+  const sc = lerp(1.32, 1, eBack(p)), g = (1 - inv(t0, t0 + .16, lt)) * 16;
+  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+  if (g > .5 && (o.split ?? CFG.textSplit) !== false){ T(s, -g, 0, { ...o, c: C.alt, a: .75 }); T(s, g, 0, { ...o, c: C.bad, a: .75 }); }
+  T(s, 0, 0, o); ctx.restore();
+}
+// calm entrance: fade in while rising dy px — the quiet counterpart of slam for soft/editorial styles
+function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
+  const p = inv(t0, t0 + dur, lt); if (p <= 0) return;
+  T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
+}
+function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
+// draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
+function polyPartial(pts, p){
+  let L = 0; const seg = [];
+  for (let i = 0; i < pts.length - 1; i++){ const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * clamp(p), end = pts[0]; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 0; i < seg.length && rem > 0; i++){ const f = Math.min(1, rem / seg[i]); end = [lerp(pts[i][0], pts[i + 1][0], f), lerp(pts[i][1], pts[i + 1][1], f)]; ctx.lineTo(end[0], end[1]); rem -= seg[i]; }
+  ctx.stroke(); return end;
+}
+function dot(x, y, r, c, a = 1){ ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function glow(x, y, r, c, a = 1){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.globalAlpha *= a; ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ================================================================ STYLE — the film's frame
+   Rewrite this block for every piece so the frame fits the topic (references/styles.md has building blocks).
+   Contract — define all four:
+     drawBg(t)          paints the whole frame before the scene (base colour, texture, moving pattern)
+     overlay(t)         after the scene (vignette, grain, scanlines, paper fibres) — may be empty
+     hud(t, sc)         frame decorations and labels (corner marks, timecode, scene counter) — may be empty
+     transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
+   The engine draws the progress bar after hud(); keep y > 990 free for it. */
+// @@style
+// deep space: near-black with a faint blue nebula, a seeded star field drifting slowly (parallax by depth),
+// a museum-quiet frame: no chrome (kickers sit in each scene), and a hexagon-tile wipe that builds over the outgoing scene.
+const STARS = Array.from({ length: 340 }, (_, i) => ({ x: hash(i + 1) * W, y: hash(i + 501) * H, r: .6 + Math.pow(hash(i + 901), 3) * 2.1,
+  a: .22 + hash(i + 1301) * .6, tw: hash(i + 1701) * TAU, dp: .2 + hash(i + 2101) * .8, warm: hash(i + 2501) > .8 }));
+const NEB = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  for (const [x, y, r, col] of [[W * .78, H * .3, 760, 'rgba(40,62,120,.20)'], [W * .15, H * .85, 620, 'rgba(70,40,90,.14)']]){
+    const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+  return c; })();
+const vig = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const r = g.createRadialGradient(W / 2, H / 2, H * .4, W / 2, H / 2, H * 1.05); r.addColorStop(0, 'rgba(0,0,0,0)'); r.addColorStop(1, 'rgba(0,0,0,.5)');
+  g.fillStyle = r; g.fillRect(0, 0, W, H); return c; })();
+function drawBg(t){
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); ctx.drawImage(NEB, 0, 0);
+  for (const s of STARS){ const x = ((s.x - t * 7 * s.dp) % W + W) % W, a = s.a * (.72 + .28 * Math.sin(t * 1.4 + s.tw));
+    ctx.fillStyle = s.warm ? `rgba(255,226,180,${a})` : `rgba(226,234,255,${a})`; ctx.fillRect(x, s.y, s.r, s.r); }
+  ctx.drawImage(vig, 0, 0);   // vignette under the scene so it never dims the copy
+}
+// no frame chrome: scene kickers live in each scene's headline block (localised); the engine draws only its progress bar
+function hud(t, sc){}
+// cut: hexagon tiles grow over the outgoing scene in a wave from a per-cut origin (the Moon, the Sun side, the mirror…),
+// then shrink away from the same origin to uncover the next scene; a few tiles are gold like mirror segments
+const CUT_FROM = { oldlight: [W + 80, 640], reach: [-80, 560], mirror: [1360, 500], cold: [-120, 720], fold: [1360, -120], orbit: [-80, 520], seen: [1330, 560], close: [1330, 450] };
+function hexGrid(r){ const a = [], R3 = Math.sqrt(3);
+  for (let q = -1; q * r * 1.5 < W + r; q++) for (let row = -1; row * r * R3 < H + r; row++){
+    const x = q * r * 1.5, y = row * r * R3 + (q & 1 ? r * R3 / 2 : 0), i = a.length;
+    a.push({ x, y, j: hash(i + 77 + r) * .08, gold: hash(i + 99 + r) > .92, k: {} }); }
+  for (const [id, [ox, oy]] of Object.entries(CUT_FROM)){ let mx = 0; for (const c of a) mx = Math.max(mx, Math.hypot(c.x - ox, c.y - oy)); for (const c of a) c.k[id] = Math.hypot(c.x - ox, c.y - oy) / mx; }
+  return { r, cells: a }; }
+const HEXG = [hexGrid(60), hexGrid(96)];   // cuts alternate between small and large tiles
+function hexTile(g, c, s){ hexPath(c.x, c.y, (g.r + 1) * s); ctx.fillStyle = c.gold ? rgba(C.acc, .95) : C.bg; ctx.fill();
+  if (!c.gold){ ctx.strokeStyle = rgba(C.acc, .35 * s); ctx.lineWidth = 1.5; ctx.stroke(); } }
+const WIPE_IN = .2;
+function overlay(t){   // the outgoing half: tiles grow in over the last 0.2 s of a scene
+  const sc = sceneAt(t), nx = SC[sc.i + 1]; if (!nx) return;
+  const e = WIPE_IN - (sc.t0 + sc.d - t); if (e <= 0) return;
+  const g = HEXG[nx.i % 2]; for (const c of g.cells){ const k = c.k[nx.id] * .9 + c.j, s = eO(inv(k * .1, k * .1 + .1, e)); if (s > 0) hexTile(g, c, s); }
+}
+function transition(sc, lt){   // the incoming half: the same tiles shrink away from the same origin
+  if (lt > .7) return;
+  const g = HEXG[sc.i % 2]; for (const c of g.cells){ const k = c.k[sc.id] * .9 + c.j, s = 1 - eO(inv(k * .2, k * .2 + .22, lt)); if (s > 0) hexTile(g, c, s); }   // eO: moving from the first frame, no frozen hold
+}
+// @@/style
+
+/* ================================================================ PROGRESS BAR (engine-owned: the DOM .scrub hit area mirrors BAR) */
+const BAR = { x0: 74, x1: W - 74, y: H - 78 };
+let hoverFrac = null;
+function progressBar(t){
+  const x0 = BAR.x0, x1 = BAR.x1, y = BAR.y, bh = hoverFrac == null ? 2 : 5;
+  ctx.fillStyle = rgba(C.ink, .12); ctx.fillRect(x0, y - (bh - 2) / 2, x1 - x0, bh);
+  ctx.fillStyle = C.acc; ctx.fillRect(x0, y - (bh - 2) / 2, (x1 - x0) * (t / DUR), bh);
+  for (const s2 of SC){ ctx.fillStyle = rgba(C.ink, .35); ctx.fillRect(x0 + (x1 - x0) * (s2.t0 / DUR), y - 4, 2, 10); }
+  if (hoverFrac != null){
+    const hx = x0 + (x1 - x0) * hoverFrac, ht = hoverFrac * DUR, hs = sceneAt(ht), lab = `${String(Math.floor(ht / 60)).padStart(2, '0')}:${String(Math.floor(ht) % 60).padStart(2, '0')} · ${hs.code}`;
+    ctx.fillStyle = C.accHi; ctx.fillRect(hx - 1.5, y - 14, 3, 30);
+    const lw = mw(lab, FM, 700, 18, 2) + 24, lx = clamp(hx - lw / 2, x0, x1 - lw);
+    ctx.fillStyle = rgba(C.bg, .92); ctx.fillRect(lx, y - 52, lw, 32); ctx.strokeStyle = C.acc; ctx.lineWidth = 1.5; ctx.strokeRect(lx, y - 52, lw, 32);
+    T(lab, lx + lw / 2, y - 30, { f: FM, w: 700, z: 18, c: C.acc, ls: 2, al: 'center' });
+  }
+}
+
+/* ================================================================ SHARED GEOMETRY
+   Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
+// @@geometry
+// ---------------------------------------------------------------- shared helpers
+const R3 = Math.sqrt(3);
+const HANGUL = /[ᄀ-ᇿ㄰-㆏가-힣]/;
+const LF = s => HANGUL.test(s) ? FK : FM;                     // mono for Latin labels; Hangul goes to the sans (no CJK in DM Mono)
+const GOLD_DK = '#7A5217', GOLD_BK = '#2B2F3A';
+// flat-top hexagon; addHex adds a subpath (for unions / clips), hexPath starts a fresh path
+function addHex(x, y, r){ for (let k = 0; k < 6; k++){ const a = k * Math.PI / 3, px = x + r * Math.cos(a), py = y + r * Math.sin(a); k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.closePath(); }
+function hexPath(x, y, r){ ctx.beginPath(); addHex(x, y, r); }
+
+// ---------------------------------------------------------------- Webb's primary mirror (facts F5, F6)
+// 18 flat-top hexagons 1.32 m flat to flat, axial radius 2 with the centre cell empty. Columns q = ±2 (3 segments each) are the folding wings.
+const SEG_R = 1.32 / R3;                                      // circumradius in metres
+const SEGS = (() => { const a = [];
+  for (let q = -2; q <= 2; q++) for (let r = -2; r <= 2; r++){ const s = -q - r, ring = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
+    if (ring > 2 || ring === 0) continue;
+    const x = SEG_R * 1.5 * q, y = SEG_R * R3 * (r + q / 2);
+    a.push({ q, r, x, y, ring, wing: q === 2 ? 1 : q === -2 ? -1 : 0, ang: (Math.atan2(y, x) + Math.PI / 2 + TAU) % TAU }); }
+  a.sort((u, v) => u.ring - v.ring || u.ang - v.ang);
+  a.forEach((s, i) => { s.i = i; s.h = hash(i + 11); s.h2 = hash(i + 71); s.h3 = hash(i + 131); s.tone = hash(i + 191); });
+  return a; })();
+const MIRROR_H = 5 * 1.32;                                    // drawn height in metres (5 segments tall)
+
+// o: a (alpha) · off(s) → [dx, dy, rot, scale, alpha] · lit(s) 0..1 · flash(s) 0..1 · fold 0..1 (wings swing behind) · struts 0..1 · glint 0..1 (a light band crossing) · grow(s) 0..1 (radius)
+function drawMirror(cx, cy, k, o = {}){
+  const { a = 1, off = null, lit = null, flash = null, fold = 0, struts = 0, boom = 1, glint = 0, grow = null, gap = Math.max(1.5, k * .035) } = o;
+  const R0 = SEG_R * k - gap, hinge = SEG_R * 2.25 * k, cf = Math.cos(Math.PI * clamp(fold));
+  const bp = clamp(boom);
+  if (struts > 0 && bp > 0){   // secondary-mirror booms: one from the top, two from the lower corners, growing from the rim inward
+    ctx.save(); ctx.globalAlpha *= struts * a * clamp(bp * 4); ctx.strokeStyle = rgba(C.dim, .9); ctx.lineWidth = Math.max(2, k * .05);
+    for (const an of [-Math.PI / 2, Math.PI / 2 + .95, Math.PI / 2 - .95]){ const ex = cx + Math.cos(an) * 3.25 * k, ey = cy + Math.sin(an) * 3.25 * k; ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(lerp(ex, cx, bp), lerp(ey, cy, bp)); ctx.stroke(); }
+    ctx.restore(); }
+  const order = cf < 0 ? [...SEGS].sort((u, v) => Math.abs(v.wing) - Math.abs(u.wing)) : SEGS;   // folded wings sit behind
+  for (const s of order){
+    let x = s.x * k, y = s.y * k, rot = 0, sc = 1, al = a, sx = 1;
+    if (s.wing && fold > 0){ x = s.wing * (hinge + (Math.abs(x) - hinge) * cf); sx = cf; }
+    if (off){ const [dx, dy, dr, ds, da] = off(s); x += dx; y += dy; rot = dr; sc = ds; al *= da; }
+    const R = R0 * (grow ? grow(s) : 1); if (al <= 0 || R <= .5) continue;
+    ctx.save(); ctx.translate(cx + x, cy + y); ctx.rotate(rot); ctx.scale(sc * sx, sc); ctx.globalAlpha *= al;
+    hexPath(0, 0, R);
+    if (sx < 0){ ctx.fillStyle = GOLD_BK; ctx.fill(); }
+    else {
+      const L = lit ? lit(s) : 1;
+      ctx.fillStyle = '#241A0B'; ctx.fill();
+      const g = ctx.createLinearGradient(-R, -R, R, R); g.addColorStop(0, C.accHi); g.addColorStop(.5, C.acc); g.addColorStop(1, GOLD_DK);
+      ctx.globalAlpha *= .22 + .78 * L; ctx.fillStyle = g; ctx.fill();
+      ctx.fillStyle = `rgba(255,255,255,${.07 * s.tone})`; ctx.fill();
+      const fl = flash ? flash(s) : 0; if (fl > 0){ ctx.fillStyle = `rgba(255,248,225,${.55 * fl})`; ctx.fill(); }
+    }
+    ctx.restore();
+  }
+  const sr = .37 * k * clamp((bp - .8) / .2);
+  if (struts > 0 && sr > .5){ dot(cx, cy, sr, '#141926', struts * a); ctx.save(); ctx.globalAlpha *= struts * a; ctx.strokeStyle = C.acc; ctx.lineWidth = Math.max(1.5, k * .03); ctx.beginPath(); ctx.arc(cx, cy, sr, 0, TAU); ctx.stroke(); ctx.restore(); }
+  if (glint > 0 && glint < 1 && !off && fold <= 0){   // a band of light crossing the segments, clipped to them
+    ctx.save(); ctx.beginPath(); for (const s of SEGS) addHex(cx + s.x * k, cy + s.y * k, R0); ctx.clip();
+    const span = 8 * k, bx = cx - span * .75 + span * 1.5 * glint, by = cy;
+    const g = ctx.createLinearGradient(bx - 110, by - 110, bx + 110, by + 110);
+    g.addColorStop(0, 'rgba(255,240,200,0)'); g.addColorStop(.5, `rgba(255,244,214,${.55 * a})`); g.addColorStop(1, 'rgba(255,240,200,0)');
+    ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = g; ctx.fillRect(cx - span, cy - span, span * 2, span * 2); ctx.restore(); }
+}
+
+// ---------------------------------------------------------------- small illustrated bodies
+function drawEarth(x, y, r){
+  const g = ctx.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r); g.addColorStop(0, '#6FA8FF'); g.addColorStop(.6, '#2A5FC0'); g.addColorStop(1, '#0B2152');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.clip(); ctx.fillStyle = 'rgba(120,190,120,.55)';
+  for (const [dx, dy, rr] of [[-.3, -.1, .35], [.25, .3, .28], [.35, -.35, .18]]){ ctx.beginPath(); ctx.ellipse(x + dx * r, y + dy * r, rr * r, rr * r * .7, .6, 0, TAU); ctx.fill(); }
+  ctx.restore(); ctx.strokeStyle = 'rgba(150,200,255,.45)'; ctx.lineWidth = Math.max(1, r * .06); ctx.beginPath(); ctx.arc(x, y, r * 1.04, 0, TAU); ctx.stroke();
+}
+function drawMoon(x, y, r){
+  const g = ctx.createRadialGradient(x - r * .3, y - r * .35, r * .1, x, y, r); g.addColorStop(0, '#E9E6DF'); g.addColorStop(1, '#8C8980');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  for (const [dx, dy, rr] of [[-.3, -.2, .18], [.25, .15, .22], [.05, .45, .12]]) dot(x + dx * r, y + dy * r, rr * r, 'rgba(90,88,82,.45)');
+}
+function drawGalaxy(x, y, r, rot, col, a = 1, flat = .42){
+  ctx.save(); ctx.globalAlpha *= a; ctx.translate(x, y); ctx.rotate(rot); ctx.scale(1, flat);
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r); g.addColorStop(0, '#FFF6E6'); g.addColorStop(.18, col); g.addColorStop(1, rgba(col, 0));
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill(); ctx.restore();
+}
+// a star with Webb-style diffraction spikes: six long, two short
+function spikeStar(g, x, y, L, col){
+  g.save(); g.translate(x, y); g.globalCompositeOperation = 'lighter';
+  for (let k = 0; k < 8; k++){ const long = k < 6, an = long ? Math.PI / 2 + k * Math.PI / 3 : (k - 6) * Math.PI, len = long ? L : L * .45;
+    const gr = g.createLinearGradient(0, 0, Math.cos(an) * len, Math.sin(an) * len); gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.strokeStyle = gr; g.lineWidth = long ? 2.2 : 1.6; g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(an) * len, Math.sin(an) * len); g.stroke(); }
+  const h = g.createRadialGradient(0, 0, 0, 0, 0, L * .22); h.addColorStop(0, '#FFFFFF'); h.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = h; g.beginPath(); g.arc(0, 0, L * .22, 0, TAU); g.fill();
+  g.restore();
+}
+
+// ---------------------------------------------------------------- galaxies that appear when scene 2 pulls back
+const WARM = ['#FFC27A', '#FF9A5A', '#FFE3B0', '#E8764A', '#FFB38A', '#D9E4FF'];
+const GAL2 = Array.from({ length: 44 }, (_, i) => ({ x: 720 + hash(i + 300) * 1060, y: 430 + hash(i + 340) * 420, r: 6 + Math.pow(hash(i + 380), 2) * 26,
+  rot: hash(i + 420) * Math.PI, col: WARM[i % WARM.length], h: hash(i + 460) }));
+
+// ---------------------------------------------------------------- a drawn deep field (an illustration, not a Webb photo)
+const FIELD = (() => { const N = 1100, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), Rn = rng(2022);
+  const bgG = g.createRadialGradient(N / 2, N / 2, 0, N / 2, N / 2, N * .7); bgG.addColorStop(0, '#0B0F1E'); bgG.addColorStop(1, '#03050B'); g.fillStyle = bgG; g.fillRect(0, 0, N, N);
+  const pick = () => WARM[Math.floor(Rn() * WARM.length)];
+  const blob = (x, y, r, rot, col, flat, al) => { g.save(); g.globalAlpha = al; g.translate(x, y); g.rotate(rot); g.scale(1, flat);
+    const gr = g.createRadialGradient(0, 0, 0, 0, 0, r); gr.addColorStop(0, '#FFF3DC'); gr.addColorStop(.2, col); gr.addColorStop(1, rgba(col, 0));
+    g.fillStyle = gr; g.beginPath(); g.arc(0, 0, r, 0, TAU); g.fill(); g.restore(); };
+  for (let i = 0; i < 3200; i++){ const r = .6 + Rn() * 1.5; g.globalAlpha = .25 + Rn() * .55; g.fillStyle = pick(); g.fillRect(Rn() * N, Rn() * N, r, r); }   // faint, distant
+  for (let i = 0; i < 620; i++) blob(Rn() * N, Rn() * N, 3 + Math.pow(Rn(), 2) * 16, Rn() * Math.PI, pick(), .3 + Rn() * .7, .9);
+  for (let i = 0; i < 9; i++){ const x = N * (.15 + Rn() * .7), y = N * (.15 + Rn() * .7), r = 26 + Rn() * 30, rot = Rn() * Math.PI;   // a few spirals
+    blob(x, y, r, rot, '#FFD9A0', .45, .9); g.save(); g.translate(x, y); g.rotate(rot); g.scale(1, .45); g.strokeStyle = 'rgba(190,210,255,.35)'; g.lineWidth = 3;
+    for (const s of [0, Math.PI]){ g.beginPath(); for (let u = 0; u < 1; u += .04){ const an = s + u * 3.6, rr = 6 + u * r * 1.1; g.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } g.stroke(); } g.restore(); }
+  for (let i = 0; i < 7; i++) blob(N * .5 + (Rn() - .5) * 180, N * .5 + (Rn() - .5) * 160, 22 + Rn() * 26, Rn() * Math.PI, '#F4D9A8', .8, .95);   // cluster core
+  g.save(); g.translate(N / 2, N / 2); g.lineCap = 'round';                                                                                           // stretched arcs around the core
+  for (let i = 0; i < 6; i++){ const rr = 190 + Rn() * 150, a0 = Rn() * TAU, len = .25 + Rn() * .35; g.strokeStyle = `rgba(255,${150 + Rn() * 60 | 0},90,.55)`; g.lineWidth = 3 + Rn() * 3; g.beginPath(); g.arc(0, 0, rr, a0, a0 + len); g.stroke(); }
+  g.restore();
+  for (let i = 0; i < 5; i++) spikeStar(g, N * (.1 + Rn() * .8), N * (.1 + Rn() * .8), 60 + Rn() * 70, i % 2 ? '#E6EEFF' : '#FFF2D8');
+  g.globalAlpha = 1; return c; })();
+
+// scene layouts that other scenes echo
+const M1 = { cx: 1330, cy: 450, k: 84 };                      // opening and closing mirror: the loop seam
+// @@/geometry
+
+/* ================================================================ SCENES
+   S[id] = { draw(lt, d, t), cues(d) }. lt = seconds into the scene, d = scene length.
+   draw() must depend only on lt (no accumulated state) so scrubbing and ?t= stills show exactly what playback shows.
+   cues() returns [[secondsIntoScene, SYN name, ...args]] — put each sound on the same beat as the motion it belongs to. */
+const S = {};
+// @@scenes
+// text voices: headline (display 900) · body (sans 500, 46 px, light grey) · fact labels (sans 700, never below 34 px)
+// · kicker (mono capitals in English, sans in Korean, gold) · decorative mono labels only where the meaning survives without them
+const SOFT = '#C6CCD8';
+const HEAD = { f: FD, w: 900, z: 80, fit: 1700 };
+const KO = HANGUL.test(TXT.title);   // Hangul sublines get a bolder, larger cut so they survive phone size
+const BODY = { f: FK, w: KO ? 700 : 500, z: KO ? 50 : 48, c: SOFT, fit: 1700 };
+function fact(s, x, y, o = {}){ T(s, x, y, { f: FK, w: 700, z: 36, c: SOFT, ...o }); }
+function lab(s, x, y, o = {}){ const k = HANGUL.test(s); T(s, x, y, { f: FM, w: 500, z: 30, c: C.dim, ...o, ...(k ? { f: FK, ls: 0, z: Math.max(28, (o.z || 30) + 2) } : {}) }); }
+function kick(s, x, y, lt, t0 = .05, al = 'left'){ const k = HANGUL.test(s);
+  T(typeOn(s, inv(t0, t0 + .35, lt)), x, y, k ? { f: FK, w: 700, z: 30, c: C.acc, al } : { f: FM, w: 500, z: 26, c: C.acc, ls: 5, al }); }
+// a second headline entrance: a mask opens left → right on a spring while the line settles 24 px
+function reveal(s, x, y, lt, t0, o = {}){
+  const u = spring(lt - t0, ...SPRING.default); if (u <= .001) return;
+  const z = o.z || 64, tw = Math.min(mw(s, o.f || FK, o.w || 900, z), o.fit || 1e9);
+  ctx.save(); ctx.beginPath(); ctx.rect(x - 12, y - z * 1.15, (tw + 40) * u, z * 1.6); ctx.clip();
+  T(s, x - (1 - u) * 24, y, o); ctx.restore();
+}
+function chip(k, v, x, y, lt, t0, al = 'left', col = C.acc){   // a small label over a value, popping in on a spring
+  const u = spring(lt - t0, ...SPRING.snappy), a = inv(t0, t0 + .12, lt); if (a <= 0) return;
+  const dy = (1 - u) * 18;
+  T(k, x, y + dy, HANGUL.test(k) ? { f: FK, w: 700, z: 30, c: C.dim, a, al } : { f: FM, w: 500, z: 26, c: C.dim, ls: 3, a, al });
+  T(v, x, y + 46 + dy, { f: FK, w: 700, z: 38, c: col, a, al });
+}
+function vdim(x, y0, y1, col, p = 1, a = 1){   // vertical dimension line, drawn from its centre outward
+  const m = (y0 + y1) / 2, h = (y1 - y0) / 2 * p; if (p <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = col; ctx.fillRect(x - 1.5, m - h, 3, h * 2); ctx.fillRect(x - 12, m - h - 1.5, 24, 3); ctx.fillRect(x - 12, m + h - 1.5, 24, 3); ctx.restore();
+}
+
+// 1 · the mirror assembles, the booms grow in, a slow push-in; title under it, right-aligned (the poster's left-centre stays free)
+S.open = {
+  draw(lt, d){
+    const st = s => .05 + s.i * .03, zc = 1 + .06 * eIO(inv(1, 4.2, lt));
+    ctx.save(); ctx.translate(M1.cx, M1.cy); ctx.scale(zc, zc); ctx.translate(-M1.cx, -M1.cy);
+    glow(M1.cx, M1.cy, 560, rgba(C.acc, .12), inv(.5, 1.6, lt));
+    drawMirror(M1.cx, M1.cy, M1.k, {
+      off: lt > 2.2 ? null : s => { const u = spring(lt - st(s), ...SPRING.heavy), v = 1 - u; return [(s.h - .5) * 820 * v, (s.h2 - .5) * 560 * v, (s.h3 - .5) * 1.8 * v, lerp(.75, 1, u), lerp(.7, 1, u)]; },
+      struts: 1, boom: spring(lt - 2 * B, ...SPRING.default), glint: inv(5 * B, 5 * B + 1, lt) });
+    ctx.restore();
+    rise(TXT.title, 1810, 868, lt, .95, { ...HEAD, z: 84, al: 'right', fit: 1150 });   // after the last segment lands, so nothing flies across it
+    rise(TXT.titleSub, 1810, 936, lt, 3 * B, { ...BODY, z: KO ? 52 : 48, c: C.ink, al: 'right', fit: 1150 }, .5, 16);
+    kick(TXT.k.open, 1810, 772, lt, 1.85, 'right');
+  },
+  cues: d => [[0, 'power'], [.05, 'pad', [220, 261.63, 329.63], 3.9, .05], ...SEGS.map(s => [.05 + s.i * .03 + .38, 'tick', .018]), [2 * B, 'bell'], [2 * B, 'chord', 3], [1.85, 'blip', 1180, .03], [5 * B, 'scan', 1, .045], [d - 1.1, 'riser', 1.1, .12]]
+};
+
+// 2 · a pulse of moonlight crosses in real time (1.3 s), then the view pulls back to distant galaxies
+S.oldlight = {
+  draw(lt, d){
+    kick(TXT.k.oldlight, 110, 205, lt);
+    reveal(TXT.o2.head, 110, 300, lt, .2, HEAD);
+    const pb = spring(lt - 4 * B, ...SPRING.heavy), sc = lerp(1, .34, pb), ox = lerp(960, 330, pb), oy = lerp(640, 660, pb);
+    for (const g of GAL2){ const t0 = 4 * B + .1 + g.h * .9, a = inv(t0, t0 + .3, lt); if (a > 0) drawGalaxy(g.x, g.y, g.r, g.rot, g.col, a * .9); }
+    ctx.save(); ctx.translate(ox, oy); ctx.scale(sc, sc);
+    const ex = -580, mx = 580, t0 = .45, t1 = t0 + 1.3, p = inv(t0, t1, lt);   // constant speed: it's light
+    if (p > 0){
+      const hx = lerp(mx - 40, ex + 90, p);
+      ctx.fillStyle = rgba(C.accHi, .45); ctx.fillRect(hx, -2, mx - 40 - hx, 4);
+      if (p < 1){ glow(hx, 0, 70, rgba(C.accHi, .9)); dot(hx, 0, 7, '#FFFFFF'); }
+      else glow(ex + 90, 0, 90, rgba(C.accHi, .7), 1 - inv(t1, t1 + .5, lt));
+      const s = (1.3 * p).toFixed(1) + TXT.o2.unit;
+      T(s, p < 1 ? hx : (ex + mx) / 2, -44, { f: HANGUL.test(s) ? FK : FM, w: 500, z: 48, c: C.accHi, al: 'center', a: 1 - inv(4 * B, 4 * B + .3, lt) });   // the caption takes over once the view pulls back
+    }
+    drawEarth(ex, 0, 84); drawMoon(mx, 0, 32);
+    ctx.restore();
+    rise(TXT.o2.cap, 110, 890, lt, t1 + .05, { ...BODY, c: C.ink });
+  },
+  cues: d => [[.45, 'blip', 1320, .05], [1.75, 'correct', .09], [4 * B, 'whoosh', .5, .12], [d - 1, 'riser', 1, .12]]
+};
+
+// 3 · thesis: over 13.5 billion years, drawn against the universe's 13.8-billion-year timeline on one scale
+const FIRSTG = Array.from({ length: 9 }, (_, i) => ({ x: 1450 + (hash(i + 600) - .5) * 360, y: 430 + (hash(i + 640) - .5) * 220, r: 10 + hash(i + 680) * 22, rot: hash(i + 720) * Math.PI, col: WARM[(i * 3) % WARM.length], h: hash(i + 760) }));
+S.reach = {
+  draw(lt, d){
+    const r = TXT.r;
+    for (const g of FIRSTG){ const a = inv(.2 + g.h * .6, .5 + g.h * .6, lt); if (a > 0) drawGalaxy(g.x + lt * 4, g.y, g.r, g.rot, g.col, a * (.75 + .25 * Math.sin(lt * 3 + g.h * 6))); }
+    kick(TXT.k.reach, 110, 205, lt);
+    reveal(r.pre, 110, 300, lt, .05, { f: FK, w: 500, z: 46, c: C.ink });
+    const v = 13.5 * eO(inv(0, .45 + B, lt)), s = r.big(v), wFinal = mw(r.big(13.5), FD, 900, 280);
+    slam(s, 110, 590, lt, 0, { f: FD, w: 900, z: 280, c: C.acc, split: false });
+    rise(r.unit, 110 + wFinal + 26, 590, lt, .3, { f: FD, w: 900, z: HANGUL.test(r.unit) ? 150 : 72, c: C.acc });
+    rise(r.post, 110, 694, lt, 2 * B, { ...BODY, c: C.ink, w: 700 });
+    const X0 = 110, X1 = 1810, Y = 840, bp = spring(lt - 4 * B, ...SPRING.default), la = inv(4 * B + .1, 4 * B + .4, lt);
+    if (bp > 0){
+      ctx.fillStyle = rgba(C.ink, .28); ctx.fillRect(X0, Y - 2, (X1 - X0) * bp, 4);
+      glow(X0, Y, 60, rgba(C.accHi, .8), la); dot(X0, Y, 6, '#FFFFFF', la); dot(X1, Y, 6, C.ink, la);
+      fact(r.bang, X0, Y + 60, { a: la, z: 40 }); fact(r.today, X1, Y + 60, { a: la, z: 40, al: 'right' }); fact(r.age, 960, Y + 60, { a: la, z: 44, c: C.ink, al: 'center' });
+    }
+    const gp = eIO(inv(6 * B, 8 * B, lt)), xl = lerp(X1, X1 - (X1 - X0) * 13.5 / 13.8, gp);
+    if (gp > 0){
+      ctx.fillStyle = C.acc; ctx.fillRect(xl, Y - 28, X1 - xl, 6); ctx.fillRect(X1 - 3, Y - 42, 6, 34); ctx.fillRect(xl - 3, Y - 42, 6, 34);
+      ctx.beginPath(); ctx.moveTo(xl - 16, Y - 25); ctx.lineTo(xl + 4, Y - 38); ctx.lineTo(xl + 4, Y - 12); ctx.closePath(); ctx.fill();
+      if (gp < 1) glow(xl, Y - 25, 70, rgba(C.accHi, .8));
+    }
+  },
+  cues: d => [[0, 'impact', .8], [.02, 'roll', .45 + B, 14], [6 * B, 'scan', 2 * B, .07], [8 * B, 'stamp', .6], [d - 1, 'riser', 1, .12]]
+};
+
+// 4 · the light bucket: segments light up one by one, then Hubble's mirror slides in on the same scale
+const M4 = { cx: 1380, cy: 500, k: 84 }, M4B = M4.cy + MIRROR_H / 2 * M4.k;
+const litT = s => .3 + s.ang / TAU * 1.2;
+const FOCUS4 = SEGS.find(s => s.q === -1 && s.r === 0);
+S.mirror = {
+  draw(lt, d){
+    const m = TXT.m;
+    kick(TXT.k.mirror, 110, 205, lt);
+    rise(m.head, 110, 300, lt, .7, { ...HEAD, fit: 980 });
+    const fz = spring(lt - .1, 60, 15.5), zm = lerp(3.2, 1, fz), F = FOCUS4;   // a close-up on one segment springs back to the whole mirror
+    ctx.save(); ctx.translate(M4.cx, M4.cy); ctx.scale(zm, zm); ctx.translate(-F.x * M4.k * (1 - fz), -F.y * M4.k * (1 - fz)); ctx.translate(-M4.cx, -M4.cy);
+    drawMirror(M4.cx, M4.cy, M4.k, { lit: s => inv(litT(s), litT(s) + .12, lt), flash: s => { const f = inv(litT(s), litT(s) + .35, lt); return f > 0 && f < 1 ? 1 - f : 0; }, struts: .55 });
+    ctx.restore();
+    const dm = spring(lt - 1.5, ...SPRING.snappy), wx = M4.cx + 4 * SEG_R * M4.k + 34, h65 = 6.5 * M4.k;   // 6.5 m at the drawing's scale
+    vdim(wx, M4.cy - h65 / 2, M4.cy + h65 / 2, C.acc, dm);
+    fact(m.webb, M4.cx, M4B + 78, { z: 42, c: C.acc, al: 'center', a: inv(1.9, 2.2, lt) });
+    const hu = spring(lt - 5 * B, ...SPRING.default);
+    if (hu > 0){ const hr = 1.2 * M4.k, hx = lerp(620, 840, hu), hy = M4B - hr, a = inv(5 * B, 5 * B + .2, lt);
+      ctx.save(); ctx.globalAlpha *= a; const g = ctx.createRadialGradient(hx - hr * .3, hy - hr * .3, hr * .1, hx, hy, hr); g.addColorStop(0, '#E4E8EF'); g.addColorStop(1, '#6F7684');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU); ctx.fill(); dot(hx, hy, hr * .14, '#1A1F2A'); ctx.restore();
+      vdim(hx + hr + 30, hy - hr, hy + hr, C.dim, spring(lt - 5 * B - .15, ...SPRING.default), a);
+      fact(m.hub, hx, M4B + 78, { z: 42, c: C.ink, al: 'center', a }); }
+    const bp = inv(7 * B, 7 * B + .25, lt);
+    if (bp > 0){ const s = lerp(1.5, 1, eBack(bp)), bw = mw(m.badge, FK, 700, 42) + 48;
+      ctx.save(); ctx.translate(110, 430); ctx.scale(s, s); ctx.globalAlpha *= inv(7 * B, 7 * B + .1, lt);
+      ctx.fillStyle = C.acc; ctx.fillRect(0, -54, bw, 80); T(m.badge, 24, 0, { f: FK, w: 700, z: 42, c: C.bg }); ctx.restore(); }
+  },
+  cues: d => [[.1, 'whoosh', .9, .08], ...SEGS.map(s => [litT(s), 'tick', .022]), [5 * B, 'whoosh', .3, .12], [7 * B, 'stamp', .55], [d - 1, 'riser', 1, .12]]
+};
+
+// 5 · heat from the Sun is stopped layer by layer; the cold side falls to −233 °C
+const LAYX = j => 800 + j * 30, LAYH = j => 205 - j * 16;   // centre x of layer j (0 = sun-facing) and half-height
+const layT = j => 1.0 + j * .1;
+S.cold = {
+  draw(lt, d){
+    const c = TXT.c, CY = 745;
+    glow(-160, CY, 700, rgba(C.bad, .55), inv(0, .6, lt)); glow(-160, CY, 360, rgba(C.acc, .5), inv(0, .6, lt));
+    const ra = inv(.3, .8, lt);   // rays: full strength until they meet a landed layer, a quarter as strong past each one
+    if (ra > 0) for (let i = 0; i < 5; i++){ const y = CY - 100 + i * 62; let I = 1, x0 = 0;
+      for (let j = 0; j <= 5; j++){ const x1 = j < 5 ? LAYX(j) : 1500; ctx.beginPath();
+        for (let x = x0; x <= x1; x += 10) ctx.lineTo(x, y + Math.sin((x - lt * 420) / 34 + i) * 7);
+        ctx.strokeStyle = rgba(j === 0 ? C.bad : j < 3 ? C.acc : C.alt, .75 * I * ra); ctx.lineWidth = 3; ctx.stroke();
+        if (j < 5 && lt >= layT(j) + .15) I *= .25; x0 = x1; if (I < .01) break; } }
+    for (let j = 0; j < 5; j++){ const u = spring(lt - layT(j), ...SPRING.default), a = inv(layT(j), layT(j) + .12, lt); if (a <= 0) continue;
+      const x = LAYX(j), h = LAYH(j), bow = 26 + j * 14, dy = (1 - u) * -90;
+      ctx.save(); ctx.globalAlpha *= a; ctx.strokeStyle = j < 2 ? '#D7B4E6' : '#C3CCDD'; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.moveTo(x + bow, CY - h + dy); ctx.quadraticCurveTo(x - bow * .6, CY + dy, x + bow, CY + h + dy); ctx.stroke(); ctx.restore(); }
+    const hotA = inv(.5, .9, lt), side = HANGUL.test(c.hotL) ? { f: FK, w: 700, z: 30, c: C.dim } : { f: FM, w: 500, z: 26, c: C.dim, ls: 4 };
+    T(c.hotL, 150, 478, { ...side, a: hotA }); T('85 °C', 150, 568, { f: FD, w: 900, z: 88, c: C.bad, a: hotA }); if (c.hotF) fact(c.hotF, 150, 618, { z: 40, a: hotA });
+    const cv = lerp(85, -233, eIO(inv(1.5, 2.7, lt))), cs = (cv < -.5 ? '−' : '') + Math.abs(Math.round(cv)) + ' °C', coldA = inv(1.1, 1.4, lt);
+    T(c.coldL, 1030, 478, { ...side, a: coldA }); T(cs, 1030, 568, { f: FD, w: 900, z: 88, c: cv < 0 ? C.alt : C.ink, a: coldA });
+    if (c.coldF) fact(c.coldF, 1030, 618, { z: 40, a: inv(2.7, 3, lt) });
+    drawMirror(1600, 800, 28, { struts: .6, a: inv(.2, .5, lt), lit: () => .8 });
+    glow(1600, 800, 170, rgba(C.alt, .22), inv(2.3, 3, lt));
+    kick(TXT.k.cold, 110, 205, lt);
+    reveal(c.head, 110, 300, lt, .15, HEAD);
+    rise(c.sub, 110, 376, lt, 3 * B, BODY, .5, 16);
+    const sp = inv(8 * B, 8 * B + .25, lt);   // the SPF stamp
+    if (sp > 0){ const s = lerp(1.7, 1, eBack(sp)), kr = HANGUL.test(c.spfN);
+      ctx.save(); ctx.translate(1630, 540); ctx.rotate(-.16); ctx.scale(s, s); ctx.globalAlpha *= inv(8 * B, 8 * B + .08, lt);
+      ctx.strokeStyle = C.acc; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, 124, 0, TAU); ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 110, 0, TAU); ctx.stroke();
+      T(c.spf, 0, -22, { f: FM, w: 500, z: 36, c: C.acc, al: 'center', ls: 8 });
+      T(c.spfN, 0, 40, { f: kr ? FK : FD, w: 900, z: kr ? 58 : 46, c: C.acc, al: 'center', fit: 176 }); ctx.restore(); }
+  },
+  cues: d => [[.3, 'whoosh', .6, .06], ...[0, 1, 2, 3, 4].map(j => [layT(j), 'blip', 880 - j * 90, .045]), [1.5, 'down', .14], [8 * B, 'stamp', .7], [d - 1, 'riser', 1, .12]]
+};
+
+// 6 · the observatory folds into a rocket-fairing outline, then unfolds
+const OBS = { cx: 1360, my: 540, sy: 800, k: 48 };
+S.fold = {
+  draw(lt, d){
+    const f = TXT.f, fo = clamp(spring(lt - .25, ...SPRING.default) - spring(lt - 4 * B, ...SPRING.heavy), 0, 1.02);
+    const my = lerp(OBS.my, 520, fo), sy = lerp(OBS.sy, 780, fo), sw = lerp(1, .3, fo), sh = lerp(1, 1.9, fo);
+    const fa = inv(.8, 1.1, lt) * (1 - inv(4 * B, 4 * B + .3, lt));   // fairing outline
+    if (fa > 0){ ctx.save(); ctx.globalAlpha *= fa; ctx.strokeStyle = rgba(C.ink, .55); ctx.lineWidth = 3; const cx = OBS.cx, top = 250, sh0 = 440, bot = 935, hw = 175;
+      ctx.beginPath(); ctx.moveTo(cx - hw, bot); ctx.lineTo(cx - hw, sh0); ctx.bezierCurveTo(cx - hw, 330, cx - 50, top, cx, top); ctx.bezierCurveTo(cx + 50, top, cx + hw, 330, cx + hw, sh0); ctx.lineTo(cx + hw, bot); ctx.stroke(); ctx.restore(); }
+    // sunshield: a stretched hexagon seen from slightly above, five layers; it concertinas up around the telescope
+    const P = [[-440, 0], [-215, -80], [215, -80], [440, 0], [215, 80], [-215, 80]];
+    ctx.fillStyle = rgba(C.dim, .8); ctx.fillRect(OBS.cx - 5, my + 2.8 * OBS.k, 10, Math.max(0, sy - 80 * sh - my - 2.8 * OBS.k));   // deployable tower
+    ctx.save(); ctx.translate(OBS.cx, sy);
+    for (let j = 4; j >= 0; j--){ ctx.beginPath(); P.forEach(([x, y], n) => { const X = x * sw * (1 - j * .03), Y = y * sh * (1 - j * .03) - j * 7; n ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.closePath();
+      ctx.fillStyle = j < 2 ? 'rgba(215,180,230,.16)' : 'rgba(195,204,221,.12)'; ctx.fill(); ctx.strokeStyle = j < 2 ? '#D7B4E6' : '#C3CCDD'; ctx.lineWidth = 2; ctx.stroke(); }
+    if (fo > .05){ ctx.strokeStyle = rgba(C.ink, .25 * fo); ctx.lineWidth = 1.5; for (let n = -3; n <= 3; n++){ ctx.beginPath(); ctx.moveTo(n * 60 * sw, -70 * sh); ctx.lineTo(n * 60 * sw, 70 * sh); ctx.stroke(); } }
+    ctx.restore();
+    drawMirror(OBS.cx, my, OBS.k, { fold: fo, struts: 1 - fo });
+    kick(TXT.k.fold, 110, 205, lt);
+    reveal(f.head, 110, 300, lt, .15, { ...HEAD, fit: 1060 });
+    rise(f.sub, 110, 376, lt, 4.5 * B, BODY, .5, 16);
+    const la = inv(5.6 * B, 6.2 * B, lt); if (la > 0) lab(typeOn(f.lab, la), OBS.cx, 945, { z: 24, ls: 3, al: 'center', c: C.acc });
+  },
+  cues: d => [[.25, 'whoosh', .4, .12], [.25, 'down', .12], [.8, 'tick', .04], [.9, 'tick', .04], [4 * B, 'whoosh', .45, .14], [4.5 * B, 'correct', .1], [5.6 * B, 'blip', 990, .04], [d - 1, 'riser', 1, .12]]
+};
+
+// 7 · to L2: Earth, the Moon's orbit a quarter of the way, L2 at the far end (to scale); Webb coasts out, then circles L2.
+// The headline sits at the bottom here, the map above it.
+const MAP = { y: 430, ex: 240, lx: 1700 };
+const tripP = lt => { const u = inv(2 * B, 6 * B, lt); return 1 - Math.pow(1 - u, 2.2); };   // a hard push at the start, then a coast
+S.orbit = {
+  draw(lt, d){
+    const o = TXT.o, { y, ex, lx } = MAP, la = spring(lt - .2, ...SPRING.default), mr = (lx - ex) / 4;
+    glow(-200, y, 520, rgba(C.acc, .28), la);
+    ctx.save(); ctx.setLineDash([6, 12]); ctx.strokeStyle = rgba(C.ink, .35); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(ex, y); ctx.lineTo(lerp(ex, lx, la), y); ctx.stroke(); ctx.restore();
+    const ma = inv(.4, .8, lt);   // the Moon's orbit ring: a quarter of the way
+    if (ma > 0){ ctx.save(); ctx.globalAlpha *= ma; ctx.strokeStyle = rgba(C.dim, .7); ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(ex, y, mr, 70, 0, 0, TAU); ctx.stroke(); ctx.restore();
+      const an = -.25 + lt * .12; drawMoon(ex + Math.cos(an) * mr, y + Math.sin(an) * 70, 12);
+      fact(o.moon, ex + mr, y - 110, { z: 44, c: C.ink, al: 'center', a: ma }); }
+    drawEarth(ex, y, 34);
+    const l2a = inv(.8, 1.1, lt); ctx.save(); ctx.globalAlpha *= l2a; ctx.strokeStyle = C.ink; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(lx - 12, y - 12); ctx.lineTo(lx + 12, y + 12); ctx.moveTo(lx + 12, y - 12); ctx.lineTo(lx - 12, y + 12); ctx.stroke(); ctx.restore();
+    T('L2', lx, y - 112, { f: FD, w: 900, z: 40, c: C.ink, al: 'center', a: l2a });
+    const p = tripP(lt), hr = 42, hv = 90;   // halo orbit around L2, joined at its left point
+    let wx, wy;
+    if (lt < 6 * B){ wx = lerp(ex + 40, lx - hr, p); wy = y; }
+    else { const an = Math.PI + (lt - 6 * B) * 1.6; wx = lx + Math.cos(an) * hr; wy = y - Math.sin(an) * hv;
+      ctx.save(); ctx.strokeStyle = rgba(C.acc, .5 * inv(6 * B, 6 * B + .3, lt)); ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(lx, y, hr, hv, 0, 0, TAU); ctx.stroke(); ctx.restore(); }
+    if (lt > 2 * B){ ctx.fillStyle = C.acc; ctx.fillRect(ex + 40, y - 2, Math.min(wx, lx - hr) - ex - 40, 4);
+      glow(wx, wy, 60, rgba(C.accHi, .8)); hexPath(wx, wy, 12); ctx.fillStyle = C.accHi; ctx.fill(); }
+    const db = spring(lt - 6 * B, ...SPRING.default);   // the distance, once Webb is there: the same string as the headline
+    if (db > 0){ const hx = (lx - ex) / 2 * db, cx = (ex + lx) / 2, by = y + 96;
+      ctx.fillStyle = C.acc; ctx.fillRect(cx - hx, by - 1.5, hx * 2, 3); ctx.fillRect(cx - hx - 1.5, by - 12, 3, 24); ctx.fillRect(cx + hx - 1.5, by - 12, 3, 24);
+      const tw = mw(o.dist, FK, 700, 38) + 36; ctx.fillStyle = C.bg; ctx.fillRect(cx - tw / 2, by - 30, tw, 60);
+      T(o.dist, cx, by + 13, { f: FK, w: 700, z: 38, c: C.acc, al: 'center', a: inv(6 * B + .1, 6 * B + .3, lt) }); }
+    chip(o.launchK, o.launch, 110, 620, lt, 2 * B);
+    chip(o.arriveK, o.arrive, 1810, 620, lt, 6 * B, 'right');
+    kick(TXT.k.orbit, 110, 792, lt);
+    reveal(o.head, 110, 876, lt, .15, HEAD);
+    if (o.miles) rise(o.miles, 110, 936, lt, .6, { ...BODY, z: 34 }, .4, 10);
+  },
+  cues: d => [[2 * B, 'blip', 660, .06], [2 * B, 'scan', 4 * B, .06], [6 * B, 'bell'], [d - 1, 'riser', 1, .12]]
+};
+
+// 8 · what it has seen: a drawn deep field seen through the mirror (an illustration), then the record galaxy on the timeline
+const SEEN = { cx: 1330, cy: 560, k: 88 }, SEEN_B = { cx: 1640, cy: 330, k: 30 }, SWAP = 6.5 * B;
+S.seen = {
+  draw(lt, d){
+    const s = TXT.s, mv = spring(lt - SWAP, ...SPRING.heavy);
+    const cx = lerp(SEEN.cx, SEEN_B.cx, mv), cy = lerp(SEEN.cy, SEEN_B.cy, mv), k = lerp(SEEN.k, SEEN_B.k, mv);
+    const grow = sg => lerp(.4, 1, spring(lt - sg.ring * .05 - sg.h * .04, ...SPRING.heavy)), R0 = SEG_R * k - 3;
+    ctx.save(); ctx.beginPath(); for (const sg of SEGS){ const g = grow(sg); if (g > .01) addHex(cx + sg.x * k, cy + sg.y * k, R0 * g); } ctx.clip();
+    const z = (1.05 + lt * .03) * k / SEEN.k, fs = 700 * z; ctx.drawImage(FIELD, cx - fs / 2, cy - fs / 2, fs, fs); ctx.restore();
+    ctx.save(); ctx.strokeStyle = rgba(C.acc, .9); ctx.lineWidth = 2; for (const sg of SEGS){ const g = grow(sg); if (g > .01){ hexPath(cx + sg.x * k, cy + sg.y * k, R0 * g); ctx.stroke(); } } ctx.restore();
+    const ia = inv(.8, 1.2, lt) * (1 - inv(SWAP - .2, SWAP, lt));
+    fact(s.illus, SEEN.cx, SEEN.cy + MIRROR_H / 2 * SEEN.k + 70, { z: 36, ls: HANGUL.test(s.illus) ? 0 : 6, c: C.dim, al: 'center', a: ia });
+    kick(TXT.k.seen, 110, 222, lt);
+    const aA = swapAlpha(lt, .1, SWAP);
+    rise(s.aK, 110, 330, lt, .15, { f: FD, w: 900, z: 60, c: C.acc, a: aA });
+    s.aH.forEach((line, i) => rise(line, 110, 430 + i * 90, lt, .35 + i * .15, { ...HEAD, z: 76, fit: 860, a: aA }));
+    // part B: the record galaxy on the universe timeline, with a zoom into its first billion years
+    const bA = inv(SWAP + .1, SWAP + .4, lt); if (bA <= 0) return;
+    s.bH.forEach((line, i) => reveal(line, 110, 312 + i * 88, lt, SWAP + .1 + i * .12, { ...HEAD, z: i ? 72 : 56, c: i ? C.ink : SOFT, fit: 1330 }));
+    rise(s.rec, 110, 466, lt, SWAP + .4, { f: FK, w: 700, z: 40, c: C.acc }, .4, 10);
+    const X0 = 110, X1 = 1810, YF = 880, YI = 720, fb = spring(lt - SWAP - .05, ...SPRING.default), xg = X0 + (X1 - X0) / 13.8;
+    ctx.fillStyle = rgba(C.ink, .28); ctx.fillRect(X0, YF - 2, (X1 - X0) * fb, 4);
+    fact(s.bang, X0, YF + 56, { z: 40, a: bA }); fact(s.today, X1, YF + 56, { z: 40, al: 'right', a: bA });
+    const zp = spring(lt - SWAP - .3, ...SPRING.default);
+    if (zp > 0){ ctx.fillStyle = C.acc; ctx.fillRect(X0, YF - 4, xg - X0, 8);
+      ctx.fillStyle = rgba(C.acc, .08 * zp); ctx.beginPath(); ctx.moveTo(X0, YF - 6); ctx.lineTo(xg, YF - 6); ctx.lineTo(lerp(xg, X1, zp), YI + 4); ctx.lineTo(X0, YI + 4); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = rgba(C.ink, .5); ctx.fillRect(X0, YI - 2, (X1 - X0) * zp, 4);
+      fact(s.span, X1, YI + 54, { z: 40, al: 'right', a: inv(SWAP + .5, SWAP + .8, lt) }); }
+    const mark = (my, t0, col, txt, up) => { const u = spring(lt - t0, ...SPRING.snappy), a = inv(t0, t0 + .1, lt); if (a <= 0) return;
+      const x = X0 + (X1 - X0) * my / 1000;
+      ctx.fillStyle = col; ctx.globalAlpha = a; ctx.fillRect(x - 2, YI - up * u, 4, up * u); ctx.globalAlpha = 1; dot(x, YI, 9, col, a);
+      fact(txt, x - 10, YI - up - 18, { z: 44, c: col, a: a * inv(t0 + .1, t0 + .25, lt) }); };
+    mark(500, SWAP + .6, SOFT, s.hub, 70);
+    mark(280, SWAP + 1.25, C.acc, s.webb, 164);
+    const gl = inv(SWAP + 1.25, SWAP + 1.9, lt); if (gl > 0 && gl < 1) glow(X0 + (X1 - X0) * .28, YI, 120, rgba(C.accHi, .7), 1 - gl);
+  },
+  cues: d => [[.05, 'chord', 2.6], [.35, 'bell'], [SWAP, 'whoosh', .4, .12], [SWAP + .6, 'tick', .05], [SWAP + 1.25, 'stamp', .65], [d - 1, 'riser', 1, .12]]
+};
+
+// 9 · close: the mirror back where it started (the loop seam), partners, and the link card
+S.close = {
+  draw(lt, d){
+    const e = TXT.e, ap = spring(lt - .02, ...SPRING.heavy);
+    ctx.save(); const sc = lerp(.94, 1, ap); ctx.translate(M1.cx, M1.cy); ctx.scale(sc, sc); ctx.translate(-M1.cx, -M1.cy);
+    glow(M1.cx, M1.cy, 560, rgba(C.acc, .12 + .06 * beatPulse(lt) * inv(4 * B, 4.5 * B, lt)));
+    drawMirror(M1.cx, M1.cy, M1.k, { struts: 1, glint: inv(7 * B, 7 * B + 1, lt) });
+    ctx.restore();
+    rise(e.ag, 1810, 868, lt, .2, { ...HEAD, z: 84, al: 'right', fit: 1150 });
+    rise(e.people, 1810, 932, lt, 2 * B, { ...BODY, al: 'right', fit: 1150 }, .5, 16);
+    const { x, y, w, h } = CFG.endCta, u = spring(lt - 4 * B, ...SPRING.default), a = inv(4 * B, 4 * B + .15, lt);
+    if (a > 0){ ctx.save(); ctx.globalAlpha *= a; ctx.translate((1 - u) * -70, 0);
+      ctx.fillStyle = C.panel; ctx.fillRect(x, y, w, h); ctx.strokeStyle = rgba(C.acc, .55); ctx.lineWidth = 2; ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+      ctx.fillStyle = C.acc; ctx.fillRect(x, y, 8, h);
+      hexPath(x + 82, y + 96, 30); ctx.fill();
+      T(e.card, x + 136, y + 116, { f: FD, w: 900, z: 60, fit: w - 176 });
+      T(e.url, x + 54, y + 214, { f: FK, w: 700, z: 42, c: C.acc, fit: w - 108 });
+      ctx.restore(); }
+  },
+  cues: d => [[2 * B, 'blip', 880, .04], [4 * B, 'impact', .5], [4 * B, 'stamp', .45], [4 * B, 'chord', 3], [4 * B + .1, 'bell'], [7 * B, 'scan', 1, .04]]
+};
+// @@/scenes
+
+/* ================================================================ TIMELINE
+   [scene id, beats, HUD code]. At 140 BPM one beat = 0.4286 s, so 8 beats ≈ 3.4 s and 12 beats ≈ 5.1 s. */
+// @@plan
+const PLAN = [
+  ['open', 8, '01 · TIME MACHINE'], ['oldlight', 8, '02 · LIGHT TAKES TIME'], ['reach', 10, '03 · LOOK-BACK TIME'],
+  ['mirror', 10, '04 · LIGHT BUCKET'], ['cold', 12, '05 · INFRARED'], ['fold', 10, '06 · ORIGAMI'],
+  ['orbit', 10, '07 · DESTINATION L2'], ['seen', 12, '08 · FIRST LIGHT'], ['close', 10, '09 · EXPLORE']
+];
+// @@/plan
+let acc = 0;
+const SC = PLAN.map(([id, beats, code], i) => { const s = { id, i, code, t0: acc * B, d: beats * B }; acc += beats; return s; });
+const DUR = acc * B;
+function sceneAt(t){ let s = SC[0]; for (const x of SC) if (t >= x.t0 - 1e-6) s = x; return s; }
+function render(t){
+  t = clamp(t, 0, DUR - 1e-4); const sc = sceneAt(t), lt = t - sc.t0;
+  ctx.save(); drawBg(t); ctx.restore();
+  ctx.save(); try { S[sc.id].draw(lt, sc.d, t); } catch (e){ console.error(e); } ctx.restore();
+  ctx.save(); overlay(t); ctx.restore();
+  if (sc.i > 0){ ctx.save(); transition(sc, lt); ctx.restore(); }
+  ctx.save(); hud(t, sc); ctx.restore();
+  progressBar(t);
+}
+
+/* ================================================================ SOUND
+   Everything is synthesised with Web Audio — no audio files. A beat grid (kick/clap/hat/bass/arp) runs under
+   the scenes, and each scene's cues() adds one-shot effects from SYN. */
+function buildSound(ac, out, t0, T0){
+  const noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), nd = noise.getChannelData(0), R = rng(11);
+  for (let i = 0; i < nd.length; i++) nd[i] = R() * 2 - 1;
+  const at = e => T0 + (e - t0);
+  const mus = ac.createGain(); mus.gain.value = 1; mus.connect(out);
+  const env = (g, T, a, dec, att = .003) => { g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(Math.max(.0002, a), T + att); g.gain.exponentialRampToValueAtTime(.0001, T + dec); };
+  const osc = (e, type, f, a, dec, f2, fd, lp, dest = out) => {
+    if (e < t0 - .001) return; const T = at(e), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, T); if (f2) o.frequency.exponentialRampToValueAtTime(f2, T + fd);
+    env(g, T, a, dec); let n = o; if (lp){ const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); n = fl; }
+    n.connect(g).connect(dest); o.start(T); o.stop(T + dec + .05);
+  };
+  const nz = (e, type, f, q, a, dec, f2) => {
+    if (e < t0 - .001) return; const T = at(e), s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noise; s.loop = true; fl.type = type; fl.frequency.setValueAtTime(f, T); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, T + dec); fl.Q.value = q;
+    env(g, T, a, dec); s.connect(fl).connect(g).connect(out); s.start(T, R()); s.stop(T + dec + .05);
+  };
+  const swell = (e, len, a, f1, f2) => {
+    if (e + len < t0) return; const s0 = Math.max(e, t0), T = at(s0), rem = e + len - s0, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    const fr = f1 * Math.pow(f2 / f1, (s0 - e) / len);
+    s.buffer = noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 3; fl.frequency.setValueAtTime(fr, T); fl.frequency.exponentialRampToValueAtTime(f2, T + rem);
+    g.gain.setValueAtTime(.0001, T); g.gain.exponentialRampToValueAtTime(a, T + rem * .92); g.gain.linearRampToValueAtTime(0, T + rem + .01);
+    s.connect(fl).connect(g).connect(out); s.start(T); s.stop(T + rem + .05);
+  };
+  const duck = e => { if (e < t0) return; const T = at(e); mus.gain.setValueAtTime(.28, T); mus.gain.linearRampToValueAtTime(1, T + .17); };
+  const SYN = {
+    kick: (e, a = .9) => { osc(e, 'sine', 165, a, .3, 42, .09); duck(e); },
+    clap: (e, a = .26) => { nz(e, 'bandpass', 1500, .8, a, .13); nz(e + .012, 'bandpass', 1900, .8, a * .7, .12); },
+    hat: (e, a = .03, dec = .03) => nz(e, 'highpass', 9000, .7, a, dec),
+    ohat: (e, a = .055) => nz(e, 'highpass', 7200, .6, a, .1),
+    bass: (e, f, a = .17, type = 'sawtooth') => osc(e, type, f, a, .16, 0, 0, 420, mus),
+    arp: (e, f, a = .03, type = 'square') => osc(e, type, f, a, .07, 0, 0, 2800, mus),
+    // sustained chord with a slow swell — the bed for calm grooves
+    pad: (e, fs, len, a = .025) => { if (e < t0 - .001) return; const T = at(e);
+      fs.forEach(f => { const o = ac.createOscillator(), g = ac.createGain(), fl = ac.createBiquadFilter(); o.type = 'triangle'; o.frequency.value = f; fl.type = 'lowpass'; fl.frequency.value = 1400;
+        g.gain.setValueAtTime(.0001, T); g.gain.linearRampToValueAtTime(a, T + len * .3); g.gain.linearRampToValueAtTime(.0001, T + len);
+        o.connect(fl).connect(g).connect(mus); o.start(T); o.stop(T + len + .05); }); },
+    blip: (e, f = 880, a = .07) => osc(e, 'square', f, a, .07, 0, 0, 3200),           // UI tick with pitch; rising pitch for lists
+    tick: (e, a = .03) => osc(e, 'square', 3400, a, .012),                              // clock / counter tick
+    hit: (e, a = .6) => { nz(e, 'bandpass', 2600, 1.2, a * .3, .08); osc(e, 'square', 180, a * .15, .09); },
+    slam: (e, a = .7) => { osc(e, 'sine', 125, a, .42, 38, .18); nz(e, 'bandpass', 1100, 1, a * .45, .1); osc(e, 'square', 1600, a * .06, .015); },   // headline hit
+    impact: (e, a = .95) => { osc(e, 'sine', 95, a, .95, 30, .55); nz(e, 'lowpass', 3200, .7, a * .45, .6, 180); [220, 261.63, 329.63, 440].forEach(f => osc(e, 'sawtooth', f, .045, .4, 0, 0, 2200)); },   // thesis / finale
+    glitch: (e, a = .055) => { for (let k = 0; k < 7; k++) osc(e + k * .018, 'square', 300 + R() * 3200, a, .02); },
+    stamp: (e, a = .7) => { osc(e, 'sine', 105, a, .28, 36, .15); nz(e, 'bandpass', 900, 1, a * .5, .08); osc(e, 'square', 1500, a * .07, .012); },   // badge / chip pop
+    scan: (e, len, a = .07) => swell(e, len, a, 380, 5200),                              // beam sweeping across
+    riser: (e, len, a = .2) => swell(e, len, a, 300, 8000),                              // end of a scene, into the cut
+    whoosh: (e, len = .25, a = .15) => nz(e, 'bandpass', 500, 1.2, a, len, 5200),
+    down: (e, a = .22) => osc(e, 'sine', 720, a, .5, 70, .45),                           // power-down / loss
+    error: (e, a = .11) => { osc(e, 'square', 110, a, .3, 0, 0, 900); osc(e, 'square', 117, a, .3, 0, 0, 900); },
+    correct: (e, a = .13) => { osc(e, 'sine', 880, a, .25); osc(e + .09, 'sine', 1318.5, a, .45); },
+    power: e => { osc(e, 'sine', 40, .4, 1.3, 190, 1.1); swell(e, 1.2, .12, 200, 3200); },
+    laser: (e, len) => { for (let k = 0; k * .028 < len; k++) osc(e + k * .028, 'square', 2200 + R() * 900, .018, .02); osc(e, 'sawtooth', 1760, .02, len, 0, 0, 5000); },
+    roll: (e, len, n = 12) => { for (let k = 0; k < n; k++) SYN.tick(e + k * len / n, .035); },   // counting up
+    chord: (e, len) => [110, 164.81, 220, 261.63, 329.63, 440].forEach((f, k) => osc(e, 'sawtooth', f, .032, len, 0, 0, 1700 - k * 110)),
+    bell: e => { osc(e, 'sine', 1760, .07, 1.8); osc(e, 'sine', 2637, .035, 1.3); }
+  };
+  // groove: 'electro' (driving four-on-the-floor) · 'soft' (light kick on 1 and 3, shaker, round bass, pad) · 'pulse' (pad + gentle arp, no drums) · 'none' (cues only)
+  const GROOVE = CFG.music.groove || 'electro', last = SC[SC.length - 1], dStart = SC[Math.min(1, SC.length - 1)].t0, dEnd = Math.min(DUR, last.t0 + CFG.music.tailBeats * B);
+  const ROOT = CFG.music.roots || [55, 43.65, 65.41, 49];   // one bass root per bar, 4-bar loop (default Am–F–C–G)
+  const CH = CFG.music.chords || [[440, 523.25, 659.25], [349.23, 440, 523.25], [523.25, 659.25, 783.99], [392, 493.88, 587.33]];
+  const arpOn = new Set(CFG.music.arpScenes), liteOn = new Set(CFG.music.liteScenes);
+  for (let e = dStart, n = 0; e < dEnd - 1e-3 && GROOVE !== 'none'; e += B / 4, n++){
+    const six = n % 4, beat = Math.floor(n / 4), bar = Math.floor(beat / 4) % 4, id = sceneAt(e + 1e-4).id, lite = liteOn.has(id);
+    if (GROOVE === 'electro'){
+      if (six === 0){ if (!lite) SYN.kick(e); else if (beat % 2 === 0) SYN.kick(e, .45); if (beat % 2 && !lite) SYN.clap(e); }
+      if (!lite){ if (six === 2) SYN.ohat(e); SYN.hat(e, six % 2 ? .022 : .032); if (six % 2 === 0) SYN.bass(e + .01, ROOT[bar] * (six === 2 ? 2 : 1)); }
+    } else if (GROOVE === 'soft'){
+      if (six === 0 && beat % 2 === 0) SYN.kick(e, lite ? .3 : .5);
+      if (!lite && six === 2) SYN.hat(e, .014, .05);
+      if (!lite && six === 0) SYN.bass(e + .01, ROOT[bar] * 2, .09, 'triangle');
+    }
+    if (GROOVE !== 'electro' && six === 0 && beat % 4 === 0) SYN.pad(e, CH[bar].map(f => f / 2), 4 * B + .2, lite ? .016 : .024);
+    if (arpOn.has(id)) GROOVE === 'electro' ? SYN.arp(e, CH[bar][n % 3] * (n % 8 < 4 ? 1 : 2)) : (n % 2 === 0 && SYN.arp(e, CH[bar][(n / 2) % 3], .02, 'sine'));
+  }
+  SC.forEach((s, i) => {
+    for (const [lt, name, ...args] of S[s.id].cues(s.d)){ const e = s.t0 + lt; if (e < 0 || e > DUR) continue; SYN[name](e, ...args); }
+    if (i > 0) SYN.whoosh(s.t0 - .12, .2, .12);
+  });
+}
+function masterChain(ac, dest){
+  const g = ac.createGain(); g.gain.value = .5;
+  const sh = ac.createWaveShaper(), curve = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++){ const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6); }
+  sh.curve = curve;
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .12;
+  g.connect(sh).connect(comp).connect(dest); return g;
+}
+
+/* ================================================================ PLAYER */
+const $ = id => document.getElementById(id);
+const U = TXT.ui, root = document.documentElement.style;
+for (const [k, v] of Object.entries({ bg: C.bg, line: C.line, ink: C.ink, dim: C.dim, acc: C.acc, alt: C.alt })) root.setProperty('--' + k, v);
+// page around the film + translucent panels follow the palette, so light styles don't sit in a black page
+const lum = hex => { const n = parseInt(hex.slice(1), 16); return (.2126 * (n >> 16 & 255) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255; };
+root.setProperty('--page', C.page || (lum(C.bg) > .5 ? C.bg : '#020203')); root.setProperty('--glass', rgba(C.bg, .86));
+root.setProperty('color-scheme', lum(C.bg) > .5 ? 'light' : 'dark');
+root.setProperty('--bar-y', ((BAR.y + 1) / H * 100) + '%');
+document.documentElement.lang = LANG; document.title = U.title;
+const startBtn = $('start'), stage = $('stage'), scrub = $('scrub'), endCta = $('endcta'), cta = $('cta'), fsb = $('fsb');
+const TOUCH = matchMedia('(pointer:coarse)').matches;
+$('startMain').textContent = U.play; $('startSub').textContent = `${Math.round(DUR)}s · ${TOUCH ? U.playsubtouch : U.playsub}`;
+cv.setAttribute('aria-label', U.canvas); scrub.setAttribute('aria-label', U.scrub); scrub.setAttribute('aria-valuemax', DUR.toFixed(1));
+Object.assign(scrub.style, { left: BAR.x0 / W * 100 + '%', width: (BAR.x1 - BAR.x0) / W * 100 + '%' });
+$('rot').textContent = U.rotate; fsb.textContent = U.fullscreen;
+if (CFG.cta.href){
+  for (const a of [cta, endCta]){ a.href = CFG.cta.href; if (CFG.cta.newTab){ a.target = '_blank'; a.rel = 'noopener'; } }
+  $('ctaLab').textContent = U.ctaLab; $('ctaSub').textContent = U.ctaSub; $('ctaGo').textContent = U.ctaGo; cta.setAttribute('aria-label', U.ctaGo); cta.hidden = false;
+  $('endTag').textContent = U.endTag; endCta.setAttribute('aria-label', U.ctaGo);
+  if (CFG.endCta){ const b = CFG.endCta; Object.assign(endCta.style, { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%' }); }
+}
+if (LANGS.length > 1){ const nx = LANGS[(LANGS.indexOf(LANG) + 1) % LANGS.length], ln = $('lang'), q = new URLSearchParams(location.search); q.set('lang', nx);
+  ln.href = '?' + q.toString(); ln.textContent = U.lang || nx.toUpperCase(); ln.hidden = false; }
+endCta.addEventListener('click', e => e.stopPropagation());
+let watched = false; try { watched = localStorage.getItem(CFG.watchKey) === '1'; } catch (e){}
+let scrubbing = false;
+let actx = null, master = null, bus = null, base = null, soundOn = true, playing = false, head = 0, last = 0, dirty = true, armed = false;
+function readStill(){ const q = new URLSearchParams(location.search).get('t'); const h = /^#t(\d+(?:\.\d+)?)$/.exec(location.hash || ''); const v = q != null ? parseFloat(q) : h ? parseFloat(h[1]) : NaN; return Number.isFinite(v) ? clamp(v, 0, DUR) : null; }
+const still = readStill();
+const endAt = Math.min(DUR - .3, SC[SC.length - 1].t0 + CFG.endCtaBeat * B);
+function ensureAudio(){ if (actx) return; try { actx = new (window.AudioContext || window.webkitAudioContext)(); master = masterChain(actx, actx.destination); } catch (e){ actx = null; } }
+function stopAudio(){ if (bus){ try { bus.gain.setValueAtTime(0, actx.currentTime); bus.disconnect(); } catch (e){} bus = null; } base = null; }
+function schedule(t0){ if (!actx) return; stopAudio(); bus = actx.createGain(); bus.gain.value = soundOn ? 1 : 0; bus.connect(master); const T0 = actx.currentTime + .06; base = { T0, t0 }; buildSound(actx, bus, t0, T0); }
+function play(){ ensureAudio(); if (actx && actx.state === 'suspended') actx.resume(); if (head >= DUR - .02) head = 0; schedule(head); playing = true; last = performance.now(); startBtn.hidden = true; syncUI(); }
+function pause(){ playing = false; stopAudio(); dirty = true; syncUI(); }
+function seek(t){ head = clamp(t, 0, DUR); if (playing) schedule(head); dirty = true; syncUI(); }
+function arm(from = 0){ armed = true; head = from; play(); }
+function toggle(){ if (!armed) arm(0); else playing ? pause() : play(); }
+function syncUI(){ const on = !!(CFG.cta.href && CFG.endCta) && watched && head >= endAt; if (endCta.hidden === on) endCta.hidden = !on; scrub.setAttribute('aria-valuenow', head.toFixed(1)); }
+function setWatched(){ if (watched) return; watched = true; try { localStorage.setItem(CFG.watchKey, '1'); } catch (e){} }
+function frame(now){
+  if (playing && scrubbing){ last = now; render(head); syncUI(); }
+  else if (playing){
+    if (actx && actx.state === 'running' && base) head = Math.max(base.t0, base.t0 + actx.currentTime - base.T0); else head += (now - last) / 1000;
+    last = now;
+    if (head >= DUR){ head = DUR; playing = false; stopAudio(); setWatched(); startBtn.hidden = false; $('startMain').textContent = U.replay; }
+    render(head); syncUI();
+  } else if (dirty){ render(head); dirty = false; syncUI(); }
+  requestAnimationFrame(frame);
+}
+function toggleFs(){ try {
+  if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const p = (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  // phones: turn the 16:9 film sideways where the browser allows it (Android Chrome); others reject and stay as they are
+  Promise.resolve(p).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {});
+} catch (e){} }
+// iPhone Safari has no element full screen, so the button only shows where it works
+fsb.hidden = !(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+fsb.addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+startBtn.addEventListener('click', e => { e.stopPropagation(); if (!armed || head >= DUR - .8) arm(0); else play(); });
+stage.addEventListener('click', () => { if (armed) toggle(); });
+stage.addEventListener('dblclick', toggleFs);
+/* progress bar: click to jump, drag to scrub; audio re-syncs on release */
+const fracAt = e => { const r = scrub.getBoundingClientRect(); return clamp((e.clientX - r.left) / r.width); };
+scrub.addEventListener('pointermove', e => { hoverFrac = fracAt(e); if (scrubbing) head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerleave', () => { if (!scrubbing){ hoverFrac = null; dirty = true; } });
+scrub.addEventListener('pointerdown', e => { e.stopPropagation(); scrubbing = true; try { scrub.setPointerCapture(e.pointerId); } catch (_){}
+  if (playing) stopAudio(); hoverFrac = fracAt(e); head = hoverFrac * DUR; dirty = true; });
+scrub.addEventListener('pointerup', e => { if (!scrubbing) return; scrubbing = false; head = fracAt(e) * DUR;
+  if (e.pointerType !== 'mouse') hoverFrac = null;
+  // before the first play or after the end, a click starts playback from that point; while paused it only moves the playhead
+  if (!armed || !startBtn.hidden) arm(Math.min(head, DUR - .1)); else if (playing) schedule(head); syncUI(); });
+scrub.addEventListener('pointercancel', () => { scrubbing = false; hoverFrac = null; if (playing) schedule(head); });
+scrub.addEventListener('click', e => e.stopPropagation());
+scrub.addEventListener('dblclick', e => e.stopPropagation());
+document.addEventListener('keydown', e => {
+  if (e.key === ' '){ e.preventDefault(); toggle(); }
+  else if (e.key === 'ArrowRight') seek(head + 2);
+  else if (e.key === 'ArrowLeft') seek(head - 2);
+  else if (e.key === 'm' || e.key === 'M'){ soundOn = !soundOn; if (bus) bus.gain.value = soundOn ? 1 : 0; }
+  else if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+
+/* ================================================================ BOOT
+   Canvas text measures wrong until the web fonts are in, so anything that measures text once (cached layouts,
+   dot-matrix word maps) must be built after fontsReady(). */
+const ALL = JSON.stringify(TXT) + '0123456789.,×/−%←→↺';
+async function fontsReady(){
+  if (!document.fonts || !document.fonts.load) return;
+  const jobs = [['900', FK], ['700', FK], ['500', FK], ['900', FD], ['700', FM], ['400', FM]].map(([w, f]) => document.fonts.load(`${w} 64px ${f}`, ALL));
+  await Promise.race([Promise.all(jobs), new Promise(r => setTimeout(r, 4500))]).catch(() => {});
+}
+fontsReady().then(() => {
+  // @@ready
+  // build font-dependent caches here (e.g. buildDots())
+  // @@/ready
+  const POSTER = watched ? DUR - .7 : CFG.posterT;
+  if (still != null){ head = still; startBtn.hidden = true; } else head = POSTER;
+  dirty = true; requestAnimationFrame(frame);
+  document.body.dataset.ready = '1';
+});
+window.__motion = { render, DUR, SC, B, W, H, LANG, LANGS, groove: CFG.music.groove || 'electro' };
+if (new URLSearchParams(location.search).has('audiotest')) (async () => {
+  try { const oc = new OfflineAudioContext(2, Math.ceil(22050 * DUR), 22050), g = oc.createGain(); g.connect(masterChain(oc, oc.destination)); buildSound(oc, g, 0, 0);
+    const d = (await oc.startRendering()).getChannelData(0), per = SC.map(s => { let q = 0, n = 0; for (let i = Math.floor(s.t0 * 22050); i < Math.floor((s.t0 + s.d) * 22050) && i < d.length; i += 5){ q += d[i] * d[i]; n++; } return Math.sqrt(q / Math.max(1, n)).toFixed(3); });
+    let pk = 0; for (let i = 0; i < d.length; i += 3) pk = Math.max(pk, Math.abs(d[i]));
+    document.body.dataset.audio = `peak=${pk.toFixed(3)} rms/scene=${per.join(',')}`;
+  } catch (e){ document.body.dataset.audio = 'ERR ' + e.message; } })();
+})();
+</script>
+</body>
+</html>

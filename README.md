@@ -14,13 +14,23 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 ## Samples
 
-Four motion graphics made with this skill using Claude Code and Codex. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md` and the `storyboard.md` the agent wrote.
+The first three samples were made with v0.4.0: Claude Opus 5.5 and Claude Sonnet 5.5 each made one film from the same prompt, so you can compare them side by side. The last one was made with Codex. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md`, the `storyboard.md` the agent wrote and, for the v0.4.0 films, the `review_log.md` of the scored critique rounds. Each storyboard was reviewed once at the approval step before the build.
 
 ### Skill intro — flat pop · 30 s
 
-https://github.com/user-attachments/assets/be0d6871-4e56-49c0-91d5-90b77d540cf2
+**Opus 5.5** — a laptop lid collecting stickers
 
-[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/?lang=ko)) · [source](samples/skill-intro) · 7 scenes, electro groove at 128 BPM
+https://github.com/user-attachments/assets/cff67aee-17bd-4aff-a487-eba07781b96a
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/opus/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/opus/?lang=ko)) · [source](samples/skill-intro/opus) · 7 scenes, electro groove at 128 BPM
+
+**Sonnet 5.5** — a capsule-toy machine
+
+https://github.com/user-attachments/assets/bcf7a0ce-7537-4bf6-90e6-34d1f37131d9
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/sonnet/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/skill-intro/sonnet/?lang=ko)) · [source](samples/skill-intro/sonnet) · 7 scenes, electro groove at 128 BPM
+
+Cost and time with three critique rounds each: Opus 5.5 $17.06 in 52 min · Sonnet 5.5 $9.43 in 41 min.
 
 <details>
 <summary>Prompt</summary>
@@ -31,11 +41,21 @@ Make a 30-second motion graphic that introduces this repository's motion-graphic
 
 </details>
 
-### James Webb Space Telescope — night-sky planetarium · 45 s
+### James Webb Space Telescope — deep space and gold mirrors · 45 s
 
-https://github.com/user-attachments/assets/03088c20-9c28-4d23-9669-7edb0c5e0aeb
+**Opus 5.5** — a golden time machine
 
-[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/?lang=ko)) · [source](samples/webb-telescope) · 8 scenes, drum-less pulse groove at 90 BPM, every number sourced to NASA
+https://github.com/user-attachments/assets/0ccf1637-1888-45f5-b94c-a544b3f66c2b
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/opus/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/opus/?lang=ko)) · [source](samples/webb-telescope/opus) · 9 scenes, soft groove at 120 BPM, every number sourced to NASA
+
+**Sonnet 5.5** — the observatory unfolding, step by step
+
+https://github.com/user-attachments/assets/8c317f24-4814-454c-8190-1673ae609434
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/sonnet/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/webb-telescope/sonnet/?lang=ko)) · [source](samples/webb-telescope/sonnet) · 9 scenes, soft groove at 96 BPM, every number sourced to NASA
+
+Cost and time with three critique rounds each: Opus 5.5 $19.24 in 58 min · Sonnet 5.5 $9.57 in 44 min.
 
 <details>
 <summary>Prompt</summary>
@@ -46,11 +66,21 @@ Make a 45-second explainer motion graphic about the James Webb Space Telescope f
 
 </details>
 
-### V60 pour-over guide — warm café illustration · 31 s
+### V60 pour-over guide — warm café illustration · 30 s
 
-https://github.com/user-attachments/assets/bba61e37-23db-41b9-89be-78fe5fbb94a8
+**Opus 5.5** — one brew bar, read off the scale
 
-[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/?lang=ko)) · [source](samples/pour-over) · 7 scenes, soft groove at 124 BPM, recipe from Hario and the SCA
+https://github.com/user-attachments/assets/14931d4c-3f9e-4431-8ff3-78e5b3bbf71d
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/opus/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/opus/?lang=ko)) · [source](samples/pour-over/opus) · 7 scenes, soft groove at 104 BPM, recipe from the SCA, technique from Hario
+
+**Sonnet 5.5** — the cup fills as you learn
+
+https://github.com/user-attachments/assets/b40f14da-2def-4fda-ba0b-bcc3791f79fe
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/sonnet/) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/pour-over/sonnet/?lang=ko)) · [source](samples/pour-over/sonnet) · 7 scenes, soft groove at 100 BPM, recipe from the SCA, technique from Hario
+
+Cost and time with three critique rounds each: Opus 5.5 $18.79 in 57 min · Sonnet 5.5 $9.96 in 50 min.
 
 <details>
 <summary>Prompt</summary>
@@ -221,7 +251,7 @@ skills/motion-graphic/
   scripts/assemble.py    split the engine into parts / assemble them back
   scripts/check.js       verification: stills, phone sheet, cut strips, determinism, clipping, audio, layouts, touch
   scripts/record.js      HTML → mp4 (frame-exact render + the engine's own audio, verified with ffprobe)
-samples/                 pieces made from one prompt each (HTML, mp4, prompt, facts, storyboard)
+samples/                 pieces made from one prompt each (HTML, mp4, prompt, facts, storyboard; opus/ and sonnet/ versions)
 examples/                prebuilt style examples
 docs/images/             README images
 ```

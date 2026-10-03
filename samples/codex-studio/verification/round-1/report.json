@@ -1,0 +1,402 @@
+{
+  "target": "samples/codex-studio/index.html",
+  "out": "samples/codex-studio/verification/round-1",
+  "langs": {
+    "ko": {
+      "clippedText": [],
+      "smallText": [],
+      "hangulInMono": [],
+      "nondeterministic": [],
+      "audio": "peak=0.820 rms/scene=0.050,0.107,0.103,0.107,0.050,0.105,0.121",
+      "layout": {
+        "phone-portrait-390": {
+          "vw": 390,
+          "vh": 844,
+          "film": [
+            0,
+            222,
+            390,
+            219
+          ],
+          "start": [
+            18,
+            305,
+            149,
+            55
+          ],
+          "dock": [
+            0,
+            454,
+            390,
+            168
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1,
+            "afterBarTap": 15.3,
+            "barHitHeight": 32
+          }
+        },
+        "phone-landscape-844": {
+          "vw": 844,
+          "vh": 390,
+          "film": [
+            7,
+            0,
+            693,
+            390
+          ],
+          "start": [
+            39,
+            167,
+            149,
+            56
+          ],
+          "dock": [
+            708,
+            0,
+            136,
+            390
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.3,
+            "barHitHeight": 32
+          }
+        },
+        "phone-portrait-360": {
+          "vw": 360,
+          "vh": 740,
+          "film": [
+            0,
+            179,
+            360,
+            203
+          ],
+          "start": [
+            16,
+            253,
+            149,
+            55
+          ],
+          "dock": [
+            0,
+            393,
+            360,
+            168
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.4,
+            "barHitHeight": 32
+          }
+        },
+        "phone-landscape-740": {
+          "vw": 740,
+          "vh": 360,
+          "film": [
+            0,
+            10,
+            604,
+            340
+          ],
+          "start": [
+            27,
+            152,
+            149,
+            56
+          ],
+          "dock": [
+            604,
+            0,
+            136,
+            360
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.4,
+            "barHitHeight": 32
+          }
+        },
+        "tablet-portrait-820": {
+          "vw": 820,
+          "vh": 1180,
+          "film": [
+            0,
+            267,
+            820,
+            461
+          ],
+          "start": [
+            37,
+            469,
+            149,
+            56
+          ],
+          "dock": [
+            0,
+            740,
+            820,
+            173
+          ],
+          "over": [],
+          "cut": []
+        },
+        "tablet-landscape-1180": {
+          "vw": 1180,
+          "vh": 820,
+          "film": [
+            0,
+            13,
+            1180,
+            664
+          ],
+          "start": [
+            53,
+            312,
+            184,
+            66
+          ],
+          "dock": [
+            0,
+            689,
+            1180,
+            131
+          ],
+          "over": [],
+          "cut": []
+        },
+        "desktop-1440": {
+          "vw": 1440,
+          "vh": 900,
+          "film": [
+            0,
+            3,
+            1440,
+            810
+          ],
+          "start": [
+            65,
+            369,
+            224,
+            77
+          ],
+          "dock": [
+            0,
+            816,
+            1440,
+            84
+          ],
+          "over": [],
+          "cut": []
+        }
+      }
+    },
+    "en": {
+      "clippedText": [],
+      "smallText": [],
+      "hangulInMono": [],
+      "nondeterministic": [],
+      "audio": "peak=0.820 rms/scene=0.050,0.107,0.103,0.107,0.050,0.105,0.121",
+      "layout": {
+        "phone-portrait-390": {
+          "vw": 390,
+          "vh": 844,
+          "film": [
+            0,
+            222,
+            390,
+            219
+          ],
+          "start": [
+            18,
+            305,
+            148,
+            55
+          ],
+          "dock": [
+            0,
+            454,
+            390,
+            168
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.4,
+            "barHitHeight": 32
+          }
+        },
+        "phone-landscape-844": {
+          "vw": 844,
+          "vh": 390,
+          "film": [
+            7,
+            0,
+            693,
+            390
+          ],
+          "start": [
+            39,
+            167,
+            148,
+            56
+          ],
+          "dock": [
+            708,
+            0,
+            136,
+            390
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.3,
+            "barHitHeight": 32
+          }
+        },
+        "phone-portrait-360": {
+          "vw": 360,
+          "vh": 740,
+          "film": [
+            0,
+            179,
+            360,
+            203
+          ],
+          "start": [
+            16,
+            253,
+            148,
+            55
+          ],
+          "dock": [
+            0,
+            393,
+            360,
+            168
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.4,
+            "barHitHeight": 32
+          }
+        },
+        "phone-landscape-740": {
+          "vw": 740,
+          "vh": 360,
+          "film": [
+            0,
+            10,
+            604,
+            340
+          ],
+          "start": [
+            27,
+            152,
+            148,
+            56
+          ],
+          "dock": [
+            604,
+            0,
+            136,
+            360
+          ],
+          "over": [],
+          "cut": [],
+          "touch": {
+            "afterStartTap": 1.1,
+            "afterBarTap": 15.3,
+            "barHitHeight": 32
+          }
+        },
+        "tablet-portrait-820": {
+          "vw": 820,
+          "vh": 1180,
+          "film": [
+            0,
+            267,
+            820,
+            461
+          ],
+          "start": [
+            37,
+            469,
+            149,
+            56
+          ],
+          "dock": [
+            0,
+            740,
+            820,
+            173
+          ],
+          "over": [],
+          "cut": []
+        },
+        "tablet-landscape-1180": {
+          "vw": 1180,
+          "vh": 820,
+          "film": [
+            0,
+            13,
+            1180,
+            664
+          ],
+          "start": [
+            53,
+            312,
+            183,
+            66
+          ],
+          "dock": [
+            0,
+            689,
+            1180,
+            131
+          ],
+          "over": [],
+          "cut": []
+        },
+        "desktop-1440": {
+          "vw": 1440,
+          "vh": 900,
+          "film": [
+            0,
+            3,
+            1440,
+            810
+          ],
+          "start": [
+            65,
+            369,
+            223,
+            77
+          ],
+          "dock": [
+            0,
+            816,
+            1440,
+            84
+          ],
+          "over": [],
+          "cut": []
+        }
+      }
+    }
+  },
+  "failures": [],
+  "errors": []
+}

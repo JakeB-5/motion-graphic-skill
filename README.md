@@ -14,7 +14,7 @@ A [Codex](https://developers.openai.com/codex/) and [Claude Code](https://claude
 
 ## Samples
 
-The first three samples were made with v0.4.0: Claude Opus 5.5 and Claude Sonnet 5.5 each made one film from the same prompt, so you can compare them side by side. The last one was made with Codex. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md`, the `storyboard.md` the agent wrote and, for the v0.4.0 films, the `review_log.md` of the scored critique rounds. Each storyboard was reviewed once at the approval step before the build.
+The first three samples were made with v0.4.0: Claude Opus 5.5 and Claude Sonnet 5.5 each made one film from the same prompt, so you can compare them side by side. Codex Motion Studio was also remade with v0.4.0, retaining its original 30-second, seven-scene brief. The videos below are recorded from the HTML with [`record.js`](skills/motion-graphic/scripts/record.js) (sound on 🔊); the ▶ links open the interactive HTML itself. Each folder in [`samples/`](samples) also keeps the sourced `facts.md`, the `storyboard.md` the agent wrote and, for the v0.4.0 films, the `review_log.md` of the scored critique rounds. The Claude samples had one storyboard approval before building; the Codex remake retains the existing sample’s story under the remake request.
 
 ### Skill intro — flat pop · 30 s
 
@@ -93,9 +93,11 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 ### Codex Motion Studio — paper cards · 30 s
 
-https://github.com/user-attachments/assets/956b8396-94b1-468b-90a3-c0aff0739447
+[![Codex Motion Studio v0.4.0 contact sheet](samples/codex-studio/preview-en.png)](samples/codex-studio/codex-studio-en.mp4)
 
-[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko)) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, made with Codex
+[Download MP4 · English](samples/codex-studio/codex-studio-en.mp4) · [한국어](samples/codex-studio/codex-studio.mp4) · [Critique log](samples/codex-studio/review_log.md)
+
+[▶ Play live](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en) ([한국어](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko)) · [source](samples/codex-studio) · 7 scenes, electro groove at 128 BPM, remade with Codex using v0.4.0
 
 <details>
 <summary>Prompt</summary>

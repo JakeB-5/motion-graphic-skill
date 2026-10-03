@@ -14,7 +14,7 @@
 
 ## 샘플
 
-첫 세 샘플은 v0.4.0으로 만들었습니다. Claude Opus 5.5와 Claude Sonnet 5.5가 같은 프롬프트로 한 편씩 만들었으니 나란히 비교해 보세요. 마지막 샘플은 Codex로 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`, 그리고 v0.4.0 샘플에는 점수 기반 비평 기록 `review_log.md`도 함께 있습니다. 스토리보드는 빌드 전 승인 단계에서 한 번씩 검토했습니다.
+첫 세 샘플은 v0.4.0으로 만들었습니다. Claude Opus 5.5와 Claude Sonnet 5.5가 같은 프롬프트로 한 편씩 만들었으니 나란히 비교해 보세요. Codex Motion Studio도 기존의 30초·7장면 브리프를 유지하며 v0.4.0으로 다시 만들었습니다. 아래 영상은 HTML을 [`record.js`](skills/motion-graphic/scripts/record.js)로 녹화한 것이고(소리 있음 🔊), ▶ 링크는 인터랙티브 HTML 원본을 엽니다. [`samples/`](samples)의 각 폴더에는 에이전트가 쓴 출처 목록 `facts.md`와 `storyboard.md`, 그리고 v0.4.0 샘플에는 점수 기반 비평 기록 `review_log.md`도 함께 있습니다. 클로드 샘플은 빌드 전 스토리보드를 한 번씩 승인받았고, Codex 재제작본은 재제작 요청에 따라 기존 이야기 흐름을 유지했습니다.
 
 ### 스킬 소개 — 플랫 팝 · 30초
 
@@ -93,9 +93,11 @@ Make a 30-second motion graphic that teaches a complete beginner how to brew pou
 
 ### Codex Motion Studio — 종이 카드 · 30초
 
-https://github.com/user-attachments/assets/e74e12f7-11a4-42b5-ab39-d2a2b1eb5715
+[![Codex Motion Studio v0.4.0 콘택트 시트](samples/codex-studio/preview.png)](samples/codex-studio/codex-studio.mp4)
 
-[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en)) · [소스](samples/codex-studio) · 7장면, 128 BPM 일렉트로 그루브, Codex 제작
+[MP4 다운로드 · 한국어](samples/codex-studio/codex-studio.mp4) · [English](samples/codex-studio/codex-studio-en.mp4) · [비평 기록](samples/codex-studio/review_log.md)
+
+[▶ 바로 재생](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=ko) ([English](https://jakeb-5.github.io/motion-graphic-skill/samples/codex-studio/?lang=en)) · [소스](samples/codex-studio) · 7장면, 128 BPM 일렉트로 그루브, Codex로 v0.4.0 재제작
 
 <details>
 <summary>프롬프트</summary>

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Codex Motion Studio: remade with v0.4.0, preserving the bilingual 30-second, seven-scene brief; spring-driven cards, a tracked sequencer, a desktop-to-phone morph, scored independent critiques, and refreshed HTML, Korean/English MP4s, previews and verification evidence.
+
 - Samples: the skill intro, James Webb and V60 pour-over films were remade with v0.4.0, once by Claude Opus 5.5 and once by Claude Sonnet 5.5 from the same prompt (`samples/<id>/opus/` and `sonnet/`, with `review_log.md` and a contact sheet). The README shows both versions side by side, and the old `samples/<id>/` links redirect to the Opus version.
 
 ## 0.4.0 — 2026-09-29

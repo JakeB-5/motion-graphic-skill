@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- @@head -->
 <title>Codex Motion Studio — 생각에 움직임을</title>
-<meta name="description" content="Codex로 만든 한국어 30초 모션그래픽. 문서와 아이디어가 음악과 함께 재생되는 HTML 한 파일로.">
+<meta name="description" content="v0.4.0 스킬과 Codex로 다시 만든 한영 30초 모션그래픽. 문서와 아이디어가 음악과 함께 재생되는 HTML 한 파일로.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Codex Motion Studio">
 <meta property="og:description" content="생각에 움직임을. 30초, 7장면의 작은 모션 스튜디오.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F5F0E7">
+
+<style>.cta .led{box-shadow:none!important;animation:none!important}</style>
 <!-- @@/head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,8 +144,8 @@ const CFG = {
   textSplit:false,
   hudTitle:'MOTION / STUDIO', hudMeta:()=>'',
   cta:{href:'https://github.com/JakeB-5/motion-graphic-skill',newTab:true},
-  endCta:{x:260,y:520,w:1400,h:300}, endCtaBeat:4,
-  posterT:2.8, watchKey:'codex-studio-ko-v1',
+  endCta:{x:200,y:450,w:1520,h:430}, endCtaBeat:6,
+  posterT:3.0, watchKey:'codex-studio-v04',
   music:{groove:'electro',liteScenes:['file'],arpScenes:['rhythm','mobile'],tailBeats:10}
 };
 // @@/config
@@ -170,24 +172,26 @@ const I18N = {};
 // @@copy
 I18N.ko = {
   ui:{title:'Codex Motion Studio',play:'사운드와 함께 재생',playsub:'클릭 또는 스페이스',playsubtouch:'탭해서 재생',replay:'다시 재생',rotate:'↻ 가로로 돌리면 크게 볼 수 있어요',fullscreen:'⤢ 전체 화면',scrub:'재생 위치',canvas:'모션그래픽. 클릭 또는 스페이스로 재생, 방향키로 이동, M 음소거, F 전체 화면',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'스킬 보기',endTag:'저장소 열기',lang:'ENGLISH'},
-  title:['생각에','움직임을.'], intro:'아이디어를 재생하는 작은 스튜디오', stamp:'MADE WITH CODEX',
-  inputs:'재료는 이미 있어요', cards:['문서','이미지','아이디어'], inputSub:'모아둔 자료가 이야기의 시작이 됩니다.',
-  story:'한 장면에 한 메시지', frames:['시작','핵심','마무리'], storySub:'전하고 싶은 말에 순서를 만들고',
-  rhythm:['움직임도, 소리도','같은 박자에.'], rhythmSub:'장면과 효과음이 함께 움직입니다.',
-  file:'HTML 파일 하나', fileSub:'장면 · 음악 · 플레이어를 한곳에', fileName:'your-story.html', fileTag:'OPEN & PLAY',
-  mobile:'폰에서도 그대로', mobileSub:'탭해서 재생하고, 원하는 순간으로 이동하세요.', screen:'PLAY YOUR STORY',
-  outro:'이제 Codex에서도', outroSub:'당신의 이야기를 재생하세요.', command:'$motion-graphic', ending:'BRIEF → MOTION',
+  title:['생각에','움직임을.'], intro:'아이디어를 재생하세요', stamp:'MADE WITH CODEX',
+  inputs:'재료는 이미 있어요', cards:['문서','이미지','아이디어'], inputSub:'자료에서 이야기가 시작됩니다',
+  story:'한 장면에 한 메시지', frames:['시작','핵심','마무리'], storySub:'이야기에 순서를 만드세요',
+  rhythm:['움직임도,','소리도.'], rhythmSub:'같은 박자에',
+  file:'HTML 파일', fileSub:'장면 · 음악 · 플레이어', fileName:'your-story.html', fileTag:'OPEN & PLAY',
+  mobile:'폰에서도\n그대로', mobileSub:'탭해서 재생하세요', screen:'PLAY YOUR STORY',
+  outro:'Codex에서 시작하세요', outroSub:'당신의 이야기를 재생하세요', command:'$motion-graphic', ending:'BRIEF → MOTION',
+  unit:'하나의', beat:'128 BPM', version:'v0.4.0', link:'github.com/JakeB-5/\nmotion-graphic-skill',
 };
 
 I18N.en = {
   ui:{title:'Codex Motion Studio',play:'Play with sound',playsub:'click or press Space',playsubtouch:'tap to play',replay:'Replay',rotate:'↻ Turn sideways for a bigger view',fullscreen:'⤢ Full screen',scrub:'Playback position',canvas:'Motion graphic. Click or Space to play, arrow keys to seek, M to mute, F for full screen',ctaLab:'GitHub',ctaSub:'motion-graphic-skill',ctaGo:'View skill',endTag:'Open repository',lang:'한국어'},
-  title:['Ideas,','in motion.'], intro:'A little studio for your next big idea', stamp:'MADE WITH CODEX',
-  inputs:'Start with what you have', cards:['Docs','Images','Ideas'], inputSub:'Your source material is where the story begins.',
-  story:'One scene. One message.', frames:['Opening','The idea','The close'], storySub:'Give your story a shape, one frame at a time.',
-  rhythm:['Every move. Every sound.','On the beat.'], rhythmSub:'Motion and sound land together.',
-  file:'One HTML file', fileSub:'Scenes, music and a player. All together.', fileName:'your-story.html', fileTag:'OPEN & PLAY',
-  mobile:'Made to move with you', mobileSub:'Tap to play. Jump to any moment.', screen:'PLAY YOUR STORY',
-  outro:'Now in Codex, too.', outroSub:'Put your story in motion.', command:'$motion-graphic', ending:'BRIEF → MOTION',
+  title:['Ideas,','in motion.'], intro:'Press play on your ideas', stamp:'MADE WITH CODEX',
+  inputs:'Start with what you have', cards:['Docs','Images','Ideas'], inputSub:'Your sources start the story',
+  story:'One scene. One message.', frames:['Opening','The idea','The close'], storySub:'Give your story a shape',
+  rhythm:['Every move.','Every sound.'], rhythmSub:'On the beat',
+  file:'HTML file', fileSub:'Scenes · music · player', fileName:'your-story.html', fileTag:'OPEN & PLAY',
+  mobile:'Ready for\nyour phone', mobileSub:'Just tap to play', screen:'PLAY YOUR STORY',
+  outro:'Start with Codex', outroSub:'Put your story in motion', command:'$motion-graphic', ending:'BRIEF → MOTION',
+  unit:'One', beat:'128 BPM', version:'v0.4.0', link:'github.com/JakeB-5/\nmotion-graphic-skill',
 };
 // @@/copy
 const LANGS = Object.keys(I18N);
@@ -220,6 +224,31 @@ function rise(s, x, y, lt, t0, o = {}, dur = .5, dy = 28){
   T(s, x, y + (1 - eO(p)) * dy, { ...o, a: (o.a ?? 1) * eO(p) });
 }
 function kicker(s, x, y, lt, t0 = 0, c = C.acc, al = 'left'){ T(typeOn(s, inv(t0, t0 + .32, lt)), x, y, { f: FM, w: 700, z: 22, c, ls: 4, al }); }
+// closed-form damped spring 0 → 1, t in seconds since the move started (k stiffness, d damping). A pure function of
+// time like everything else, so ?t= stills stay exact. Unlike eO/eIO/eBack it has mass: no fixed duration, it settles
+// on its own (~0.35–0.7 s) and underdamped presets overshoot a hair. Spread a preset in: spring(lt - t0, ...SPRING.heavy)
+const SPRING = {
+  snappy: [320, 28],    // buttons, toggles, chips, leading edges — tiny overshoot, settles ~0.35 s
+  default: [170, 26],   // cards, panels, bars, camera — no visible overshoot, ~0.5 s (same as spring() with no k, d)
+  heavy: [90, 19],      // big type, logos, large objects — no overshoot, ~0.7 s
+  playful: [220, 16],   // stickers, mascots, badges — visible bounce (~13 %)
+};
+function spring(t, k = 170, d = 26){
+  if (t <= 0) return 0;
+  const w0 = Math.sqrt(k), z = d / (2 * w0);
+  if (z < 1){ const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+  if (z > 1.001){ const s = w0 * Math.sqrt(z * z - 1), r1 = -z * w0 + s, r2 = -z * w0 - s; return 1 - (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }   // overdamped: slower, still no overshoot
+  return 1 - Math.exp(-w0 * t) * (1 + w0 * t);   // critical
+}
+// a value that changes target several times: keys = [[time, value], ...] sorted by time, at least one. Each change adds
+// its own spring from its own start, so retargeting mid-move stays continuous and any t is still computed directly
+function track(t, keys, k = 170, d = 26){
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+  return v;
+}
+// alpha for content inside a morphing container: in shortly after the morph starting at tIn, out just before the next at tOut
+const swapAlpha = (t, tIn, tOut) => Math.min(clamp((t - tIn - .08) / .12), clamp((tOut - .1 - t) / .1));
 // draw a polyline up to fraction p of its length; returns the pen tip (for a glow)
 function polyPartial(pts, p){
   let L = 0; const seg = [];
@@ -241,19 +270,21 @@ function rgba(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >>
      transition(sc, lt) the first moments of each scene after the first (sc.i > 0) — wipes, dissolves, flashes
    The engine draws the progress bar after hud(); keep y > 990 free for it. */
 // @@style
-const STUDIO_BG = ['#F5F0E7','#C8B9FF','#F5F0E7','#BEE8C5','#FF8958','#F5F0E7','#C8B9FF'];
-function drawBg(t){ctx.fillStyle=STUDIO_BG[sceneAt(t).i];ctx.fillRect(0,0,W,H);}
+const STUDIO_BG = [C.bg,C.accHi,C.bg,C.alt,C.bad,C.bg,C.accHi];
+function mixColor(a,b,p){const n=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));return '#'+n(a).map((v,i)=>Math.round(lerp(v,n(b)[i],p)).toString(16).padStart(2,'0')).join('');}
+function drawBg(t){const sc=sceneAt(t);ctx.fillStyle=sc.i===2?mixColor(C.accHi,C.bg,spring(t-sc.t0-.25*B,...SPRING.default)):STUDIO_BG[sc.i];ctx.fillRect(0,0,W,H);}
 function overlay(t){}
 function hud(t,sc){
   T(CFG.hudTitle,110,78,{f:FM,z:24,w:700,c:C.ink});
-  T(sc.code,1810,78,{f:FM,z:24,w:700,al:'right',c:C.ink});
-  ctx.fillStyle=C.ink;ctx.fillRect(110,103,1700,2);
+  T(String(sc.i+1).padStart(2,'0')+' / 07',1810,78,{f:FM,z:24,w:700,al:'right'});
 }
+// Spring-driven paper wipe over the held previous frame; pure when seeking.
 function transition(sc,lt){
-  if(sc.i===0)return;
-  const p=eIO(inv(0,.7*B,lt));if(p>=1)return;
-  ctx.fillStyle=C.ink;ctx.fillRect(W*p,0,W,H);
-  ctx.fillStyle=C.acc;ctx.fillRect(W*p+W*.08,0,W,H);
+  if(sc.i===0||sc.i===2||lt>.85)return;
+  const edge=W*spring(lt,...SPRING.heavy), prev=SC[sc.i-1];
+  ctx.save();ctx.beginPath();ctx.rect(edge,0,W-edge,H);ctx.clip();
+  drawBg(prev.t0+prev.d-.001);S[prev.id].draw(prev.d-.001,prev.d);hud(prev.t0+prev.d-.001,prev);
+  ctx.restore();ctx.fillStyle=C.ink;ctx.fillRect(edge,0,8*(1-lt/.85),H);
 }
 // @@/style
 
@@ -277,22 +308,33 @@ function progressBar(t){
 /* ================================================================ SHARED GEOMETRY
    Precompute anything random or expensive once (seeded by hash) so every frame is a pure function of time. */
 // @@geometry
-function card(x,y,w,h,color,r=24){
-  ctx.fillStyle=C.ink;ctx.beginPath();ctx.roundRect(x+9,y+11,w,h,r);ctx.fill();
+function card(x,y,w,h,color,r=22){
+  ctx.fillStyle=C.ink;ctx.beginPath();ctx.roundRect(x+10,y+12,w,h,r);ctx.fill();
   ctx.fillStyle=color;ctx.strokeStyle=C.ink;ctx.lineWidth=4;
   ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke();
 }
 function star(x,y,r,t,color=C.acc){
-  ctx.save();ctx.translate(x,y);ctx.rotate(t);
-  ctx.strokeStyle=color;ctx.lineWidth=r*.23;ctx.lineCap='square';
-  for(let i=0;i<6;i++){ctx.rotate(Math.PI/6);ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.stroke();}
-  ctx.restore();
+  if(r<=0)return;ctx.save();ctx.translate(x,y);ctx.rotate(t);ctx.fillStyle=color;
+  for(let i=0;i<6;i++){ctx.rotate(Math.PI/6);ctx.fillRect(-r,-r*.115,r*2,r*.23);}ctx.restore();
 }
 function playMark(x,y,s,color=C.ink){
   ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x-s*.32,y-s*.5);ctx.lineTo(x+s*.48,y);ctx.lineTo(x-s*.32,y+s*.5);ctx.closePath();ctx.fill();
 }
-function titleLine(s,lt,y=290){slam(s,110,y,lt,B,{z:100,w:900,fit:1680,c:C.ink});}
-function caption(s,lt,y=890){rise(s,110,y,lt,2*B,{z:38,w:700,fit:1680,c:C.ink},B);}
+// Final-resolution text, revealed through a spring-driven mask.
+function reveal(s,x,y,lt,t0,o={}){
+  const p=spring(lt-t0,...SPRING.heavy);if(p<=0)return;
+  const z=o.z||110,fw=o.fit||1700;
+  ctx.save();ctx.beginPath();ctx.rect(x-8,y-z*1.3,fw+16,z*1.5*p);ctx.clip();
+  T(s,x,y+(1-p)*30,o);ctx.restore();
+}
+function titleLine(s,lt,y=285){reveal(s,110,y,lt,.5*B,{z:104,fit:1700});}
+function caption(s,lt,y=900,t0=5*B){reveal(s,110,y,lt,t0,{z:56,w:700,fit:1700});}
+function icon(i,x,y,r,t){
+  if(i===0){ctx.fillStyle=C.acc;for(let j=0;j<4;j++)ctx.fillRect(x-r,y-r*.75+j*r*.43,r*(2-j*.28),r*.14);}
+  if(i===1){dot(x+r*.6,y-r*.55,r*.33,C.acc);ctx.fillStyle=C.ink;ctx.beginPath();ctx.moveTo(x-r,y+r*.55);ctx.lineTo(x-r*.05,y-r*.7);ctx.lineTo(x+r,y+r*.55);ctx.fill();}
+  if(i===2)star(x,y,r,t,C.ink);
+}
+function ribbon(x,y,w,lt,t0){const p=spring(lt-t0,...SPRING.snappy);ctx.fillStyle=C.acc;ctx.fillRect(x,y,w*p,9);}
 // @@/geometry
 
 /* ================================================================ SCENES
@@ -302,89 +344,105 @@ function caption(s,lt,y=890){rise(s,110,y,lt,2*B,{z:38,w:700,fit:1680,c:C.ink},B
 const S = {};
 // @@scenes
 S.title={
-  draw(lt){
-    const p=eBack(inv(.5*B,1.5*B,lt));
-    ctx.save();ctx.translate(1280,500);ctx.rotate(-.045);ctx.scale(p,p);card(-455,-270,910,580,C.panel);ctx.restore();
-    slam(TXT.title[0],1280,435,lt,1.5*B,{z:118,w:900,al:'center',fit:770});
-    slam(TXT.title[1],1280,590,lt,2.5*B,{z:128,w:900,al:'center',fit:790,c:C.acc});
-    star(1680,220,82,lt*.18,C.bad);
-    rise(TXT.intro,1260,725,lt,3.5*B,{z:36,w:700,al:'center',fit:800},B);
-    T(TXT.stamp,115,910,{f:FM,z:25,w:700,a:inv(B,2*B,lt)});
-    for(let i=0;i<3;i++)dot(140+i*58,190,17,[C.acc,C.bad,C.alt][i]);
-  },cues:()=>[[0,'power'],[1.5*B,'slam',.5],[2.5*B,'slam',.65],[3.5*B,'blip',660]]
+ draw(lt){
+  const p=spring(lt,...SPRING.heavy);
+  ctx.save();ctx.translate(1265,510+(1-p)*100);ctx.rotate(-.035*(1-p));card(-460,-300,920,610,C.panel);ctx.restore();
+  reveal(TXT.title[0],900,420,lt,.25*B,{z:137,fit:820});
+  reveal(TXT.title[1],900,595,lt,B,{z:137,fit:820,c:C.acc});
+  reveal(TXT.intro,900,725,lt,2.5*B,{z:51,w:700,fit:810});
+  star(1700,240,78*spring(lt-4*B,...SPRING.playful),-.3+spring(lt-4*B)*.5,C.bad);
+  const q=spring(lt-5.5*B,...SPRING.snappy);
+  ctx.save();ctx.translate(1240,850);ctx.rotate(-.025);ctx.fillStyle=C.alt;ctx.fillRect(-370,-42,740*q,66);
+  T(TXT.stamp,-335,6,{f:FM,z:34,w:700,a:swapAlpha(lt,5.5*B+.2,Infinity)});ctx.restore();
+  for(let i=0;i<3;i++)dot(140+i*58,190,17,[C.acc,C.bad,C.alt][i]);
+ },cues:()=>[[0,'power'],[.25*B,'slam',.35],[B,'slam',.5],[2.5*B,'blip',660],[4*B,'stamp',.4],[5.5*B,'stamp',.4]]
 };
 S.inputs={
-  draw(lt){
-    titleLine(TXT.inputs,lt);
-    TXT.cards.forEach((s,i)=>{
-      const p=eBack(inv((2+i)*B,(2.7+i)*B,lt));if(p<=0)return;
-      ctx.save();ctx.translate(395+i*560,590);ctx.rotate((i-1)*.06*p);ctx.scale(p,p);
-      card(-235,-200,470,420,[C.panel,C.alt,C.bad][i]);
-      if(i===0){for(let j=0;j<4;j++){ctx.fillStyle=C.acc;ctx.fillRect(-145,-115+j*36,210-j*27,13);}}
-      if(i===1){dot(85,-115,35,C.acc);ctx.fillStyle=C.ink;ctx.beginPath();ctx.moveTo(-150,10);ctx.lineTo(-40,-115);ctx.lineTo(90,10);ctx.fill();}
-      if(i===2)star(0,-65,87,lt*.13,C.ink);
-      T(s,0,145,{z:62,w:900,al:'center',fit:370});ctx.restore();
-    });caption(TXT.inputSub,lt);
-  },cues:()=>[[B,'slam',.5],...[0,1,2].map(i=>[(2+i)*B,'blip',520+i*150])]
+ draw(lt){
+  titleLine(TXT.inputs,lt);
+  TXT.cards.forEach((s,i)=>{
+   const p=spring(lt-(1+i)*B,...[SPRING.snappy,SPRING.default,SPRING.heavy][i]),out=spring(lt-6*B,...SPRING.default);
+   const x=395+i*560+(1-p)*(i-1)*130,y=572+(1-p)*210-out*35;
+   ctx.save();ctx.translate(x,y);ctx.rotate((i-1)*.055*p*(1-out));card(-235,-190,470,390,[C.panel,C.alt,C.bad][i]);
+   icon(i,0,-52,90,lt*.18);T(s,0,142,{z:68,al:'center',fit:385,a:p});ctx.restore();
+   ribbon(160+i*560,818,465,lt,6*B);
+  });caption(TXT.inputSub,lt,920,4.5*B);
+ },cues:()=>[[.5*B,'slam',.4],...[0,1,2].map(i=>[(1+i)*B,'stamp',.32+i*.06]),[4.5*B,'blip',720],[6*B,'whoosh',.3,.08]]
 };
 S.story={
-  draw(lt){
-    titleLine(TXT.story,lt);caption(TXT.storySub,lt);
-    TXT.frames.forEach((s,i)=>{
-      const a=inv((2+i*1.5)*B,(2.6+i*1.5)*B,lt);if(a<=0)return;
-      const x=135+i*570,y=425+(1-eO(a))*80;
-      ctx.save();ctx.globalAlpha=a;card(x,y,500,350,[C.accHi,C.bad,C.alt][i]);
-      if(i===0)dot(x+250,y+120,65,C.acc);
-      if(i===1)star(x+250,y+120,65,lt*.1,C.ink);
-      if(i===2)playMark(x+250,y+120,115);
-      T(s,x+250,y+290,{z:55,w:900,al:'center',fit:430});ctx.restore();
-    });
-  },cues:()=>[[B,'slam',.6],...[0,1,2].map(i=>[(2+i*1.5)*B,'blip',600+i*180])]
+ draw(lt){
+  // Start exactly where the source cards ended, then reshape the same objects.
+  const p=spring(lt-.5*B,...SPRING.default),oldA=1-inv(0,.18,lt);
+  T(TXT.inputs,110,285,{z:104,fit:1700,a:oldA});T(TXT.inputSub,110,920,{z:56,w:700,fit:1700,a:oldA});
+  reveal(TXT.story,110,270,lt,.75*B,{z:104,fit:1700});
+  ctx.save();ctx.globalAlpha=oldA;for(let i=0;i<3;i++){ctx.fillStyle=C.acc;ctx.fillRect(160+i*560,818,465,9);}ctx.restore();
+  const end=[[160,370,700,420],[980,370,780,180],[980,610,780,180]];
+  end.forEach(([xx,yy,ww,hh],i)=>{
+   const x=lerp(160+i*560,xx,p),y=lerp(347,yy,p),w=lerp(470,ww,p),h=lerp(390,hh,p);
+   card(x,y,w,h,mixColor([C.panel,C.alt,C.bad][i],[C.accHi,C.bad,C.alt][i],p));
+   const aOld=1-inv(.4*B,.8*B,lt),aNew=swapAlpha(lt,1.5*B,Infinity);
+   if(aOld>0){ctx.save();ctx.globalAlpha=aOld;icon(i,x+w/2,y+138,90,(lt+3.75)*.18);T(TXT.cards[i],x+w/2,y+332,{z:68,al:'center',fit:w-70});ctx.restore();}
+   if(aNew>0){ctx.save();ctx.globalAlpha=aNew;
+    if(i===0){dot(x+w/2,y+158,100,C.acc);ctx.fillStyle=C.panel;ctx.fillRect(x+w/2-85,y+150,170*spring(lt-4*B,...SPRING.snappy),16);T(TXT.frames[i],x+w/2,y+350,{z:76,al:'center',fit:620});}
+    if(i===1){star(x+105,y+90,60,spring(lt-5*B,...SPRING.playful)*.55,C.ink);T(TXT.frames[i],x+215,y+116,{z:76,fit:500});}
+    if(i===2){playMark(x+105,y+90,92+16*spring(lt-6.5*B,...SPRING.playful));T(TXT.frames[i],x+215,y+116,{z:76,fit:500});}
+    ctx.restore();
+   }
+  });
+  const lineP=spring(lt-4*B,...SPRING.snappy);
+  ctx.save();ctx.globalAlpha=lineP;ctx.strokeStyle=C.ink;ctx.lineWidth=5;polyPartial([[872,580],[915,580],[915,460],[970,460]],lineP);ctx.restore();
+  ctx.fillStyle=C.acc;ctx.fillRect(980,track(lt,[[0,566],[6.5*B,806]],...SPRING.snappy),780*lineP,10);
+  caption(TXT.storySub,lt,925,7.5*B);
+ },cues:()=>[[.5*B,'whoosh',.4,.12],[.75*B,'slam',.4],[1.5*B,'blip',660],[4*B,'blip',740],[5*B,'blip',880],[6.5*B,'blip',1040],[7.5*B,'blip',720]]
 };
 S.rhythm={
-  draw(lt){
-    titleLine(TXT.rhythm[0],lt,280);
-    slam(TXT.rhythm[1],110,425,lt,2*B,{z:120,w:900,fit:1500,c:C.acc});
-    const step=Math.floor(lt/B)%8;
-    for(let i=0;i<8;i++){
-      const x=130+i*210,h=80+130*(.5+.5*Math.sin(lt/B*Math.PI-i*.7));
-      ctx.fillStyle=i===step?C.acc:C.ink;ctx.fillRect(x,735-h,155,h);
-      dot(x+77,790,12,i===step?C.acc:C.panel);
-    }
-    caption(TXT.rhythmSub,lt,915);
-  },cues:()=>[[B,'slam',.55],[2*B,'slam',.6],...[3,4,5,6,7,8].map(i=>[i*B,'blip',440+i*60,.045])]
+ draw(lt){
+  reveal(TXT.rhythm.join(' '),110,280,lt,.5*B,{z:108,fit:1700});
+  reveal(TXT.rhythmSub,110,415,lt,2*B,{z:100,fit:1100,c:C.acc});
+  reveal(TXT.beat,1460,405,lt,2*B,{f:FM,z:58,w:700,fit:345});
+  const enter=spring(lt-B,...SPRING.heavy);
+  ctx.save();ctx.translate(110,465+(1-enter)*90);card(0,0,1700,390,C.panel);
+  const keys=[[0,0],...[2,3,4,5,6,7,8,9].map((b,i)=>[b*B,i*198])],hx=track(lt,keys,...SPRING.snappy);
+  ctx.fillStyle=C.accHi;ctx.fillRect(52+hx,40,177,270);
+  for(let i=0;i<8;i++){
+   let h=55;for(let b=2;b<=9;b++){const amount=(b-2===i?205:55)-(b===2?55:(b-3===i?205:55));h+=amount*spring(lt-b*B,...SPRING.snappy);}
+   ctx.fillStyle=C.acc;ctx.fillRect(68+i*198,288-h,143,h);dot(140+i*198,341,13,C.ink);
+  }ctx.restore();
+ },cues:()=>[[.5*B,'slam',.45],[B,'stamp',.35],...[2,3,4,5,6,7,8,9].map(i=>[i*B,'blip',440+(i%4)*140,.06])]
 };
 S.file={
-  draw(lt){
-    titleLine(TXT.file,lt);caption(TXT.fileSub,lt);
-    const p=eO(inv(2*B,4*B,lt));
-    for(let i=2;i>=0;i--){const dx=(1-p)*(i-1)*440;ctx.save();ctx.translate(960+dx,575);ctx.rotate((1-p)*(i-1)*.13);card(-360,-205,720,410,[C.panel,C.accHi,C.alt][i]);ctx.restore();}
-    dot(960,560,100,C.acc);playMark(969,560,96,C.panel);
-    T(TXT.fileName,960,735,{f:FM,z:37,w:700,al:'center',fit:650});
-    T(TXT.fileTag,960,432,{f:FM,z:24,w:700,al:'center',fit:600});
-  },cues:()=>[[B,'slam',.6],[2*B,'whoosh',B,.12],[4*B,'stamp',.6],[4.5*B,'bell']]
+ draw(lt){
+  reveal(TXT.unit,110,435,lt,.5*B,{z:220,fit:740});reveal(TXT.file,110,580,lt,1.5*B,{z:108,fit:800});
+  reveal(TXT.fileSub,110,810,lt,6*B,{z:58,w:700,fit:790});
+  const gather=spring(lt-3*B,...SPRING.default);
+  for(let i=2;i>=0;i--){ctx.save();ctx.translate(1380+(i-1)*155*(1-gather),535+(i-1)*85*(1-gather));ctx.rotate((i-1)*.12*(1-gather));card(-285,-285,570,570,[C.panel,C.accHi,C.alt][i]);ctx.restore();}
+  const a=swapAlpha(lt,3*B+.35,Infinity);
+  dot(1380,505,114*spring(lt-4*B,...SPRING.playful),C.acc);
+  if(lt>4*B)playMark(1390,505,106*spring(lt-4*B,...SPRING.playful),C.panel);
+  T(TXT.fileName,1380,720,{f:FM,z:44,w:700,al:'center',fit:520,a});T(TXT.fileTag,1380,335,{f:FM,z:30,w:700,al:'center',a});ribbon(1110,772,540,lt,6*B);
+ },cues:()=>[[.5*B,'slam',.5],[1.5*B,'blip',660],[3*B,'whoosh',.4,.13],[4*B,'stamp',.55],[4*B,'bell'],[6*B,'blip',880]]
 };
 S.mobile={
-  draw(lt){
-    titleLine(TXT.mobile,lt);caption(TXT.mobileSub,lt);
-    const p=eO(inv(2*B,3*B,lt));ctx.save();ctx.globalAlpha=p;
-    card(170,385,1060,380,C.panel);card(1360,335,295,475,C.ink,40);
-    ctx.fillStyle=C.accHi;ctx.fillRect(1390,392,235,340);
-    dot(1507,765,14,C.panel);star(1510,550,63,lt*.18,C.acc);
-    star(410,565,104,lt*.18,C.acc);
-    T(TXT.screen,820,560,{f:FM,z:40,w:700,al:'center',fit:530});
-    ctx.fillStyle=C.ink;ctx.fillRect(590,623,440,8);dot(590+440*((lt/B%4)/4),627,15,C.acc);
-    ctx.restore();
-  },cues:()=>[[B,'slam',.55],[2*B,'whoosh',.3,.15],[3*B,'blip',780]]
+ draw(lt){
+  TXT.mobile.split('\n').forEach((s,i)=>reveal(s,110,345+i*150,lt,(.5+i)*B,{z:115,fit:800}));reveal(TXT.mobileSub,110,710,lt,5*B,{z:64,w:700,fit:790});
+  const w=track(lt,[[0,740],[3*B,350]],...SPRING.default),h=track(lt,[[0,430],[3*B,640]],...SPRING.default),x=1390-w/2,y=530-h/2;
+  card(x,y,w,h,C.ink,38);ctx.fillStyle=C.accHi;ctx.beginPath();ctx.roundRect(x+22,y+22,w-44,h-90,22);ctx.fill();
+  star(1390,510,90,track(lt,[[0,-.2],[3*B,.45],[5*B,.95]],...SPRING.playful),C.acc);
+  const p=spring(lt-5*B,...SPRING.snappy);dot(1390,y+h-35,10,C.panel);
+  ctx.fillStyle=C.panel;ctx.fillRect(x+48,y+h-135,(w-96)*p,12);dot(x+48+(w-96)*p,y+h-129,15,C.bad);
+ },cues:()=>[[.5*B,'slam',.45],[1.5*B,'blip',660],[3*B,'whoosh',.4,.15],[5*B,'blip',880]]
 };
 S.outro={
-  draw(lt){
-    slam(TXT.outro,960,300,lt,B,{z:110,w:900,al:'center',fit:1670});
-    rise(TXT.outroSub,960,405,lt,2*B,{z:42,w:700,al:'center',fit:1600},B);
-    const p=eBack(inv(3*B,4*B,lt));if(p>0){ctx.save();ctx.translate(960,670);ctx.scale(p,p);card(-700,-150,1400,300,C.panel);T(TXT.command,0,28,{f:FM,z:89,w:700,al:'center',fit:1240,c:C.acc});ctx.restore();}
-    star(1650,400,65,lt*.16,C.bad);
-    T(TXT.ending,960,920,{f:FM,z:28,w:700,al:'center',a:inv(4*B,5*B,lt)});
-  },cues:()=>[[B,'impact'],[B,'chord',3.2],[3*B,'stamp',.6],[4*B,'bell']]
+ draw(lt){
+  titleLine(TXT.outro,lt,285);reveal(TXT.outroSub,110,390,lt,1.5*B,{z:62,w:700,fit:1660});
+  const p=spring(lt-2.5*B,...SPRING.heavy);
+  ctx.save();ctx.translate(960,665+(1-p)*55);card(-760,-215,1520,430,C.panel,24);ctx.fillStyle=C.acc;ctx.fillRect(-758,-213,18,426);
+  T(TXT.command,-665,-75,{f:FM,z:103,w:700,fit:1320,c:C.acc,a:swapAlpha(lt,2.5*B+.25,Infinity)});
+  TXT.link.split('\n').forEach((line,i)=>T(line,-665,35+i*94,{f:FM,z:70,w:700,fit:1320,a:swapAlpha(lt,4*B,Infinity)}));ctx.restore();
+  const q=spring(lt-6*B,...SPRING.playful);
+  ctx.save();ctx.translate(1620,382);ctx.rotate(-.12);ctx.fillStyle=C.alt;ctx.fillRect(-125,-48,250*q,83);T(TXT.version,0,12,{f:FM,z:43,w:700,al:'center',a:swapAlpha(lt,6*B+.2,Infinity)});ctx.restore();
+  T(TXT.ending,110,930,{f:FM,z:32,w:700,a:swapAlpha(lt,6*B,Infinity)});
+ },cues:()=>[[.5*B,'impact'],[.5*B,'chord',3.2],[1.5*B,'blip',660],[2.5*B,'stamp',.55],[4*B,'bell'],[6*B,'stamp',.4]]
 };
 // @@/scenes
 
